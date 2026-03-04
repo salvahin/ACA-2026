@@ -19,7 +19,7 @@ kernelspec:
 
 ## Introducción
 
-Imagina que invitas a alguien a una cena, pero esa persona no habla tu idioma. Antes de conversar, necesitas un idioma común. De manera similar, tu tesis necesita construir un "idioma común" con tu lector antes de poder presentar tu investigación compleja.
+Imagina que invitas a alguien a una cena, pero esa persona no habla tu idioma. Antes de conversar, necesitas un idioma común. De manera similar, tu proyecto de investigación necesita construir un "idioma común" con tu lector antes de poder presentar tu investigación compleja.
 
 Eso es lo que el marco teórico hace. No es simplemente una lista de definiciones. Es una construcción cuidadosa de los conceptos, teorías, y frameworks que tu lector **debe entender** para comprender por qué tu investigación importa y cómo abordas tu pregunta.
 
@@ -65,7 +65,7 @@ Muchos estudiantes confunden estos. Son relacionados pero distintos.
 
 ### En la Práctica
 
-Tu tesis probablemente tendrá ambas secciones:
+Tu proyecto de investigación probablemente tendrá ambas secciones:
 
 ```
 Capítulo 2: Marco Teórico
@@ -312,7 +312,7 @@ Escribe la primera sección (Nivel 1) de tu marco teórico (~500-800 palabras). 
 
 ## Próximos pasos
 
-Con tu marco teórico en lugar, estás listo para la sección más crítica de tu tesis: **Metodología**. Aquí describirás exactamente cómo realizaste tu investigación, permitiendo a otros reproducir tu trabajo. Verás cómo el marco teórico que construiste sienta la base para explicar métodos complejos con claridad.
+Con tu marco teórico en lugar, estás listo para la sección más crítica de tu proyecto de investigación: **Metodología**. Aquí describirás exactamente cómo realizaste tu investigación, permitiendo a otros reproducir tu trabajo. Verás cómo el marco teórico que construiste sienta la base para explicar métodos complejos con claridad.
 
 ---
 

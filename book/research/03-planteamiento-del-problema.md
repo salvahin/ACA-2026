@@ -21,7 +21,7 @@ kernelspec:
 
 Has leído papers. Has identificado patrones en el campo. Has notado algunas cosas que no tienen respuesta clara. Ahora viene la parte aterradora: **convertir toda esa curiosidad amorfa en preguntas de investigación formales y específicas**.
 
-Muchos estudiantes aquí cometen un error crítico: quieren hacer "demasiado". Quieren resolver el problema fundamental de la generación de código, optimización de GPU, y cambiar el mundo todo en una tesis de maestría. Mientras el entusiasmo es admirable, una tesis fuerte normalmente aborda **una pregunta clara y bien delimitada**.
+Muchos estudiantes aquí cometen un error crítico: quieren hacer "demasiado". Quieren resolver el problema fundamental de la generación de código, optimización de GPU, y cambiar el mundo todo en un proyecto de investigación de maestría. Mientras el entusiasmo es admirable, un proyecto de investigación fuerte normalmente aborda **una pregunta clara y bien delimitada**.
 
 Esta lectura te enseña a tomar un área general de interés y refinarlo en 2-3 preguntas precisas, falsables, y respondibles. Es un proceso de refinamiento iterativo, no un epifanía instantáneo.
 
@@ -34,7 +34,7 @@ Al finalizar esta lectura, serás capaz de:
 1. Escribir un planteamiento de problema que identifique una brecha específica en el conocimiento
 2. Formular 3 preguntas de investigación (RQ1-RQ3) que sean específicas, falsables, y respondibles
 3. Construir hipótesis formales que hagan predicciones comprobables
-4. Evaluar si tu planteamiento es lo suficientemente delimitado para una tesis
+4. Evaluar si tu planteamiento es lo suficientemente delimitado para un proyecto de investigación
 
 ---
 
@@ -108,7 +108,7 @@ Tus preguntas de investigación son más específicas que tu planteamiento gener
 
 ### Estructura recomendada
 
-**RQ1: La pregunta primaria (la que la mayoría de tu tesis responde)**
+**RQ1: La pregunta primaria (la que la mayoría de tu proyecto de investigación responde)**
 
 Ejemplo: "¿Pueden las restricciones gramaticales compiladas a GPU mejorar la calidad de kernels generados mientras mantienen overhead computacional bajo (<10%)?"
 
@@ -156,27 +156,27 @@ Ejemplo:
 
 ---
 
-## Construcción de Hipótesis Formales (Opcional pero Recomendado)
+## Construcción de Hipóproyecto de investigación Formales (Opcional pero Recomendado)
 
 Además de RQs, puedes formular hipótesis estadísticas. Estas son especialmente útiles si tu investigación incluye comparaciones cuantitativas.
 
-### Estructura de Hipótesis
+### Estructura de Hipóproyecto de investigación
 
-**Hipótesis Nula (H0):** No hay diferencia, efecto o relación
+**Hipóproyecto de investigación Nula (H0):** No hay diferencia, efecto o relación
 
 H0: "La validez sintáctica de kernels generados bajo restricciones gramaticales es estadísticamente idéntica a kernels generados sin restricciones."
 
-**Hipótesis Alternativa (H1):** Sí hay diferencia, efecto o relación
+**Hipóproyecto de investigación Alternativa (H1):** Sí hay diferencia, efecto o relación
 
 H1: "La validez sintáctica de kernels bajo restricciones es significativamente mayor que sin restricciones."
 
 El punto de la hipótesis nula es que es tu punto de partida neutral. Tu experimento intenta rechazarla (mediante pruebas estadísticas). Si no la rechazas, entonces no tienes evidencia de un efecto.
 
-### Hipótesis Prácticas vs. Estadísticas
+### Hipóproyecto de investigación Prácticas vs. Estadísticas
 
 A veces, tu hipótesis estadística (mayor, menor) no es suficientemente específica. Puedes ser más práctico:
 
-**Hipótesis práctica:**
+**Hipóproyecto de investigación práctica:**
 "El overhead computacional de restricciones gramaticales será menor al 10% en comparación con generación sin restricciones, haciendo el enfoque práctico para uso industrial."
 
 Esto combina el aspecto estadístico (menor overhead) con una evaluación práctica (qué threshold es "práctico").
@@ -223,7 +223,7 @@ Tu primer borrador de planteamiento de problema probablemente será muy amplio. 
 ### Ciclo de Refinamiento Típico
 
 **Semana 1:** Presentas tu planteamiento inicial
-- Supervisor: "Interesante, pero esto son casi 3 tesis separadas. Enfócate en esto."
+- Supervisor: "Interesante, pero esto son casi 3 proyecto de investigación separadas. Enfócate en esto."
 
 **Semana 2:** Reescribes más enfocado
 - Supervisor: "Mejor. Pero ahora tu RQ2 es trivial si tienes los datos. ¿Puedes hacer que sea más desafiante?"
@@ -240,7 +240,7 @@ Este ciclo típicamente toma 2-4 semanas. **Es tiempo bien invertido.** Un plant
 
 ## Documentación de tu Planteamiento
 
-Una vez que tu supervisor ha aprobado tu planteamiento, documéntalo formalmente. Esto se convierte en la sección de "Introducción" y "Preguntas de Investigación" de tu tesis.
+Una vez que tu supervisor ha aprobado tu planteamiento, documéntalo formalmente. Esto se convierte en la sección de "Introducción" y "Preguntas de Investigación" de tu proyecto de investigación.
 
 **Estructura recomendada:**
 
@@ -269,7 +269,7 @@ En esta lectura exploramos:
 - **El embudo de refinamiento:** De interés general a preguntas precisas
 - **Características de buenos planteamientos:** Basado en brechas reales, importante, respondible, neutral
 - **Preguntas de Investigación (RQs):** RQ1 primaria más RQ2-3 subsidiarias, todas específicas y falsables
-- **Hipótesis formales:** Hipótesis nulas y alternativas que puedes usar para estructura adicional
+- **Hipóproyecto de investigación formales:** Hipóproyecto de investigación nulas y alternativas que puedes usar para estructura adicional
 - **Auto-crítica:** Checklist de especificidad, justificación, delimitación
 
 ---

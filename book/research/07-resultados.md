@@ -43,7 +43,7 @@ Al finalizar esta lectura, serás capaz de:
 
 ## Resultados vs. Interpretación: Distinción Crítica
 
-Muchas tesis mezclan esto. Es un error.
+Muchas proyecto de investigación mezclan esto. Es un error.
 
 ### Resultados (Los Hechos)
 
@@ -68,7 +68,7 @@ Sin interpretación. Solo datos.
 **Sección de Resultados:** Presenta datos, figuras, tablas
 **Sección de Discusión:** Interpreta qué significan, implicaciones
 
-Algunas tesis combinan estas ("Resultados y Discusión"), lo cual está bien, pero aún deben estar separadas conceptualmente.
+Algunas proyecto de investigación combinan estas ("Resultados y Discusión"), lo cual está bien, pero aún deben estar separadas conceptualmente.
 
 > 💡 **Concepto clave:** En Resultados, tu trabajo es comunicar; en Discusión, tu trabajo es explicar.
 

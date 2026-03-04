@@ -44,11 +44,11 @@ parts:
           - file: stats/09-mlops-visualizacion
           - file: stats/10-reporte-estadistico
 
-  - caption: Research (Tesis)
+  - caption: Research (Proyecto)
     chapters:
       - file: research/index
         sections:
-          - file: research/01-que-es-una-tesis
+          - file: research/01-que-es-un-proyecto
           - file: research/02-revision-bibliografica
           - file: research/03-planteamiento-del-problema
           - file: research/04-marco-teorico

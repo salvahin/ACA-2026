@@ -19,7 +19,7 @@ kernelspec:
 
 ## Introducción
 
-Aquí está la verdad incómoda: muchas personas que leen tu tesis solo leerán dos cosas: el Abstract (al principio) y las Conclusiones (al final). Algunos quizás saltarán directo al Abstract y luego a las Conclusiones, completamente. Esto significa que estas dos secciones necesitan ser extraordinarias.
+Aquí está la verdad incómoda: muchas personas que leen tu proyecto de investigación solo leerán dos cosas: el Abstract (al principio) y las Conclusiones (al final). Algunos quizás saltarán directo al Abstract y luego a las Conclusiones, completamente. Esto significa que estas dos secciones necesitan ser extraordinarias.
 
 Tu Abstract es tu "elevator pitch" de 250 palabras. Tu Conclusión es donde cierras el círculo: regresas a tus preguntas de investigación, explicas qué aprendiste, y sugières hacia dónde va el campo. Ambas son críticas para comunicar el impacto de tu trabajo.
 
@@ -57,7 +57,7 @@ Establece por qué alguien debería importarle.
 
 **3. Tu Enfoque / Pregunta (1-2 oraciones)**
 
-"Esta tesis investiga cómo restricciones gramaticales formales afectan tanto la calidad como la velocidad de generación de kernels GPU, evaluando tres sistemas principales: regex, gramáticas libres de contexto, y gramáticas EBNF."
+"Esta proyecto de investigación investiga cómo restricciones gramaticales formales afectan tanto la calidad como la velocidad de generación de kernels GPU, evaluando tres sistemas principales: regex, gramáticas libres de contexto, y gramáticas EBNF."
 
 ¿Qué exactamente hiciste?
 
@@ -128,7 +128,7 @@ Tu conclusión es donde cierras tu argumento y la das al lector un sentido de ci
 
 **1. Regresar a tu Pregunta de Investigación Primaria (RQ1) (1 página)**
 
-"En esta tesis, investigamos la pregunta: ¿Pueden restricciones gramaticales compiladas a GPU mejorar la calidad de kernels generados mientras mantienen overhead bajo? Nuestros resultados indicaron que sí—restricciones EBNF mejoraron validez sintáctica de 78% a 94%—pero con tradeoff computacional que requiere consideración."
+"En esta proyecto de investigación, investigamos la pregunta: ¿Pueden restricciones gramaticales compiladas a GPU mejorar la calidad de kernels generados mientras mantienen overhead bajo? Nuestros resultados indicaron que sí—restricciones EBNF mejoraron validez sintáctica de 78% a 94%—pero con tradeoff computacional que requiere consideración."
 
 Explícitamente regresas a tu pregunta y resumidamente responde.
 
@@ -334,13 +334,13 @@ Escribe un outline para tu sección de Conclusiones:
 
 ### Para pensar
 
-> *Si solo dos secciones de tu tesis serán leídas por la mayoría de personas (Abstract y Conclusiones), ¿cómo cambia cómo escribes estas secciones? ¿Qué es absolutamente crítico que comuniques?*
+> *Si solo dos secciones de tu proyecto de investigación serán leídas por la mayoría de personas (Abstract y Conclusiones), ¿cómo cambia cómo escribes estas secciones? ¿Qué es absolutamente crítico que comuniques?*
 
 ---
 
 ## Próximos pasos
 
-Con Abstract y Conclusiones escritas, estás casi al final. La próxima lectura enfatiza **verificación de consistencia e integridad** de tu tesis entera: revisando que tus preguntas de investigación se responden en resultados, que tus conclusiones son soportadas por evidencia, y que no tienes contradicciones internas. Este es el "quality control" final antes de presentar.
+Con Abstract y Conclusiones escritas, estás casi al final. La próxima lectura enfatiza **verificación de consistencia e integridad** de tu proyecto de investigación entera: revisando que tus preguntas de investigación se responden en resultados, que tus conclusiones son soportadas por evidencia, y que no tienes contradicciones internas. Este es el "quality control" final antes de presentar.
 
 ---
 

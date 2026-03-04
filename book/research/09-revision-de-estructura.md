@@ -9,7 +9,7 @@ kernelspec:
   name: python3
 ---
 
-# Revisión de Estructura: Verificar la Integridad Interna de tu Tesis
+# Revisión de Estructura: Verificar la Integridad Interna de tu Proyecto de Investigación
 
 > **Módulo:** Research
 > **Semana:** 9
@@ -21,9 +21,9 @@ kernelspec:
 
 Imagina que construyes una casa y terminas todas las habitaciones. Las paredes se ven bien, el techo está en su lugar, pero olvidaste verificar si las tuberías conectan correctamente o si las puertas se alinean. Cuando alguien intenta vivir en la casa, todo colapsa.
 
-Una tesis tiene el mismo riesgo. Puedes escribir un excelente Abstract, un marco teórico sólido, resultados rigurosos, y conclusiones convincentes. Pero si estos no se alinean internamente—si tus resultados no responden tus preguntas de investigación, si tus conclusiones van más allá de lo que tu evidencia soporta—toda la estructura falla.
+Una proyecto de investigación tiene el mismo riesgo. Puedes escribir un excelente Abstract, un marco teórico sólido, resultados rigurosos, y conclusiones convincentes. Pero si estos no se alinean internamente—si tus resultados no responden tus preguntas de investigación, si tus conclusiones van más allá de lo que tu evidencia soporta—toda la estructura falla.
 
-Esta lectura te enseña a hacer una "auditoría de integridad" de tu tesis entera, asegurandote que cada parte conecta lógicamente con otras.
+Esta lectura te enseña a hacer una "auditoría de integridad" de tu proyecto de investigación entera, asegurandote que cada parte conecta lógicamente con otras.
 
 ---
 
@@ -31,7 +31,7 @@ Esta lectura te enseña a hacer una "auditoría de integridad" de tu tesis enter
 
 Al finalizar esta lectura, serás capaz de:
 
-1. Realizar una auditoría de integridad de tu tesis entera
+1. Realizar una auditoría de integridad de tu proyecto de investigación entera
 2. Verificar que tus preguntas de investigación se responden en tu sección de resultados
 3. Asegurar que tus conclusiones están soportadas por evidencia
 4. Identificar y resolver contradicciones internas
@@ -55,7 +55,7 @@ Mejor aún, esta auditoría es algo que *puedes hacer tú mismo* antes de entreg
 
 ## Auditoría 1: RQs ↔ Resultados ↔ Conclusiones
 
-Este es el "hilo dorado" de tu tesis. Cada pregunta de investigación debe tener una correspondencia clara en resultados y conclusiones.
+Este es el "hilo dorado" de tu proyecto de investigación. Cada pregunta de investigación debe tener una correspondencia clara en resultados y conclusiones.
 
 ### Creando el Mapa
 
@@ -129,7 +129,7 @@ Solución: Modifica conclusión para lo que realmente mostraste: "EBNF tiene 15%
 
 ## Auditoría 2: Coherencia de Métricas
 
-Asegúrate de que cómo defines y reportas una métrica es consistente en toda la tesis.
+Asegúrate de que cómo defines y reportas una métrica es consistente en toda el proyecto de investigación.
 
 ### Ejemplo: Definición de "Validez Sintáctica"
 
@@ -149,7 +149,7 @@ Pero si confundiste sintáctica y funcional en Resultados, esto es inconsistente
 
 ### Cómo Verificar
 
-En tu tesis, busca cada métrica importante (Ctrl+F "syntactic validity"):
+En tu proyecto de investigación, busca cada métrica importante (Ctrl+F "syntactic validity"):
 
 - Primera ocurrencia: ¿Se define claramente?
 - Ocurrencias siguientes: ¿Se usa la definición consistentemente?
@@ -172,7 +172,7 @@ Errores fácticos son desastres de credibilidad. Un número citado incorrectamen
 
 ¿Reportaste 1,500 kernels en Metodología, pero 1,501 en Resultados?
 
-Herramienta: Busca cada número importante (1500, 94%, etc.) en toda la tesis. Asegúrate de que es consistente.
+Herramienta: Busca cada número importante (1500, 94%, etc.) en toda el proyecto de investigación. Asegúrate de que es consistente.
 
 **2. Citas de trabajos anteriores**
 
@@ -229,7 +229,7 @@ Discusión: "Nuestros modelos fueron fine-tuned en datos sintéticos para mejora
 
 ### Cómo Encontrarlas
 
-Lee tu tesis de principio a fin, buscando afirmaciones que se contradigan. Haz preguntas como:
+Lee tu proyecto de investigación de principio a fin, buscando afirmaciones que se contradigan. Haz preguntas como:
 
 - ¿Afirmo que X es cierto pero luego que X es falso?
 - ¿Digo que hice A pero luego que no hice A?
@@ -244,7 +244,7 @@ Cuando encuentras una contradicción, resuelvela:
 
 ## Auditoría 5: Coherencia Narrativa
 
-Tu tesis debería leer como una narrativa coherente, no como un conjunto de secciones desconectadas.
+Tu proyecto de investigación debería leer como una narrativa coherente, no como un conjunto de secciones desconectadas.
 
 ### La Narrativa Ideal
 
@@ -366,7 +366,7 @@ Después de escribir, toma 1-2 semanas de distancia. Necesitas objetividad.
 
 **Paso 2: Leer de Corrido**
 
-Lee tu tesis de principio a fin de una sola vez (o en 2-3 sesiones). Nota donde te pierdes o donde hay confusión.
+Lee tu proyecto de investigación de principio a fin de una sola vez (o en 2-3 sesiones). Nota donde te pierdes o donde hay confusión.
 
 **Paso 3: Auditorías Sistemáticas**
 
@@ -425,14 +425,14 @@ Crea una tabla que mapea:
 
 **Tarea 2: Fact Check (40 minutos)**
 
-Selecciona 5-10 "hechos" importantes de tu tesis (números, años, nombres de autores, métricas). Para cada uno:
+Selecciona 5-10 "hechos" importantes de tu proyecto de investigación (números, años, nombres de autores, métricas). Para cada uno:
 - Verifica que aparece consistentemente
 - Si es cita de otro trabajo, verifica contra la fuente original
 - Documentar en hoja de cálculo
 
 **Tarea 3: Búsqueda de Contradicciones (30 minutos)**
 
-Lee tu tesis rápidamente y anota 3-4 lugar donde podría haber contradicciones o inconsistencias. Para cada una:
+Lee tu proyecto de investigación rápidamente y anota 3-4 lugar donde podría haber contradicciones o inconsistencias. Para cada una:
 - Describe la contradicción
 - Determina cuál es correcta
 - Propone como arreglarlo
@@ -445,13 +445,13 @@ Lee el primer párrafo de: Intro, Marco, Metodología, Resultados, Conclusiones.
 
 ### Para pensar
 
-> *¿Cuánto de tu trabajo se pierde si tienes una tesis con resultados brillantes pero estructura incoherente? ¿Cómo afecta la integridad estructural la credibilidad?*
+> *¿Cuánto de tu trabajo se pierde si tienes un proyecto de investigación con resultados brillantes pero estructura incoherente? ¿Cómo afecta la integridad estructural la credibilidad?*
 
 ---
 
 ## Próximos pasos
 
-Una vez que has verificado la integridad interna de tu tesis, tienes un documento sólido. El paso final es **preparar para tu defensa oral**: cómo presentar tu trabajo hablado, anticipar preguntas difíciles, y demostrar que entienden profundamente tu investigación.
+Una vez que has verificado la integridad interna de tu proyecto de investigación, tienes un documento sólido. El paso final es **preparar para tu defensa oral**: cómo presentar tu trabajo hablado, anticipar preguntas difíciles, y demostrar que entienden profundamente tu investigación.
 
 ---
 

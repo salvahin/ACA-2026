@@ -120,7 +120,7 @@ O, sin sujeto: "Cincuenta experimentos fueron conducidos."
 
 "Se observó que la validez sintáctica mejoraba con restricciones." (El agente—los investigadores—es obvio)
 
-**Regla de oro:** La mayoría (70%+) de tu tesis debería ser voz activa. Usa pasiva selectivamente.
+**Regla de oro:** La mayoría (70%+) de tu proyecto de investigación debería ser voz activa. Usa pasiva selectivamente.
 
 ---
 
@@ -323,7 +323,7 @@ Solución: Sé consistente: "Entrenamos el modelo. Lo evaluamos en..."
 Desarrolla una guía de referencia para ti mismo mientras escribes. Ejemplo:
 
 ```
-Mi Guía de Estilo para esta Tesis:
+Mi Guía de Estilo para esta Proyecto de Investigación:
 
 Voz activa vs. pasiva:
 - Activa cuando describe nuestro trabajo
@@ -364,7 +364,7 @@ En esta lectura exploramos:
 
 1. ¿Cuál es la diferencia entre "escritura académica" y "escritura aburrida"? ¿Son lo mismo?
 
-2. ¿Cuándo preferirías voz activa vs. pasiva en una tesis? Proporciona ejemplos.
+2. ¿Cuándo preferirías voz activa vs. pasiva en un proyecto de investigación? Proporciona ejemplos.
 
 3. Si obtuviste un resultado que contradice tu hipótesis, ¿cómo lo presentarías honestamente?
 
@@ -381,7 +381,7 @@ Reescribe estas oraciones en estilo académico:
 
 **Tarea 2: Voz Activa vs. Pasiva (25 minutos)**
 
-Escribe 3 pares de oraciones (una activa, una pasiva) sobre tu investigación. Para cada par, explica qué versión preferirías en tu tesis y por qué.
+Escribe 3 pares de oraciones (una activa, una pasiva) sobre tu investigación. Para cada par, explica qué versión preferirías en tu proyecto de investigación y por qué.
 
 Ejemplo:
 - Activa: "Entrenamos el modelo en 10,000 kernels."

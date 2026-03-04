@@ -19,7 +19,7 @@ kernelspec:
 
 ## Introducción
 
-Si alguien te pidiera leer 200 papers de investigación para tu tesis, probablemente entraría en pánico. Y con razón: a un ritmo de una hora por paper, serían meses de lectura pura. Pero aquí está la verdad incómoda: **no tienes que leer cada papel completamente para extraer su valor**.
+Si alguien te pidiera leer 200 papers de investigación para tu proyecto de investigación, probablemente entraría en pánico. Y con razón: a un ritmo de una hora por paper, serían meses de lectura pura. Pero aquí está la verdad incómoda: **no tienes que leer cada papel completamente para extraer su valor**.
 
 Los investigadores experimentados desarrollan una técnica sofisticada: la lectura "dirigida por propósito". Lees diferentes partes de diferentes papers dependiendo de qué necesitas aprender. Es como ser un chef que conoce exactamente qué ingredientes necesita para cada plato, en lugar de probar toda la despensa.
 
@@ -158,7 +158,7 @@ Sí, estos hechos vienen del paper. Pero entonces, ¿por qué no solo leer el pa
 
 Síntesis significa conectar ideas de múltiples fuentes, identificar patrones, y extraer implicaciones.
 
-**Ejemplo de buena síntesis:**
+**Ejemplo de buena sínproyecto de investigación:**
 "Tres trabajos recientes (Smith et al. 2023, Johnson et al. 2024, Lee et al. 2023) convergen en un hallazgo: las restricciones gramaticales mejoran la corrección de código generado por LLMs, pero el mecanismo subyacente varía. Smith et al. atribuyen esto a la reducción del espacio de búsqueda; Johnson et al. sugieren que es sobre refuerzo de conceptos sintácticos durante entrenamiento. Esta divergencia sugiere una investigación más profunda es necesaria para entender si ambos mecanismos aplican o si uno domina."
 
 Observa que:
@@ -171,7 +171,7 @@ Observa que:
 
 ## Comparación de Enfoques: Un Caso de Estudio
 
-Para ilustrar la síntesis, veamos cómo comparar herramientas de generación grammar-constrained.
+Para ilustrar la sínproyecto de investigación, veamos cómo comparar herramientas de generación grammar-constrained.
 
 ### Dimensiones de Comparación
 
@@ -234,7 +234,7 @@ En esta lectura exploramos:
 
 - **Lectura estratégica:** Las 3 pasadas (Abstract→Conclusions→Methodology) te permiten procesar 200+ papers eficientemente
 - **Organización sistemática:** Un sistema de etiquetas y tablas comparativas convierte caos en claridad
-- **Resumen vs. síntesis:** Los buenos revisiones conectan ideas, no solo las repiten
+- **Resumen vs. sínproyecto de investigación:** Los buenos revisiones conectan ideas, no solo las repiten
 - **Comparación estructurada:** Identificar dimensiones específicas te permite comparaciones justas entre enfoques
 
 ---
@@ -245,7 +245,7 @@ En esta lectura exploramos:
 
 1. ¿Cuáles son los tres elementos que siempre lees en la "primera pasada"? ¿Por qué estos específicamente?
 
-2. ¿Cuál es la diferencia entre "resumen" y "síntesis"? Proporciona un ejemplo que NO sea del texto.
+2. ¿Cuál es la diferencia entre "resumen" y "sínproyecto de investigación"? Proporciona un ejemplo que NO sea del texto.
 
 3. ¿En qué se diferencian XGrammar y Outlines en su enfoque a las restricciones gramaticales? ¿Cuáles son las implicaciones?
 

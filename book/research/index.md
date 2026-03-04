@@ -18,17 +18,17 @@ kernelspec:
 
 ## Overview
 
-Este módulo guía al estudiante en la escritura de su tesis de investigación. Desde la estructura fundamental hasta la defensa oral, cubre todos los aspectos de la comunicación científica.
+Este módulo guía al estudiante en la escritura de su proyecto de investigación. Desde la estructura fundamental hasta la defensa oral, cubre todos los aspectos de la comunicación científica.
 
 ---
 
 ## Estructura del Módulo
 
-### Semana 1: Qué es una Tesis
-**Archivo:** `01-que-es-una-tesis.md`
+### Semana 1: Qué es un Proyecto de Investigación
+**Archivo:** `01-que-es-un-proyecto.md`
 
 - Estructura fundamental
-- Tipos de tesis
+- Tipos de proyectos
 - Expectativas académicas
 - Planificación inicial
 
@@ -128,7 +128,7 @@ Este módulo guía al estudiante en la escritura de su tesis de investigación. 
 
 ```
 Semanas 1-3: Fundamentos
-├─ Estructura de tesis
+├─ Estructura de proyecto
 ├─ Literatura
 └─ Problema
 
@@ -151,7 +151,7 @@ Semanas 9-10: Cierre
 ## Relación con Otros Módulos
 
 - **Stats:** Análisis estadístico de resultados
-- **Project 1 & 2:** Contenido técnico de la tesis
+- **Project 1 & 2:** Contenido técnico del proyecto
 
 ---
 

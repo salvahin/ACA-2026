@@ -119,7 +119,7 @@ phases = [
     {"name": "Integración", "start": 4, "end": 6, "color": "#34d399",
      "topics": "Constrained Decoding + GPU"},
     {"name": "Aplicación", "start": 7, "end": 10, "color": "#f472b6",
-     "topics": "Sistema + Tesis"}
+     "topics": "Sistema + Proyecto"}
 ]
 
 for i, phase in enumerate(phases):
@@ -169,7 +169,7 @@ Construyes y evalúas tu sistema:
 
 - **Implementación**: Pipeline completo de generación
 - **Experimentación**: Benchmarks rigurosos vs baselines
-- **Tesis**: Documentación y defensa de tu trabajo
+- **Proyecto**: Documentación y defensa de tu trabajo
 
 ---
 
@@ -209,7 +209,7 @@ Fundamentos de probabilidad, pruebas de hipótesis, power analysis, diseño expe
 :link: research/index
 :link-type: doc
 
-Metodología de investigación, escritura académica, revisión bibliográfica, estructura de tesis, preparación de defensa.
+Metodología de investigación, escritura académica, revisión bibliográfica, estructura de proyectos, preparación de defensa.
 
 **10 lecturas** | Nivel: Todos
 ```
@@ -280,7 +280,7 @@ fig.show()
 
 ## El Entregable Final
 
-```{admonition} Tu Tesis
+```{admonition} Tu Proyecto
 :class: important
 
 Un **sistema funcional** que genera kernels GPU correctos y optimizados usando LLMs con restricciones gramaticales, evaluado rigurosamente contra baselines de la industria.
@@ -290,7 +290,7 @@ Un **sistema funcional** que genera kernels GPU correctos y optimizados usando L
 - Gramática formal para kernels Triton
 - Suite de benchmarks y evaluación
 - Análisis estadístico de resultados
-- Documento de tesis defendible
+- Documento de proyecto defendible
 ```
 
 ---

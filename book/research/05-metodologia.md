@@ -327,11 +327,11 @@ Selecciona un componente de tu metodología (ej: un modelo, un dataset, un hiper
 
 **Tarea 3: Reproducibilidad Checklist (20 minutos)**
 
-Imagina que compartiste tu tesis con alguien en otra universidad. Pasa por el checklist y para cada ítem, escribe: "Sí, documenté esto" o "No, necesito documentar..."
+Imagina que compartiste tu proyecto de investigación con alguien en otra universidad. Pasa por el checklist y para cada ítem, escribe: "Sí, documenté esto" o "No, necesito documentar..."
 
 ### Para pensar
 
-> *¿Cuál sería más valioso para el campo: una tesis con resultados impresionantes pero vaga Metodología, o una tesis con resultados modestos pero Metodología perfectamente reproducible? ¿Por qué?*
+> *¿Cuál sería más valioso para el campo: un proyecto de investigación con resultados impresionantes pero vaga Metodología, o un proyecto de investigación con resultados modestos pero Metodología perfectamente reproducible? ¿Por qué?*
 
 ---
 

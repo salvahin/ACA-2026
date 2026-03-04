@@ -19,9 +19,9 @@ kernelspec:
 
 ## Introducción
 
-Has escrito una tesis excelente. Verificaste su estructura. Ahora viene lo aterrador: hablar sobre ella frente a un panel de expertos. La defensa oral es donde demuestras no solo que escribiste un documento bueno, sino que entiendes profundamente tu investigación, puedes responder preguntas difíciles, y puedes defender tus decisiones.
+Has escrito un proyecto de investigación excelente. Verificaste su estructura. Ahora viene lo aterrador: hablar sobre ella frente a un panel de expertos. La defensa oral es donde demuestras no solo que escribiste un documento bueno, sino que entiendes profundamente tu investigación, puedes responder preguntas difíciles, y puedes defender tus decisiones.
 
-Aquí está lo bueno: si escribiste tu tesis cuidadosamente (que has hecho), ya tienes 80% del material listo. Solo necesitas traducirlo de "documento escrito" a "presentación oral" y prepararte para preguntas difíciles.
+Aquí está lo bueno: si escribiste tu proyecto de investigación cuidadosamente (que has hecho), ya tienes 80% del material listo. Solo necesitas traducirlo de "documento escrito" a "presentación oral" y prepararte para preguntas difíciles.
 
 Esta lectura final de la serie te enseña a estructurar una presentación compelling, anticipar preguntas, manejar objeciones, y demostrar maestría en tu área.
 
@@ -41,11 +41,11 @@ Al finalizar esta lectura, serás capaz de:
 
 ## Estructura de una Presentación de Defensa: El Arco Narrativo
 
-Tu presentación debe contar la misma historia que tu tesis, pero de forma comprimida y más dinámica.
+Tu presentación debe contar la misma historia que tu proyecto de investigación, pero de forma comprimida y más dinámica.
 
 ### Duración Típica
 
-- **Presentación:** 20-30 minutos (típicamente 25 para una tesis de maestría)
+- **Presentación:** 20-30 minutos (típicamente 25 para un proyecto de investigación de maestría)
 - **Preguntas:** 20-40 minutos
 
 Esto significa debes comprimir meses de trabajo en 25 minutos. Eficiencia es crítica.
@@ -116,7 +116,7 @@ Propuesta: 20% antecedentes, 30% metodología, 40% resultados, 10% conclusión.
 :align: center
 :width: 90%
 
-**Figura 1:** Distribución recomendada de tiempo para una defensa de tesis de maestría de 25 minutos, optimizando para máximo impacto en la presentación de resultados.
+**Figura 1:** Distribución recomendada de tiempo para una defensa de proyecto de investigación de maestría de 25 minutos, optimizando para máximo impacto en la presentación de resultados.
 :::
 
 > 💡 **Concepto clave:** Cada slide debería tomar 1-2 minutos de presentación. Si toma más, quizás tiene demasiado contenido.
@@ -160,7 +160,7 @@ Tú proporciona los detalles oralmente. Las slides son notas visuales.
 
 **3. Figuras claras**
 
-Tus gráficos en la tesis son buenos. Para slides, simplifica:
+Tus gráficos en el proyecto de investigación son buenos. Para slides, simplifica:
 - Quita colores no-esenciales
 - Aumenta tamaño de fuente (debe ser legible desde 5m de distancia)
 - Quita gridlines si no ayudan
@@ -225,7 +225,7 @@ El panel puede hacer preguntas profundas, capciosas, o completamente fuera de ca
 
 "¿Por qué no comparaste contra [otro método]? ¿Por qué no mediste [otra métrica]?"
 
-**Respuesta:** "Nos enfocamos en [razón]. [Otro método] sería interesante pero está fuera del alcance de esta tesis. Eso podría ser trabajo futuro."
+**Respuesta:** "Nos enfocamos en [razón]. [Otro método] sería interesante pero está fuera del alcance de esta proyecto de investigación. Eso podría ser trabajo futuro."
 
 **Categoría 5: Relevancia / Impacto**
 
@@ -302,7 +302,7 @@ Durante la defensa, alguien puede objetar tu trabajo o cuestionar un resultado.
 
 4. **Ofrece extensión si es aplicable**
 
-"Eso sería interesante investigar más a fondo. Mi tesis se enfocó en [scope], pero definitivamente es un trabajo futuro valioso."
+"Eso sería interesante investigar más a fondo. Mi proyecto de investigación se enfocó en [scope], pero definitivamente es un trabajo futuro valioso."
 
 ### Ejemplo
 
@@ -372,7 +372,7 @@ Responde con precisión. Usa slides o dibuja en pizarra si es necesario.
 
 "¿Cuál es el siguiente paso natural?"
 
-**Respuesta:** You ya tienes esto de tu tesis. Solo amplía.
+**Respuesta:** You ya tienes esto de tu proyecto de investigación. Solo amplía.
 
 **4. Preguntas de perspectiva**
 
@@ -477,7 +477,7 @@ Idealmente, practica múltiples veces (mínimo 3) hasta que se sienta fluido.
 
 ## Epílogo: La Jornada Completa
 
-Comenzaste esta serie de lecturas sin tesis, sin estructura, sin dirección. Ahora tienes:
+Comenzaste esta serie de lecturas sin proyecto de investigación, sin estructura, sin dirección. Ahora tienes:
 
 ✓ Una pregunta de investigación clara y respondible
 ✓ Una revisión bibliográfica que sintetiza (no solo resume) tu campo
@@ -485,12 +485,12 @@ Comenzaste esta serie de lecturas sin tesis, sin estructura, sin dirección. Aho
 ✓ Una metodología tan detallada que otros podrían reproducirla
 ✓ Resultados presentados con rigor estadístico
 ✓ Conclusiones que retornan a tus preguntas originales y sugieren trabajo futuro
-✓ Una tesis que ha pasado auditoría de integridad interna
+✓ Una proyecto de investigación que ha pasado auditoría de integridad interna
 ✓ Una presentación convincente y práctica para defenderte
 
-Lo más importante: Has aprendido el proceso de investigación rigurosa. Este proceso no es específico a tesis de maestría. Es el proceso que los investigadores de élite en universidades de élite usan. Dominar esto es una habilidad que te llevará lejos en tu carrera.
+Lo más importante: Has aprendido el proceso de investigación rigurosa. Este proceso no es específico a proyecto de investigación de maestría. Es el proceso que los investigadores de élite en universidades de élite usan. Dominar esto es una habilidad que te llevará lejos en tu carrera.
 
-Tu tesis es solo el comienzo.
+Tu proyecto de investigación es solo el comienzo.
 
 ---
 
@@ -510,4 +510,4 @@ Para profundizar en áreas específicas después de completar esta serie:
 
 ---
 
-*Felicidades por completar esta serie. Ahora ve y construye una tesis excelente.*
+*Felicidades por completar esta serie. Ahora ve y construye un proyecto de investigación excelente.*

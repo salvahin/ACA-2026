@@ -9,7 +9,7 @@ kernelspec:
   name: python3
 ---
 
-# Qué es una Tesis: Estructura Fundamental de tu Proyecto de Investigación
+# Qué es un Proyecto de Investigación: Estructura Fundamental
 
 > **Módulo:** Research
 > **Semana:** 1
@@ -19,11 +19,11 @@ kernelspec:
 
 ## Introducción
 
-Imagina que eres un detective en una película. No empiezas simplemente buscando pistas al azar. Primero, planteas una pregunta clara: "¿Quién cometió el crimen?" Luego, reúnes evidencia sistemáticamente, la analizas cuidadosamente, y finalmente presentas tu caso de manera convincente. Una tesis académica funciona exactamente así.
+Imagina que eres un detective en una película. No empiezas simplemente buscando pistas al azar. Primero, planteas una pregunta clara: "¿Quién cometió el crimen?" Luego, reúnes evidencia sistemáticamente, la analizas cuidadosamente, y finalmente presentas tu caso de manera convincente. Un proyecto de investigación académico funciona exactamente así.
 
-Una tesis no es simplemente "un documento que escribo al final de mi carrera". Es una **declaración argumentada sobre una pregunta de investigación**, respaldada por evidencia y análisis riguroso. En nuestro caso particular—investigación sobre generación de kernels GPU con restricciones gramaticales—estás participando en la construcción del conocimiento científico en inteligencia artificial y compiladores.
+Un proyecto de investigación no es simplemente "un documento que escribo al final de mi carrera". Es una **declaración argumentada sobre una pregunta de investigación**, respaldada por evidencia y análisis riguroso. En nuestro caso particular—investigación sobre generación de kernels GPU con restricciones gramaticales—estás participando en la construcción del conocimiento científico en inteligencia artificial y compiladores.
 
-¿Por qué esto importa? Porque tu tesis no es solo para ti. Es una contribución que otros investigadores, ingenieros y estudiantes futuros usarán como punto de partida para sus propios proyectos. Establecer los cimientos correctamente desde el inicio determina toda la estructura que construirás después.
+¿Por qué esto importa? Porque tu proyecto no es solo para ti. Es una contribución que otros investigadores, ingenieros y estudiantes futuros usarán como punto de partida para sus propios proyectos. Establecer los cimientos correctamente desde el inicio determina toda la estructura que construirás después.
 
 ---
 
@@ -32,15 +32,15 @@ Una tesis no es simplemente "un documento que escribo al final de mi carrera". E
 Al finalizar esta lectura, serás capaz de:
 
 1. Entender la diferencia fundamental entre un planteamiento de problema y una hipótesis
-2. Identificar los componentes esenciales de una tesis académica
+2. Identificar los componentes esenciales de un proyecto de investigación académico
 3. Seleccionar y utilizar herramientas de gestión de referencias (Zotero, Mendeley)
 4. Organizar tu investigación desde el inicio con las prácticas recomendadas
 
 ---
 
-## La Anatomía de una Tesis: Más que un Documento
+## La Anatomía de un Proyecto: Más que un Documento
 
-Una tesis académica es estructurada como un argumento retórico bien construido. Piensa en ella como un edificio: necesitas cimientos sólidos (revisión bibliográfica), columnas robustas (marco teórico), una estructura clara (metodología) y un propósito definido (tus conclusiones).
+Un proyecto de investigación académico está estructurado como un argumento retórico bien construido. Piensa en él como un edificio: necesitas cimientos sólidos (revisión bibliográfica), columnas robustas (marco teórico), una estructura clara (metodología) y un propósito definido (tus conclusiones).
 
 Los componentes principales son:
 
@@ -54,21 +54,21 @@ Los componentes principales son:
 
 **5. Marco teórico** - Los conceptos fundamentales que necesita tu lector para entender tu investigación. En nuestro caso: restricciones gramaticales, generación de código, arquitectura de GPUs.
 
-**6. Metodología** - El "receta exacta" de cómo hiciste tu investigación. Tan específica que alguien debería poder reproducir tu trabajo.
+**6. Metodología** - La "receta exacta" de cómo hiciste tu investigación. Tan específica que alguien debería poder reproducir tu trabajo.
 
 **7. Resultados** - Lo que encontraste, presentado con claridad y rigor estadístico cuando sea aplicable.
 
-**8. Conclusiones** - Donde regresas a tus preguntas originales, explicas qué aprendiste, y sugières hacia dónde debería avanzar la investigación siguiente.
+**8. Conclusiones** - Donde regresas a tus preguntas originales, explicas qué aprendiste, y sugieres hacia dónde debería avanzar la investigación siguiente.
 
-> 💡 **Concepto clave:** Una tesis no es un reporte de "lo que hice". Es un argumento cuidadosamente construido donde cada sección respalda y construye sobre la anterior.
+> 💡 **Concepto clave:** Un proyecto de investigación no es un reporte de "lo que hice". Es un argumento cuidadosamente construido donde cada sección respalda y construye sobre la anterior.
 
 :::{figure} diagrams/thesis_structure.png
 :name: fig-thesis-structure
-:alt: Diagrama mostrando la estructura de una tesis con sus componentes principales: portada, abstract, introducción, revisión bibliográfica, marco teórico, metodología, resultados y conclusiones
+:alt: Diagrama mostrando la estructura de un proyecto de investigación con sus componentes principales: portada, abstract, introducción, revisión bibliográfica, marco teórico, metodología, resultados y conclusiones
 :align: center
 :width: 90%
 
-**Figura 1:** Estructura fundamental de una tesis académica, mostrando cómo cada sección construye sobre la anterior para formar un argumento coherente.
+**Figura 1:** Estructura fundamental de un proyecto de investigación académico, mostrando cómo cada sección construye sobre la anterior para formar un argumento coherente.
 :::
 
 ---
@@ -84,7 +84,7 @@ Es tu pregunta de investigación expresada como una brecha en el conocimiento. E
 **Ejemplo débil:** "Los kernels GPU son importantes"
 - Esto es obvio, no es un problema a resolver
 
-**Ejemplo fuerte:** "Los métodos actuales para generar kernels GPU optimizados requieren expertise manual en CUDA, lo que limita su adopción. ¿Podemos automatizar la generación de kernels mantiendo restricciones gramaticales que garanticen seguridad?"
+**Ejemplo fuerte:** "Los métodos actuales para generar kernels GPU optimizados requieren expertise manual en CUDA, lo que limita su adopción. ¿Podemos automatizar la generación de kernels manteniendo restricciones gramaticales que garanticen seguridad?"
 - Esto identifica un problema específico, por qué importa, y sugiere una dirección de investigación
 
 ### La Hipótesis
@@ -107,7 +107,7 @@ Observa que es:
 A veces usaremos "Preguntas de Investigación" (RQ1, RQ2, RQ3) en lugar de hipótesis formales. Estos son intermedios: más específicos que un problema general, pero no tan formales como una hipótesis estadística.
 
 Ejemplo:
-- **RQ1:** ¿Reducen las restricciones gramaticales la tasa de kernels sinténticamente inválidos?
+- **RQ1:** ¿Reducen las restricciones gramaticales la tasa de kernels sintácticamente inválidos?
 - **RQ2:** ¿Cuál es el overhead computacional de enforcing restricciones gramaticales durante generación?
 - **RQ3:** ¿Qué patrones de kernels son más afectados por restricciones gramaticales?
 
@@ -135,7 +135,7 @@ Ambas son excelentes; la elección es personal.
 
 ### Workflow Recomendado
 
-1. **Crea una colección/carpeta** para tu tesis (ej: "GPU-Kernels-Research")
+1. **Crea una colección/carpeta** para tu proyecto (ej: "GPU-Kernels-Research")
 
 2. **Mientras busques papers**, agrega con una anotación rápida:
    - Relevancia para tu trabajo (alta/media/baja)
@@ -155,7 +155,7 @@ Ambas son excelentes; la elección es personal.
 
 5. **Exporta según necesites:**
    - Generación automática de bibliografía en APA/IEEE
-   - Sincronización con tu editor de tesis
+   - Sincronización con tu editor de documentos
 
 > 💡 **Consejo práctico:** Invierte 30 minutos en configurar tu sistema de referencias ahora. Ahorrarás horas después cuando necesites citarlas.
 
@@ -165,7 +165,7 @@ Ambas son excelentes; la elección es personal.
 
 Un grave error común: comenzar a escribir sin tener claro tu planteamiento de problema y tus preguntas de investigación. Es como construir una casa sin planos—terminas con paredes que no se alinean y habitaciones que no tienen sentido.
 
-Tu supervisor debería aprobار tu problema y preguntas de investigación **antes de** que empieces a profundizar en metodología. Esta es una inversión de tiempo que se pagará exponencialmente.
+Tu supervisor debería aprobar tu problema y preguntas de investigación **antes de** que empieces a profundizar en metodología. Esta es una inversión de tiempo que se pagará exponencialmente.
 
 ---
 
@@ -173,7 +173,7 @@ Tu supervisor debería aprobار tu problema y preguntas de investigación **ant
 
 En esta lectura exploramos:
 
-- **Estructura de una tesis:** Desde Abstract hasta Conclusiones, cada sección tiene un propósito específico
+- **Estructura de un proyecto:** Desde Abstract hasta Conclusiones, cada sección tiene un propósito específico
 - **Problema vs. Hipótesis:** El problema es tu pregunta; la hipótesis es tu predicción falsable
 - **Preguntas de Investigación:** Una forma estructurada de articular qué exactamente investigarás
 - **Gestión de referencias:** Herramientas como Zotero y Mendeley te ayudan a organizarte desde el inicio
@@ -188,7 +188,7 @@ En esta lectura exploramos:
 
 2. ¿Por qué es importante que una hipótesis sea falsable? ¿Qué sucedería si escribieras una hipótesis que no pudiera ser falsada?
 
-3. Nombre los cuatro componentes críticos de una tesis según la analogía del "edificio" presentada en esta lectura.
+3. Nombre los cuatro componentes críticos de un proyecto según la analogía del "edificio" presentada en esta lectura.
 
 ### Ejercicio práctico
 
@@ -209,7 +209,7 @@ Si nunca has usado Zotero o Mendeley, crea una cuenta gratuita, instala la exten
 
 ### Para pensar
 
-> *¿Cuál es la diferencia entre escribir una tesis sobre "lo que aprendí haciendo un proyecto" versus escribir una tesis que responde una pregunta de investigación original? ¿Por qué crees que muchas universidades insisten en esta distinción?*
+> *¿Cuál es la diferencia entre escribir un proyecto sobre "lo que aprendí haciendo un proyecto" versus escribir un proyecto que responde una pregunta de investigación original? ¿Por qué crees que muchas universidades insisten en esta distinción?*
 
 ---
 

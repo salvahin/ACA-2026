@@ -1,0 +1,28 @@
+# Jupyter Book
+jupyter-book>=0.15.0,<1.0
+myst-parser>=0.18.0
+myst-nb>=0.17.0
+sphinx>=5.0
+
+# Para migración
+jupytext>=1.14.0
+
+# Deploy
+ghp-import>=2.1.0
+
+# Dependencias de código en lecturas
+numpy>=1.21
+matplotlib>=3.5
+pandas>=1.4
+seaborn>=0.12
+scipy>=1.9
+scikit-learn>=1.2
+
+# Deep Learning (opcional - para ejecución local)
+# torch>=2.0
+# transformers>=4.30
+# triton>=2.0  # requiere GPU
+
+# MLOps (opcional)
+# wandb
+# mlflow

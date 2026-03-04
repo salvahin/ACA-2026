@@ -1,0 +1,34 @@
+digraph constrained_decoding_flow {
+	rankdir=LR
+	graph [dpi=150 fontname="DejaVu Sans" fontsize=12 size="12,10"]
+	graph [label="Ciclo de Decodificación Restringida" labelfontsize=14 labelloc=top]
+	step1 [label="LLM produce
+Logits" fillcolor="#1A3A5C" fontcolor=white shape=box style=filled]
+	step2 [label="FSM determina
+tokens válidos" fillcolor="#F18F01" fontcolor=white shape=box style=filled]
+	step3 [label="Genera bitmask
+(válido→1, inválido→0)" fillcolor="#A23B72" fontcolor=white shape=box style=filled]
+	step4 [label="Aplica máscara
+a logits
+(inválido→-∞)" fillcolor="#2CA58D" fontcolor=white shape=box style=filled]
+	step5 [label="Softmax &
+Sample token" fillcolor="#2E86AB" fontcolor=white shape=box style=filled]
+	step6 [label="Actualiza estado
+FSM con token" fillcolor="#C73E1D" fontcolor=white shape=box style=filled]
+	decision [label="¿Token END
+o max length?" fillcolor="#1A3A5C" fontcolor=white shape=diamond style=filled]
+	output [label="Salida: Texto
+Gramaticalmente
+Válido" fillcolor="#2CA58D" fontcolor=white shape=box style=filled]
+	step1 -> step2 [label=logits]
+	step2 -> step3 [label="valid tokens"]
+	step3 -> step4 [label=bitmask]
+	step4 -> step5 [label="masked logits"]
+	step5 -> step6 [label=token]
+	step6 -> decision [label=""]
+	decision -> step1 [label=no]
+	decision -> output [label=yes]
+	graph [label="Ciclo de Decodificación Restringida
+
+Per-token latency: ~milisegundos (GPU optimizado)" labelloc=top]
+}

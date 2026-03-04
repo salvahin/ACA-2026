@@ -1,0 +1,48 @@
+digraph xgrammar_compilation_pipeline {
+	rankdir=LR
+	graph [dpi=150 fontname="DejaVu Sans" fontsize=13 size="18,5"]
+	graph [label="Pipeline de Compilación XGrammar" labelfontsize=14 labelloc=top]
+	stage1 [label="BNF / JSON
+Schema
+
+Input Formats" fillcolor="#2E86AB" fixedsize=false fontcolor=white fontsize=13 shape=note style=filled width=1.8]
+	stage2 [label="Grammar
+Parser
+
+Parse Rules" fillcolor="#2E86AB" fixedsize=false fontcolor=white fontsize=13 shape=box style=filled width=1.8]
+	stage3 [label="AST
+Construction
+
+Syntax Tree" fillcolor="#A23B72" fixedsize=false fontcolor=white fontsize=13 shape=box style=filled width=1.8]
+	stage4 [label="FSM
+Compiler
+
+State Machine" fillcolor="#F18F01" fixedsize=false fontcolor=white fontsize=13 shape=box style=filled width=1.8]
+	stage5 [label="DFA
+Minimization
+
+Optimized DFA" fillcolor="#2CA58D" fixedsize=false fontcolor=white fontsize=13 shape=box style=filled width=1.8]
+	stage6 [label="Token Mask
+Cache
+
+Bitmasks per State" fillcolor="#1A3A5C" fixedsize=false fontcolor=white fontsize=13 shape=box style=filled width=1.8]
+	stage7 [label="LogitsProcessor
+
+Constraint Application" fillcolor="#C73E1D" fixedsize=false fontcolor=white fontsize=13 shape=box style=filled width=1.8]
+	stage8 [label="Generation
+Loop
+
+Constrained Sampling" fillcolor="#2E86AB" fixedsize=false fontcolor=white fontsize=13 shape=doubleoctagon style=filled width=1.8]
+	stage1 -> stage2
+	stage2 -> stage3
+	stage3 -> stage4
+	stage4 -> stage5
+	stage5 -> stage6
+	stage6 -> stage7
+	stage7 -> stage8
+	stage8 -> stage6 [label="Iterative Token Generation
+(autoregressive)" style=dashed]
+	graph [label="Pipeline de Compilación XGrammar
+
+Gramática EBNF → Objetos Python → Árbol → Autómata → Máscaras de Tokens" labelloc=top]
+}

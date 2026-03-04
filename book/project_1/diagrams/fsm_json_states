@@ -1,0 +1,58 @@
+digraph fsm_json_states {
+	rankdir=LR
+	graph [dpi=150 fontname="DejaVu Sans" fontsize=12 size="14,8"]
+	graph [label="FSM para Gramática JSON" labelfontsize=14 labelloc=top]
+	__start__ [shape=point width=0]
+	__start__ -> START
+	START [label=START fillcolor="#1A3A5C" fontcolor=white shape=circle style=filled]
+	OBJ_OPEN [label="OBJ_OPEN
+{" fillcolor="#1A3A5C" fontcolor=white shape=circle style=filled]
+	COLON [label="COLON
+:" fillcolor="#1A3A5C" fontcolor=white shape=circle style=filled]
+	COMMA [label="COMMA
+," fillcolor="#1A3A5C" fontcolor=white shape=circle style=filled]
+	OBJ_CLOSE [label="OBJ_CLOSE
+}" fillcolor="#2CA58D" fontcolor=white shape=doublecircle style=filled]
+	subgraph cluster_0 {
+		color=lightgrey label="Key States" style=filled
+		KEY [label="KEY
+Expecting \"" fillcolor="#2E86AB" fontcolor=white shape=circle style=filled]
+		KEY_STR [label="KEY_STR
+Inside String" fillcolor="#2E86AB" fontcolor=white shape=circle style=filled]
+	}
+	VALUE [label="VALUE
+Route" fillcolor="#F18F01" fontcolor=white shape=circle style=filled]
+	subgraph cluster_1 {
+		color=lightgrey label="Value Types" style=filled
+		VAL_STR [label="VAL_STR
+String Literal" fillcolor="#F18F01" fontcolor=white shape=circle style=filled]
+		VAL_NUM [label="VAL_NUM
+Number" fillcolor="#F18F01" fontcolor=white shape=circle style=filled]
+		VAL_BOOL [label="VAL_BOOL
+Boolean" fillcolor="#F18F01" fontcolor=white shape=circle style=filled]
+		VAL_ARR [label="VAL_ARR
+Array" fillcolor="#F18F01" fontcolor=white shape=circle style=filled]
+	}
+	VAL_OBJ [label="VAL_OBJ
+Nested {}" fillcolor="#F18F01" fontcolor=white shape=circle style=filled]
+	START -> OBJ_OPEN [label="{"]
+	OBJ_OPEN -> KEY [label="\""]
+	KEY -> KEY_STR [label=chars]
+	KEY_STR -> COLON [label="\""]
+	COLON -> VALUE [label=any]
+	VALUE -> VAL_STR [label="\""]
+	VALUE -> VAL_NUM [label="[0-9]"]
+	VALUE -> VAL_BOOL [label="[t,f]"]
+	VALUE -> OBJ_OPEN [label="{"]
+	VALUE -> VAL_ARR [label="["]
+	VAL_STR -> COMMA [label="\""]
+	VAL_NUM -> COMMA [label="[,}]"]
+	VAL_BOOL -> COMMA [label="[,}]"]
+	VAL_ARR -> COMMA [label="]"]
+	OBJ_OPEN -> COMMA [label="...}"]
+	COMMA -> KEY [label="\""]
+	COMMA -> OBJ_CLOSE [label="}"]
+	graph [label="FSM para Gramática JSON
+
+Los tokens válidos en cada estado determinan la máscara de logits" labelloc=top]
+}

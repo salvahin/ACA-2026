@@ -1,0 +1,28 @@
+# Archivos temporales
+.DS_Store
+*.pyc
+__pycache__/
+.env
+~$*
+
+# Archivos de planificación (no incluir)
+*.xlsx
+*.html
+DEPENDENCY_ANALYSIS.md
+EXECUTIVE_SUMMARY.md
+VISUAL_DEPENDENCY_MAP.txt
+_build/
+lecturas/
+website/
+
+# Jupyter checkpoints
+.ipynb_checkpoints/
+
+# Build artifacts (se regeneran)
+book/_build/
+
+# IDE
+.vscode/
+.idea/
+.gemini/
+.claude/

@@ -1,0 +1,90 @@
+format: jb-book
+root: intro
+parts:
+  - caption: Inteligencia Artificial
+    chapters:
+      - file: ai/index
+        sections:
+          - file: ai/01_ia_clasica_vs_generativa
+          - file: ai/02_fundamentos_deep_learning
+          - file: ai/03_generacion_autoregresiva
+          - file: ai/04_arquitectura_transformer
+          - file: ai/05_bert_gpts_tokenizacion
+          - file: ai/06_sampling_constrained_decoding
+          - file: ai/07_fine_tuning_evaluacion
+          - file: ai/08_mlops_visualizacion
+
+  - caption: Compiladores
+    chapters:
+      - file: compilers/index
+        sections:
+          - file: compilers/01-introduccion-compiladores
+          - file: compilers/02-lenguajes-regulares-dfas
+          - file: compilers/03-nfas-conversion-dfa
+          - file: compilers/04-gramaticas-libres-contexto
+          - file: compilers/05-bnf-ebnf-parsing
+          - file: compilers/06-pipeline-fsm-xgrammar
+          - file: compilers/07-diseno-gramaticas-dsl
+          - file: compilers/08-compilacion-gramaticas
+          - file: compilers/09-limitaciones-context-sensitive
+          - file: compilers/10-parser-generators-reflexion
+
+  - caption: Estadística
+    chapters:
+      - file: stats/index
+        sections:
+          - file: stats/01-fundamentos-probabilidad
+          - file: stats/02-distribuciones-descriptiva
+          - file: stats/03-pruebas-hipotesis
+          - file: stats/04-poweranalysis-diseno
+          - file: stats/05-reproducibilidad
+          - file: stats/06-comparaciones-multiples
+          - file: stats/07-pruebas-noparametricas
+          - file: stats/08-tamano-efecto
+          - file: stats/09-mlops-visualizacion
+          - file: stats/10-reporte-estadistico
+
+  - caption: Research (Tesis)
+    chapters:
+      - file: research/index
+        sections:
+          - file: research/01-que-es-una-tesis
+          - file: research/02-revision-bibliografica
+          - file: research/03-planteamiento-del-problema
+          - file: research/04-marco-teorico
+          - file: research/05-metodologia
+          - file: research/06-estilo-academico
+          - file: research/07-resultados
+          - file: research/08-conclusiones-y-abstract
+          - file: research/09-revision-de-estructura
+          - file: research/10-preparacion-defensa
+
+  - caption: Project 1 - LLM Code Generation
+    chapters:
+      - file: project_1/index
+        sections:
+          - file: project_1/01_setup_intro_llms
+          - file: project_1/02_llms_para_codigo
+          - file: project_1/03_prompt_engineering
+          - file: project_1/04_xgrammar_constrained
+          - file: project_1/05_json_grammar
+          - file: project_1/06_gramatica_triton_l1l2
+          - file: project_1/07_gramatica_triton_l3l4
+          - file: project_1/08_serving_llms
+          - file: project_1/09_token_economics_integracion
+          - file: project_1/10_agentic_systems
+
+  - caption: Project 2 - GPU Computing
+    chapters:
+      - file: project_2/index
+        sections:
+          - file: project_2/01_gpu_fundamentals
+          - file: project_2/02_cuda_pytorch_internals
+          - file: project_2/03_memoria_optimizacion
+          - file: project_2/04_triton_completo
+          - file: project_2/05_patrones_avanzados
+          - file: project_2/06_kernelbench_corpus
+          - file: project_2/07_debugging_taxonomia
+          - file: project_2/08_baseline_experimentos
+          - file: project_2/09_analisis_visualizacion
+          - file: project_2/10_integracion_documentacion

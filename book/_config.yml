@@ -1,0 +1,66 @@
+# Configuración del Jupyter Book - ACA
+title: "ACA - Aplicaciones Computacionales Avanzadas"
+author: "Tecnológico de Monterrey"
+copyright: "2026"
+logo: ""
+
+# Ejecución de notebooks
+execute:
+  execute_notebooks: "off"  # "cache" para ejecutar, "off" para skip
+  timeout: 300
+  exclude_patterns:
+    - "**/index.md"
+    - "notebooks/*"
+  stderr_output: "remove"
+  allow_errors: true
+
+# Excluir notebooks de Colab del build
+exclude_patterns:
+  - notebooks/*
+  - "**.ipynb_checkpoints"
+
+# Configuración Sphinx
+sphinx:
+  config:
+    language: es
+    html_theme_options:
+      navigation_depth: 3
+      show_nav_level: 2
+      collapse_navigation: false
+    suppress_warnings: ["myst.header"]
+
+# Extensiones MyST
+parse:
+  myst_enable_extensions:
+    - colon_fence
+    - deflist
+    - dollarmath
+    - amsmath
+    - html_image
+    - linkify
+    - substitution
+
+# Repositorio
+repository:
+  url: https://github.com/salvahin/ACA-2026
+  path_to_book: book
+  branch: main
+
+# HTML
+html:
+  use_repository_button: true
+  use_issues_button: true
+  use_edit_page_button: true
+  home_page_in_navbar: true
+  use_fulltext_search: true
+
+# Botones de lanzamiento (Colab, Binder, etc.)
+launch_buttons:
+  colab_url: "https://colab.research.google.com"
+  notebook_interface: "classic"
+  thebe: false
+
+# LaTeX (para PDF)
+latex:
+  latex_documents:
+    targetname: aca.tex

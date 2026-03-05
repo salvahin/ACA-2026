@@ -359,7 +359,7 @@ for i, val in enumerate(a1):
 circle = plt.Circle((0.9, 0.5), 0.05, color='lightcoral', ec='black', linewidth=2)
 ax.add_patch(circle)
 ax.text(0.9, 0.5, f'{a2[0]:.3f}', ha='center', va='center', fontsize=10, weight='bold')
-ax.text(0.9, 0.65, 'Salida\n(Sigmoid)', ha='center', fontsize=9)
+ax.text(0.9, 0.65, 'Salida\\n(Sigmoid)', ha='center', fontsize=9)
 
 # Conexiones entrada -> capa oculta
 for i in range(2):

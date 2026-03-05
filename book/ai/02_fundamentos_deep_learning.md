@@ -21,6 +21,18 @@ Al finalizar esta lectura podrás:
 - Distinguir entre diferentes funciones de pérdida y optimizadores según el tipo de problema
 ```
 
+```{admonition} 🎬 Video Recomendado
+:class: tip
+
+**[But what is a neural network? (3Blue1Brown)](https://www.youtube.com/watch?v=aircAruvnKk)** - La mejor visualización matemática interactiva de una red neuronal.
+```
+
+```{admonition} 🔧 Herramienta Interactiva
+:class: seealso
+
+**[TensorFlow Neural Network Playground](https://playground.tensorflow.org/)** - Construye redes neuronales en el navegador y visualiza cómo aprenden a separar datos en tiempo real.
+```
+
 ## Introducción
 
 En la lectura anterior, mencionamos redes neuronales y retropropagación como conceptos clave. Ahora vamos a profundizar: ¿cómo funcionan realmente estas redes? ¿Qué es un tensor? ¿Por qué es tan importante el álgebra lineal?

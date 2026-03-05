@@ -28,6 +28,18 @@ Al finalizar esta lectura podrás:
 - Analizar el impacto del tokenizador en costo computacional y contexto disponible
 ```
 
+```{admonition} 🎬 Video Recomendado
+:class: tip
+
+**[Word Embedding and Tokenization (StatQuest)](https://www.youtube.com/watch?v=viZrOnJclY0)** - Animaciones sencillas y didácticas sobre cómo dividimos texto para los modelos de lenguaje.
+```
+
+```{admonition} 🔧 Herramienta Interactiva
+:class: seealso
+
+**[BertViz](https://github.com/jessevig/bertviz)** - Herramienta para visualizar cómo los *Attention Heads* de BERT y GPT conectan las palabras e infieren contexto. Requiere ejecutarse en un Jupyter/Colab notebook.
+```
+
 
 ## Introducción
 

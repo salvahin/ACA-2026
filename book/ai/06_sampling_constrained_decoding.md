@@ -28,6 +28,12 @@ Al finalizar esta lectura podrás:
 - Implementar bitmask simple para restricciones de vocabulario limitado
 ```
 
+```{admonition} 🎬 Video Recomendado
+:class: tip
+
+**[Decoding Strategies in Large Language Models](https://www.youtube.com/watch?v=d_ixjvAHA1E)** - Explicación gráfica de top-p, top-k, y temperature en la selección de tokens.
+```
+
 
 ## Introducción
 

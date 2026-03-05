@@ -21,6 +21,18 @@ Al finalizar esta lectura podrás:
 - Relacionar cada fase del compilador con el pipeline de XGrammar
 ```
 
+```{admonition} 🎬 Video Recomendado
+:class: tip
+
+**[Computerphile: How Compilers Work](https://www.youtube.com/watch?v=QXjU9qTsYCc)** - Visión general de alto nivel sobre lexers, parsers y compilación estática.
+```
+
+```{admonition} 🔧 Herramienta Interactiva
+:class: seealso
+
+**[AST Explorer](https://astexplorer.net/)** - Pega cualquier código fuente y visualiza en tiempo real el Árbol de Sintaxis Abstracta generado por distintos parsers.
+```
+
 ## ¿Qué es un Compilador?
 
 Imagina que escribes un programa en Python o C++. Tu computadora no entiende directamente el código fuente que escribiste. Necesita traducirlo a instrucciones de máquina que pueda ejecutar. Eso es exactamente lo que hace un compilador: es un **traductor automático** que convierte código en un lenguaje fuente (el que escribimos) a un lenguaje destino (generalmente código de máquina o código intermedio).

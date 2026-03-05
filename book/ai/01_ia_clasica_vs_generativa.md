@@ -20,6 +20,12 @@ Al finalizar esta lectura podrás:
 - Seleccionar el paradigma apropiado (clásico, discriminativo o generativo) para un problema dado
 ```
 
+```{admonition} 🎬 Video Recomendado
+:class: tip
+
+**[Generative AI in a Nutshell (IBM Technology)](https://www.youtube.com/watch?v=G2fqAlgmoPo)** - Explicación visual sobre la diferencia entre paradigmas de IA clásica y generativa.
+```
+
 ## Contexto
 En esta lectura comprenderás la evolución de la IA desde sistemas basados en reglas hasta modelos generativos modernos. Aprenderás las diferencias entre paradigmas discriminativos y generativos, y cuándo aplicar cada enfoque.
 

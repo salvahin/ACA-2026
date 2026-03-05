@@ -17,6 +17,12 @@ kernelspec:
 
 ---
 
+```{admonition} 🎬 Video Recomendado
+:class: tip
+
+**[Andrew Ng: How to Read a Research Paper](https://www.youtube.com/watch?v=733m6qBH-jI)** - El reconocido investigador de IA comparte su método personal para leer papers de investigación de manera eficiente, incluyendo la técnica de múltiples pasadas.
+```
+
 ## Introducción
 
 Si alguien te pidiera leer 200 papers de investigación para tu proyecto de investigación, probablemente entraría en pánico. Y con razón: a un ritmo de una hora por paper, serían meses de lectura pura. Pero aquí está la verdad incómoda: **no tienes que leer cada papel completamente para extraer su valor**.

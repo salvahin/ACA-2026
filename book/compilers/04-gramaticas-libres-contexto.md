@@ -21,6 +21,12 @@ Al finalizar esta lectura podrás:
 - Diseñar gramáticas CFG que codifiquen precedencia de operadores correctamente
 ```
 
+```{admonition} 🎬 Video Recomendado
+:class: tip
+
+**[Context Free Grammar CFG (Neso Academy)](https://www.youtube.com/watch?v=hOofv-Yy1k0)** - Producciones arbóreas (Parse Trees) dibujadas nodo por nodo con explicaciones claras.
+```
+
 ## ¿Por qué Necesitamos Algo Más?
 
 Hasta ahora hemos trabajado con lenguajes regulares y DFAs. Estos son perfectos para patrones planos: identificadores, números, palabras clave.

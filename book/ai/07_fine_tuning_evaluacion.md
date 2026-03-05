@@ -28,6 +28,12 @@ Al finalizar esta lectura podrás:
 - Detectar y prevenir benchmark contamination en el proceso de evaluación
 ```
 
+```{admonition} 🎬 Video Recomendado
+:class: tip
+
+**[Fine-tuning LLMs (Deeplearning.ai)](https://www.youtube.com/watch?v=eC6Hd1hFvos)** - Explicación del diagrama mental entre pre-entrenamiento y fine-tuning con ejemplos prácticos.
+```
+
 
 ## Contexto
 Aprenderás técnicas de fine-tuning desde full fine-tuning hasta métodos eficientes (LoRA, QLoRA). Dominarás evaluación rigurosa y detección de benchmark contamination.

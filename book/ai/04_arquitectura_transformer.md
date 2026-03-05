@@ -21,6 +21,18 @@ Al finalizar esta lectura podrás:
 - Identificar los componentes de un bloque Transformer (atención, FFN, layer norm, conexiones residuales)
 ```
 
+```{admonition} 🎬 Video Recomendado
+:class: tip
+
+**[Attention in transformers, visually explained (3Blue1Brown)](https://www.youtube.com/watch?v=eMlx5fFNoYc)** - Desglose geométrico interactivo del mecanismo de atención.
+```
+
+```{admonition} 🔧 Herramienta Interactiva
+:class: seealso
+
+**[Transformer Explainer](https://poloclub.github.io/transformer-explainer/)** - Visualización interactiva de GPT-2: ingresa texto y observa cómo Self-Attention procesa la información token por token.
+```
+
 ## Contexto
 Dominarás la arquitectura Transformer, fundamento de todos los LLMs modernos. Comprenderás el mecanismo de atención, multi-head attention, codificación posicional y la diferencia entre encoders (BERT) y decoders (GPT).
 

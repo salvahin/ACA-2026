@@ -21,6 +21,12 @@ Al finalizar esta lectura podrás:
 - Relacionar cada fase del pipeline con optimizaciones específicas del parser generado
 ```
 
+```{admonition} 🎬 Video Recomendado
+:class: tip
+
+**[XGRAMMAR: Flexible Structured Generation Engine (MLC)](https://www.youtube.com/watch?v=l_aB2w_ZqI8)** - Explicación técnica de la intersección entre gramáticas, GPU y LLMs.
+```
+
 ## Resumen Ejecutivo
 XGrammar compila gramáticas a parsers eficientes: parsing → normalización → NFA → DFA → minimización → análisis lookahead → generación de código. Resultado: parser Earley con máscaras de bits O(1).
 

@@ -22,6 +22,12 @@ Al finalizar esta lectura podrás:
 - Tomar decisiones estadísticas fundamentadas sobre tus resultados
 ```
 
+```{admonition} 🎬 Video Recomendado
+:class: tip
+
+**[StatQuest: Hypothesis Testing](https://www.youtube.com/watch?v=0oc49DyA3hU)** - Josh Starmer explica paso a paso cómo funcionan las pruebas de hipótesis, p-valores, y cómo interpretar los resultados correctamente.
+```
+
 Finalmente llegamos a la pregunta central de tu investigación: **¿Es mi método realmente mejor, o fue solo suerte?** Las pruebas de hipótesis son el marco que usamos para responder esto de manera rigurosa.
 
 ## Estructura de una Prueba de Hipótesis

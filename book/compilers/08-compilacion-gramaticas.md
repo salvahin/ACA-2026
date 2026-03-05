@@ -21,6 +21,12 @@ Al finalizar esta lectura podrás:
 - Identificar estados equivalentes en DFAs para fusión y optimización
 ```
 
+```{admonition} 🎬 Video Recomendado
+:class: tip
+
+**[Lex and Yacc Tutorial](https://www.youtube.com/watch?v=54bo1qaHAfk)** - Ver qué ocurre tras bambalinas en los generadores de parsers tradicionales.
+```
+
 ## Cerrando la Brecha: Especificación → Código Ejecutable
 
 Sabemos que XGrammar toma una especificación de gramática y genera un parser. Ahora profundizaremos en cómo **específicamente** XGrammar realiza esta compilación, con énfasis en las decisiones de diseño que la hacen eficiente para kernels GPU.

@@ -21,6 +21,12 @@ Al finalizar esta lectura podrás:
 - Diseñar gramáticas modulares en capas (L0-L4) para facilitar mantenimiento
 ```
 
+```{admonition} 🎬 Video Recomendado
+:class: tip
+
+**[Domain Specific Languages (Martin Fowler)](https://www.youtube.com/watch?v=r3_u48J-bFE)** - Qué son los DSLs como Triton, explicados desde la perspectiva de su creador.
+```
+
 ## El Arte, No Solo la Ciencia
 
 Hemos cubierto la **teoría** de compiladores. Ahora viene la parte desafiante: **diseñar buenas gramáticas**.

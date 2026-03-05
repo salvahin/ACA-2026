@@ -21,6 +21,19 @@ Al finalizar esta lectura podrás:
 - Explicar cómo los DFAs se usan para tokenización en XGrammar
 ```
 
+```{admonition} 🎬 Video Recomendado
+:class: tip
+
+**[Deterministic Finite Automata (Neso Academy)](https://www.youtube.com/watch?v=40i4PKpM0cE)** - Dibujos paso a paso diagramando estados y transiciones en DFAs.
+```
+
+```{admonition} 🔧 Herramientas Interactivas
+:class: seealso
+
+- **[AutomataVerse](https://automataverse.com/)** - Plataforma interactiva para dibujar grafos de máquinas de estados y simular paso a paso cómo una cadena es procesada.
+- **[FSM Simulator](https://ivanzuzak.info/noam/webapps/fsm_simulator/)** - Define expresiones regulares y genera automáticamente la visualización del autómata correspondiente.
+```
+
 ## Contexto
 Esta lectura presenta los fundamentos del análisis léxico: cómo reconocer patrones usando autómatas finitos. Los DFAs son la base para construir **lexers** (primera fase del compilador), NO el parser completo.
 

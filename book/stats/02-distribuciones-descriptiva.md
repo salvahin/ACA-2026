@@ -22,6 +22,20 @@ Al finalizar esta lectura podrás:
 - Detectar valores atípicos usando cuartiles e IQR
 ```
 
+```{admonition} 🎬 Video Recomendado
+:class: tip
+
+**[StatQuest: The Normal Distribution](https://www.youtube.com/watch?v=rzFX5NWojp0)** - Explicación clara y visual de la distribución normal, incluyendo la regla empírica 68-95-99.7 y cómo estandarizar con Z-scores.
+```
+
+```{admonition} 🔧 Herramienta Interactiva
+:class: seealso
+
+**[Seeing Theory (Brown University)](https://seeing-theory.brown.edu/)** - Explora las distribuciones de probabilidad de forma interactiva, ajustando parámetros y viendo cómo cambian las curvas en tiempo real.
+
+**[Probability Playground (Distributome)](https://www.distributome.org/V3/)** - Explora cómo se interrelacionan docenas de distribuciones de probabilidad diferentes alterando sus parámetros.
+```
+
 Ahora que entiendes probabilidad fundamental, es tiempo de aprender sobre distribuciones específicas. Una distribución describe cómo se comportan nuestros datos. En tu proyecto, necesitarás saber si tus conteos de iteraciones siguen una distribución normal, Poisson, o binomial. Esto determinará qué pruebas estadísticas puedes usar después.
 
 ## Distribución de Bernoulli

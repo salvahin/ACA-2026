@@ -17,6 +17,12 @@ kernelspec:
 
 ---
 
+```{admonition} 🎬 Video Recomendado
+:class: tip
+
+**[Writing a Problem Statement](https://www.youtube.com/watch?v=bRrmNJx5GQw)** - Guía paso a paso para convertir una idea general en un planteamiento de problema específico, falsable y respondible para investigación académica.
+```
+
 ## Introducción
 
 Has leído papers. Has identificado patrones en el campo. Has notado algunas cosas que no tienen respuesta clara. Ahora viene la parte aterradora: **convertir toda esa curiosidad amorfa en preguntas de investigación formales y específicas**.

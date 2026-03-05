@@ -22,6 +22,18 @@ Al finalizar esta lectura podrás:
 - Calcular valor esperado y varianza de distribuciones
 ```
 
+```{admonition} 🎬 Video Recomendado
+:class: tip
+
+**[StatQuest: Probability Concepts](https://www.youtube.com/watch?v=uzkc-qNVoOk)** - Josh Starmer explica de forma visual y amigable los conceptos fundamentales de probabilidad, incluyendo espacios muestrales y distribuciones.
+```
+
+```{admonition} 🔧 Herramienta Interactiva
+:class: seealso
+
+**[Seeing Theory (Brown University)](https://seeing-theory.brown.edu/)** - Posiblemente el mejor libro de texto interactivo de estadística en internet. Usa animaciones y minijuegos para hacer conceptos como probabilidad, Teorema del Límite Central e Inferencia Bayesiana completamente intuitivos.
+```
+
 Bienvenida a este módulo de estadística. Aquí aprenderemos los conceptos fundamentales que necesitas para analizar los resultados de tu investigación sobre generación de kernels GPU con restricciones gramaticales. Imagina que necesitas comparar cuántas iteraciones toma el algoritmo baseline versus tu versión mejorada. La probabilidad es el lenguaje que usamos para hablar sobre esta incertidumbre.
 
 ## Espacio Muestral y Eventos

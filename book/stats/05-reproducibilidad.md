@@ -28,6 +28,12 @@ Al finalizar esta lectura podrás:
 - Aplicar estrategias de pre-registro de análisis
 ```
 
+```{admonition} 🎬 Video Recomendado
+:class: tip
+
+**[Veritasium: Is Most Published Research Wrong?](https://www.youtube.com/watch?v=42QuXLucH3Q)** - Una exploración provocadora de la crisis de reproducibilidad en la ciencia, incluyendo p-hacking, sesgo de publicación, y por qué tantos estudios no pueden ser replicados.
+```
+
 ## Semana 5 - Estadística para Generación de Kernels GPU
 
 Aquí llegamos a un aspecto crítico que muchos estudiantes pasan por alto: la **reproducibilidad**. ¿Puede alguien (incluyéndote en 6 meses) ejecutar tu experimento nuevamente y obtener los mismos resultados? Si la respuesta es no, nadie puede confiar en tu investigación.

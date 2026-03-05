@@ -28,6 +28,12 @@ Al finalizar esta lectura podrás:
 - Reportar resultados completos (estadístico, p-valor, efecto, IC)
 ```
 
+```{admonition} 🎬 Video Recomendado
+:class: tip
+
+**[StatQuest: Effect Size](https://www.youtube.com/watch?v=fJPZTdVk7lk)** - Explicación clara de por qué el tamaño del efecto es tan importante como el p-valor, y cómo calcular e interpretar Cohen's d correctamente.
+```
+
 ## Semana 7 - Estadística para Generación de Kernels GPU
 
 Aquí es donde pasamos de "¿hay diferencia?" a "¿qué tan grande es la diferencia y le importa?" Un p-valor pequeño significa que una diferencia es estadísticamente significante, pero no te dice si es **prácticamente importante**.

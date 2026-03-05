@@ -28,6 +28,12 @@ Al finalizar esta lectura podrás:
 - Elegir la prueba correcta según las características de tus datos
 ```
 
+```{admonition} 🎬 Video Recomendado
+:class: tip
+
+**[StatQuest: Non-Parametric Tests](https://www.youtube.com/watch?v=GrLsW-gABm8)** - Explicación visual de cuándo y por qué usar pruebas no paramétricas como Mann-Whitney U y Wilcoxon, con ejemplos prácticos.
+```
+
 ## Semana 6 - Estadística para Generación de Kernels GPU
 
 Hasta ahora hemos asumido normalidad: que nuestros datos siguen aproximadamente una distribución normal. Pero, ¿qué pasa si no es así? Aquí es donde las **pruebas no paramétricas** entran al rescate.

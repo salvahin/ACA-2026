@@ -17,6 +17,12 @@ kernelspec:
 
 ---
 
+```{admonition} 🎬 Video Recomendado
+:class: tip
+
+**[MIT: How to Do Research At the MIT AI Lab](https://www.youtube.com/watch?v=J2I5K6u2Hqk)** - Consejos clásicos y atemporales de investigadores del MIT sobre cómo abordar proyectos de investigación, desde la formulación de preguntas hasta la escritura.
+```
+
 ## Introducción
 
 Imagina que eres un detective en una película. No empiezas simplemente buscando pistas al azar. Primero, planteas una pregunta clara: "¿Quién cometió el crimen?" Luego, reúnes evidencia sistemáticamente, la analizas cuidadosamente, y finalmente presentas tu caso de manera convincente. Un proyecto de investigación académico funciona exactamente así.

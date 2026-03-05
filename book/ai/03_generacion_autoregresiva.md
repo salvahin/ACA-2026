@@ -21,6 +21,12 @@ Al finalizar esta lectura podrás:
 - Aplicar tokenización BPE para convertir texto a secuencias numéricas
 ```
 
+```{admonition} 🎬 Video Recomendado
+:class: tip
+
+**[Let's build GPT: from scratch (Andrej Karpathy)](https://www.youtube.com/watch?v=kCc8FmEb1nY)** - Andrej ilustra conceptualmente cómo se genera el siguiente token de manera iterativa.
+```
+
 ## Contexto
 Aprenderás cómo los LLMs generan texto token por token mediante procesos autoregresivos. Comprenderás estrategias de muestreo (greedy, Top-K, Top-P) y su impacto en creatividad vs coherencia.
 

@@ -22,6 +22,12 @@ Al finalizar esta lectura podrás:
 - Distinguir entre FWER y FDR y cuándo usar cada uno
 ```
 
+```{admonition} 🎬 Video Recomendado
+:class: tip
+
+**[StatQuest: False Discovery Rates (FDR)](https://www.youtube.com/watch?v=K8LQSvtjcEo)** - Josh Starmer explica claramente el problema de las comparaciones múltiples, la tasa de falsos descubrimientos, y cómo las correcciones como Benjamini-Hochberg ayudan a controlarlo.
+```
+
 Aquí llegamos a un peligro estadístico: **si haces suficientes pruebas, alguna será "significante" solo por suerte**. Aprendemos a controlar esto.
 
 ## El Problema de Comparaciones Múltiples

@@ -22,6 +22,12 @@ Al finalizar esta lectura podrás:
 - Diseñar experimentos balanceados y contrabalanceados
 ```
 
+```{admonition} 🎬 Video Recomendado
+:class: tip
+
+**[StatQuest: Statistical Power](https://www.youtube.com/watch?v=Rsc5znwR5FA)** - Explicación visual de qué es el poder estadístico, cómo calcularlo, y por qué es crucial para diseñar experimentos antes de recolectar datos.
+```
+
 Aquí es donde la planificación científica se convierte en poder estadístico. Antes de ejecutar tu experimento, necesitas saber: **¿Cuántas muestras necesito para detectar un efecto que me importa?** Eso es power analysis.
 
 ## Conceptos Fundamentales del Diseño

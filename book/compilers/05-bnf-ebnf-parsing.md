@@ -21,6 +21,18 @@ Al finalizar esta lectura podrás:
 - Identificar cuándo usar LL, LR o Earley según las características de la gramática
 ```
 
+```{admonition} 🎬 Video Recomendado
+:class: tip
+
+**[Backus-Naur Form (Computerphile)](https://www.youtube.com/watch?v=1T4UqEwXp6w)** - La sintaxis detrás de los lenguajes mostrada visualmente de forma clara y concisa.
+```
+
+```{admonition} 🔧 Herramienta Interactiva
+:class: seealso
+
+**[AST Explorer](https://astexplorer.net/)** - Visualiza cómo diferentes parsers (Babel, TypeScript, etc.) construyen árboles de sintaxis abstracta a partir de código fuente.
+```
+
 ## Del Formalismo a la Práctica
 
 Hasta ahora hemos escrito gramáticas en notación teórica:

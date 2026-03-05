@@ -17,6 +17,12 @@ kernelspec:
 
 ---
 
+```{admonition} 🎬 Video Recomendado
+:class: tip
+
+**[How to Synthesize Literature](https://www.youtube.com/watch?v=FODo2hEsXvE)** - Aprende la diferencia crucial entre resumir y sintetizar literatura académica, con ejemplos prácticos de cómo conectar ideas de múltiples fuentes.
+```
+
 ## Introducción
 
 Imagina que invitas a alguien a una cena, pero esa persona no habla tu idioma. Antes de conversar, necesitas un idioma común. De manera similar, tu proyecto de investigación necesita construir un "idioma común" con tu lector antes de poder presentar tu investigación compleja.

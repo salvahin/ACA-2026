@@ -21,6 +21,18 @@ Al finalizar esta lectura podrás:
 - Relacionar la conversión NFA→DFA con el pipeline de compilación de XGrammar
 ```
 
+```{admonition} 🎬 Video Recomendado
+:class: tip
+
+**[NFA to DFA Conversion (Neso Academy)](https://www.youtube.com/watch?v=--TqwBvW9v8)** - Conceptos extremadamente visuales sobre las máquinas de estados no deterministas y su conversión a DFA.
+```
+
+```{admonition} 🔧 Herramienta Interactiva
+:class: seealso
+
+**[AutomataVerse](https://automataverse.com/)** - Visualiza la conversión de NFA a DFA paso a paso, mostrando cómo se construyen los subconjuntos de estados.
+```
+
 ## El Problema del Determinismo
 
 En la lectura anterior, trabajamos con **DFAs deterministas**: desde cada estado, para cada carácter, hay exactamente una transición. Esto es restrictivo cuando diseñamos autómatas manualmente.

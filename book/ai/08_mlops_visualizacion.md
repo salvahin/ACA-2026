@@ -28,6 +28,12 @@ Al finalizar esta lectura podrás:
 - Detectar overfitting visualmente mediante análisis de curvas de entrenamiento y validación
 ```
 
+```{admonition} 🎬 Video Recomendado
+:class: tip
+
+**[MLOps in 10 Minutes (DataTalksClub)](https://www.youtube.com/watch?v=7kZrrCsJdEM)** - Diagramas de arquitectura del ciclo de vida de un modelo de IA en producción.
+```
+
 
 ## Introducción
 

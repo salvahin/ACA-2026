@@ -212,9 +212,7 @@ Con df = n - 1 = 24 grados de libertad, este t = 3.33 corresponde a p ≈ 0.003.
 
 ```{code-cell} ipython3
 import numpy as np
-import matplotlib.pyplot as plt
 from scipy import stats
-import seaborn as sns
 
 # Datos del experimento
 np.random.seed(42)
@@ -251,107 +249,123 @@ if p_value < 0.05:
 else:
     print(f"  p ≥ 0.05 → No rechazamos H₀")
     print(f"  No hay evidencia suficiente de diferencia")
+```
+
+De manera visual, podemos observar cómo se comparan nuestro estadístico $t$ obtenido en la prueba y el $p$-valor en relación con la distribución teórica $t$ de Student y sus regiones críticas:
+
+```{code-cell} ipython3
+import matplotlib.subplots as subplots
+import matplotlib.pyplot as plt
 
 # Visualización
-fig, axes = plt.subplots(2, 2, figsize=(14, 10))
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
 
 # 1. Distribución t con región crítica
 x = np.linspace(-4, 4, 1000)
 t_pdf = stats.t.pdf(x, df)
 
-axes[0, 0].plot(x, t_pdf, 'b-', linewidth=2, label=f't({df})')
-axes[0, 0].fill_between(x, 0, t_pdf, alpha=0.3, color='blue')
+axes[0].plot(x, t_pdf, 'b-', linewidth=2, label=f't({df})')
+axes[0].fill_between(x, 0, t_pdf, alpha=0.3, color='blue')
 
 # Regiones críticas (α = 0.05, dos colas)
 t_critical = stats.t.ppf(0.975, df)
 x_left = x[x <= -t_critical]
 x_right = x[x >= t_critical]
-axes[0, 0].fill_between(x_left, 0, stats.t.pdf(x_left, df),
+axes[0].fill_between(x_left, 0, stats.t.pdf(x_left, df),
                         alpha=0.6, color='red', label=f'Región crítica (α=0.05)')
-axes[0, 0].fill_between(x_right, 0, stats.t.pdf(x_right, df),
+axes[0].fill_between(x_right, 0, stats.t.pdf(x_right, df),
                         alpha=0.6, color='red')
 
 # Marcar t observado
-axes[0, 0].axvline(t_stat, color='green', linewidth=3, linestyle='--',
+axes[0].axvline(t_stat, color='green', linewidth=3, linestyle='--',
                    label=f't observado = {t_stat:.2f}')
-axes[0, 0].axvline(-t_critical, color='red', linewidth=1, linestyle=':',
+axes[0].axvline(-t_critical, color='red', linewidth=1, linestyle=':',
                    label=f't crítico = ±{t_critical:.2f}')
-axes[0, 0].axvline(t_critical, color='red', linewidth=1, linestyle=':')
+axes[0].axvline(t_critical, color='red', linewidth=1, linestyle=':')
 
-axes[0, 0].set_xlabel('Estadístico t')
-axes[0, 0].set_ylabel('Densidad de Probabilidad')
-axes[0, 0].set_title('Distribución t y Regiones Críticas')
-axes[0, 0].legend()
-axes[0, 0].grid(alpha=0.3)
+axes[0].set_xlabel('Estadístico t')
+axes[0].set_ylabel('Densidad de Probabilidad')
+axes[0].set_title('Distribución t y Regiones Críticas')
+axes[0].legend()
+axes[0].grid(alpha=0.3)
 
 # 2. P-valor visualizado
-axes[0, 1].plot(x, t_pdf, 'b-', linewidth=2)
+axes[1].plot(x, t_pdf, 'b-', linewidth=2)
 x_pval_left = x[x <= -abs(t_stat)]
 x_pval_right = x[x >= abs(t_stat)]
-axes[0, 1].fill_between(x_pval_left, 0, stats.t.pdf(x_pval_left, df),
+axes[1].fill_between(x_pval_left, 0, stats.t.pdf(x_pval_left, df),
                         alpha=0.7, color='orange',
                         label=f'p-valor = {p_value:.4f}')
-axes[0, 1].fill_between(x_pval_right, 0, stats.t.pdf(x_pval_right, df),
+axes[1].fill_between(x_pval_right, 0, stats.t.pdf(x_pval_right, df),
                         alpha=0.7, color='orange')
 
-axes[0, 1].axvline(t_stat, color='green', linewidth=3, linestyle='--',
+axes[1].axvline(t_stat, color='green', linewidth=3, linestyle='--',
                    label=f't = {t_stat:.2f}')
-axes[0, 1].axvline(-t_stat, color='green', linewidth=3, linestyle='--')
+axes[1].axvline(-t_stat, color='green', linewidth=3, linestyle='--')
 
-axes[0, 1].set_xlabel('Estadístico t')
-axes[0, 1].set_ylabel('Densidad de Probabilidad')
-axes[0, 1].set_title('Visualización del P-valor')
-axes[0, 1].legend()
-axes[0, 1].grid(alpha=0.3)
+axes[1].set_xlabel('Estadístico t')
+axes[1].set_ylabel('Densidad de Probabilidad')
+axes[1].set_title('Visualización del P-valor')
+axes[1].legend()
+axes[1].grid(alpha=0.3)
+
+plt.tight_layout()
+plt.show()
+```
+
+Por otro lado, observando con más detalle los resultados de la prueba, podemos derivar un Intervalo de Confianza, de tal forma que nos muestre con alta certitud en dónde se encuentra realmente la media poblacional, independientemente de nuestros datos de muestra concretos.
+
+```{code-cell} ipython3
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
 
 # 3. Simulación de datos que podrían haber generado este resultado
 np.random.seed(42)
 datos_simulados = np.random.normal(x_bar, s, n)
 
-axes[1, 0].hist(datos_simulados, bins=10, color='steelblue', alpha=0.7,
+axes[0].hist(datos_simulados, bins=10, color='steelblue', alpha=0.7,
                 edgecolor='black', density=True)
-axes[1, 0].axvline(x_bar, color='red', linewidth=2, linestyle='--',
+axes[0].axvline(x_bar, color='red', linewidth=2, linestyle='--',
                    label=f'x̄ = {x_bar}')
-axes[1, 0].axvline(mu_0, color='green', linewidth=2, linestyle=':',
+axes[0].axvline(mu_0, color='green', linewidth=2, linestyle=':',
                    label=f'μ₀ = {mu_0}')
 
 # Superponer distribución teórica
 x_range = np.linspace(min(datos_simulados), max(datos_simulados), 100)
-axes[1, 0].plot(x_range, stats.norm.pdf(x_range, x_bar, s),
+axes[0].plot(x_range, stats.norm.pdf(x_range, x_bar, s),
                 'r-', linewidth=2, alpha=0.7, label='N(x̄, s²)')
 
-axes[1, 0].set_xlabel('Tiempo de compilación (s)')
-axes[1, 0].set_ylabel('Densidad')
-axes[1, 0].set_title('Datos Simulados y Distribución')
-axes[1, 0].legend()
-axes[1, 0].grid(alpha=0.3)
+axes[0].set_xlabel('Tiempo de compilación (s)')
+axes[0].set_ylabel('Densidad')
+axes[0].set_title('Datos Simulados y Distribución')
+axes[0].legend()
+axes[0].grid(alpha=0.3)
 
 # 4. Intervalo de confianza 95%
 se = s / np.sqrt(n)
 ci_lower = x_bar - t_critical * se
 ci_upper = x_bar + t_critical * se
 
-axes[1, 1].errorbar([1], [x_bar], yerr=[[x_bar - ci_lower], [ci_upper - x_bar]],
+axes[1].errorbar([1], [x_bar], yerr=[[x_bar - ci_lower], [ci_upper - x_bar]],
                     fmt='o', markersize=12, capsize=10, capthick=2,
                     color='blue', label=f'x̄ = {x_bar}')
-axes[1, 1].axhline(mu_0, color='green', linewidth=2, linestyle='--',
+axes[1].axhline(mu_0, color='green', linewidth=2, linestyle='--',
                    label=f'μ₀ = {mu_0}')
-axes[1, 1].axhline(ci_lower, color='red', linewidth=1, linestyle=':',
+axes[1].axhline(ci_lower, color='red', linewidth=1, linestyle=':',
                    alpha=0.5)
-axes[1, 1].axhline(ci_upper, color='red', linewidth=1, linestyle=':',
+axes[1].axhline(ci_upper, color='red', linewidth=1, linestyle=':',
                    alpha=0.5)
 
-axes[1, 1].fill_between([0.5, 1.5], ci_lower, ci_upper,
+axes[1].fill_between([0.5, 1.5], ci_lower, ci_upper,
                         alpha=0.3, color='blue',
                         label=f'IC 95%: [{ci_lower:.2f}, {ci_upper:.2f}]')
 
-axes[1, 1].set_xlim(0.5, 1.5)
-axes[1, 1].set_ylabel('Tiempo de compilación (s)')
-axes[1, 1].set_title('Intervalo de Confianza 95%')
-axes[1, 1].set_xticks([1])
-axes[1, 1].set_xticklabels(['Muestra'])
-axes[1, 1].legend()
-axes[1, 1].grid(axis='y', alpha=0.3)
+axes[1].set_xlim(0.5, 1.5)
+axes[1].set_ylabel('Tiempo de compilación (s)')
+axes[1].set_title('Intervalo de Confianza 95%')
+axes[1].set_xticks([1])
+axes[1].set_xticklabels(['Muestra'])
+axes[1].legend()
+axes[1].grid(axis='y', alpha=0.3)
 
 plt.tight_layout()
 plt.show()
@@ -396,9 +410,7 @@ Pero nota: hay una diferencia numérica de 0.4 segundos. Podría ser prácticame
 
 ```{code-cell} ipython3
 import numpy as np
-import matplotlib.pyplot as plt
 from scipy import stats
-import seaborn as sns
 
 # Datos de dos muestras independientes
 np.random.seed(42)
@@ -449,29 +461,35 @@ else:
     print(f"  p ≥ 0.05 → No rechazamos H₀")
     print(f"  No hay evidencia suficiente de diferencia")
     print(f"  PERO la diferencia práctica ({x_bar1-x_bar2:.2f}s) puede ser importante")
+```
+
+Si representamos nuestras dos distribuciones de manera visual contigua, podemos corroborar esta falta de evidencia suficiente: las distribuciones tienen áreas de superposición grandes, que es justamente lo que las hace indistinguibles estadísticamente.
+
+```{code-cell} ipython3
+import matplotlib.pyplot as plt
 
 # Visualización
-fig, axes = plt.subplots(2, 2, figsize=(14, 10))
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
 
 # 1. Distribuciones de ambos grupos
-axes[0, 0].hist(datos_baseline, bins=15, alpha=0.6, color='red',
+axes[0].hist(datos_baseline, bins=15, alpha=0.6, color='red',
                 edgecolor='black', label=f'Baseline (x̄={np.mean(datos_baseline):.2f})',
                 density=True)
-axes[0, 0].hist(datos_restricciones, bins=15, alpha=0.6, color='blue',
+axes[0].hist(datos_restricciones, bins=15, alpha=0.6, color='blue',
                 edgecolor='black', label=f'Restricciones (x̄={np.mean(datos_restricciones):.2f})',
                 density=True)
 
-axes[0, 0].axvline(x_bar1, color='red', linewidth=2, linestyle='--')
-axes[0, 0].axvline(x_bar2, color='blue', linewidth=2, linestyle='--')
+axes[0].axvline(x_bar1, color='red', linewidth=2, linestyle='--')
+axes[0].axvline(x_bar2, color='blue', linewidth=2, linestyle='--')
 
-axes[0, 0].set_xlabel('Tiempo de compilación (s)')
-axes[0, 0].set_ylabel('Densidad')
-axes[0, 0].set_title('Distribuciones de Ambos Grupos')
-axes[0, 0].legend()
-axes[0, 0].grid(alpha=0.3)
+axes[0].set_xlabel('Tiempo de compilación (s)')
+axes[0].set_ylabel('Densidad')
+axes[0].set_title('Distribuciones de Ambos Grupos')
+axes[0].legend()
+axes[0].grid(alpha=0.3)
 
 # 2. Box plots comparativos
-bp = axes[0, 1].boxplot([datos_baseline, datos_restricciones],
+bp = axes[1].boxplot([datos_baseline, datos_restricciones],
                         labels=['Baseline', 'Restricciones'],
                         patch_artist=True, notch=True, showmeans=True)
 
@@ -480,68 +498,77 @@ bp['boxes'][1].set_facecolor('blue')
 for box in bp['boxes']:
     box.set_alpha(0.6)
 
-axes[0, 1].set_ylabel('Tiempo de compilación (s)')
-axes[0, 1].set_title('Comparación de Distribuciones (Box Plots)')
-axes[0, 1].grid(axis='y', alpha=0.3)
+axes[1].set_ylabel('Tiempo de compilación (s)')
+axes[1].set_title('Comparación de Distribuciones (Box Plots)')
+axes[1].grid(axis='y', alpha=0.3)
 
 # Anotar diferencia
-axes[0, 1].plot([1, 2], [x_bar1, x_bar2], 'go-', linewidth=2, markersize=10,
+axes[1].plot([1, 2], [x_bar1, x_bar2], 'go-', linewidth=2, markersize=10,
                 label='Medias')
-axes[0, 1].text(1.5, (x_bar1 + x_bar2)/2,
+axes[1].text(1.5, (x_bar1 + x_bar2)/2,
                 f'Δ = {x_bar1-x_bar2:.2f}s\np = {p_value:.3f}',
                 ha='center', fontsize=10,
                 bbox=dict(boxstyle='round', facecolor='yellow', alpha=0.7))
+
+plt.tight_layout()
+plt.show()
+```
+
+Por otro lado, comparando el estadístico respecto a su curva *t*, y el intervalo de confianza de la diferencia, podemos extraer la misma conclsión:
+
+```{code-cell} ipython3
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
 
 # 3. Distribución t y región crítica
 x = np.linspace(-4, 4, 1000)
 t_pdf = stats.t.pdf(x, df)
 
-axes[1, 0].plot(x, t_pdf, 'b-', linewidth=2, label=f't({df})')
-axes[1, 0].fill_between(x, 0, t_pdf, alpha=0.3, color='blue')
+axes[0].plot(x, t_pdf, 'b-', linewidth=2, label=f't({df})')
+axes[0].fill_between(x, 0, t_pdf, alpha=0.3, color='blue')
 
 # Regiones críticas
 x_left = x[x <= -t_critical]
 x_right = x[x >= t_critical]
-axes[1, 0].fill_between(x_left, 0, stats.t.pdf(x_left, df),
+axes[0].fill_between(x_left, 0, stats.t.pdf(x_left, df),
                         alpha=0.6, color='red', label='Región crítica (α=0.05)')
-axes[1, 0].fill_between(x_right, 0, stats.t.pdf(x_right, df),
+axes[0].fill_between(x_right, 0, stats.t.pdf(x_right, df),
                         alpha=0.6, color='red')
 
 # Marcar t observado
-axes[1, 0].axvline(t_stat, color='green', linewidth=3, linestyle='--',
+axes[0].axvline(t_stat, color='green', linewidth=3, linestyle='--',
                    label=f't obs = {t_stat:.2f}')
-axes[1, 0].axvline(-t_critical, color='red', linewidth=1, linestyle=':')
-axes[1, 0].axvline(t_critical, color='red', linewidth=1, linestyle=':',
+axes[0].axvline(-t_critical, color='red', linewidth=1, linestyle=':')
+axes[0].axvline(t_critical, color='red', linewidth=1, linestyle=':',
                    label=f't crítico = ±{t_critical:.2f}')
 
-axes[1, 0].set_xlabel('Estadístico t')
-axes[1, 0].set_ylabel('Densidad')
-axes[1, 0].set_title('Distribución t y Estadístico Observado')
-axes[1, 0].legend()
-axes[1, 0].grid(alpha=0.3)
+axes[0].set_xlabel('Estadístico t')
+axes[0].set_ylabel('Densidad')
+axes[0].set_title('Distribución t y Estadístico Observado')
+axes[0].legend()
+axes[0].grid(alpha=0.3)
 
 # 4. Intervalo de confianza de la diferencia
-axes[1, 1].errorbar([1], [x_bar1 - x_bar2],
+axes[1].errorbar([1], [x_bar1 - x_bar2],
                     yerr=[[x_bar1-x_bar2-ci_lower], [ci_upper-(x_bar1-x_bar2)]],
                     fmt='o', markersize=12, capsize=10, capthick=2,
                     color='purple', label='Diferencia observada')
 
-axes[1, 1].axhline(0, color='red', linewidth=2, linestyle='--',
+axes[1].axhline(0, color='red', linewidth=2, linestyle='--',
                    label='H₀: diferencia = 0')
-axes[1, 1].fill_between([0.5, 1.5], ci_lower, ci_upper,
+axes[1].fill_between([0.5, 1.5], ci_lower, ci_upper,
                         alpha=0.3, color='purple',
                         label=f'IC 95%: [{ci_lower:.3f}, {ci_upper:.3f}]')
 
-axes[1, 1].set_xlim(0.5, 1.5)
-axes[1, 1].set_ylabel('Diferencia en tiempo (s)')
-axes[1, 1].set_title('Intervalo de Confianza de la Diferencia')
-axes[1, 1].set_xticks([1])
-axes[1, 1].set_xticklabels(['Baseline - Restricciones'])
-axes[1, 1].legend()
-axes[1, 1].grid(axis='y', alpha=0.3)
+axes[1].set_xlim(0.5, 1.5)
+axes[1].set_ylabel('Diferencia en tiempo (s)')
+axes[1].set_title('Intervalo de Confianza de la Diferencia')
+axes[1].set_xticks([1])
+axes[1].set_xticklabels(['Baseline - Restricciones'])
+axes[1].legend()
+axes[1].grid(axis='y', alpha=0.3)
 
 if ci_lower < 0 < ci_upper:
-    axes[1, 1].text(1, ci_upper + 0.05,
+    axes[1].text(1, ci_upper + 0.05,
                     'IC incluye 0\n→ No significante',
                     ha='center', fontsize=10,
                     bbox=dict(boxstyle='round', facecolor='yellow'))
@@ -597,9 +624,7 @@ Esto reduce varianza y aumenta poder, permitiéndote detectar efectos más peque
 
 ```{code-cell} ipython3
 import numpy as np
-import matplotlib.pyplot as plt
 from scipy import stats
-import pandas as pd
 
 # Datos pareados: mismo kernel ejecutado con ambos métodos
 np.random.seed(42)
@@ -661,73 +686,90 @@ print(f"\nComparación con prueba NO pareada:")
 print(f"  t pareada: {t_stat_paired:.3f}, p = {p_value_paired:.4f}")
 print(f"  t NO pareada: {t_stat_unpaired:.3f}, p = {p_value_unpaired:.4f}")
 print(f"  La prueba pareada tiene MÁS poder (p-valor más pequeño)")
+```
+
+Aparte de ser matemáticamente diferentes, el planteamiento de una prueba normal y una pareada se ve distinto, se analizan los kernels base y cómo cada uno cambia en lo particular al someterlo a iteraciones y restricciones.
+
+```{code-cell} ipython3
+import matplotlib.pyplot as plt
 
 # Visualización
-fig, axes = plt.subplots(2, 2, figsize=(14, 10))
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
 
 # 1. Datos pareados - líneas conectando pares
-axes[0, 0].plot([1]*n, baseline, 'ro', alpha=0.6, markersize=8, label='Baseline')
-axes[0, 0].plot([2]*n, restricciones, 'bo', alpha=0.6, markersize=8, label='Restricciones')
+axes[0].plot([1]*n, baseline, 'ro', alpha=0.6, markersize=8, label='Baseline')
+axes[0].plot([2]*n, restricciones, 'bo', alpha=0.6, markersize=8, label='Restricciones')
 
 for i in range(n):
     color = 'green' if baseline[i] > restricciones[i] else 'red'
-    axes[0, 0].plot([1, 2], [baseline[i], restricciones[i]],
+    axes[0].plot([1, 2], [baseline[i], restricciones[i]],
                     color=color, alpha=0.3, linewidth=1)
 
-axes[0, 0].plot([1, 2], [np.mean(baseline), np.mean(restricciones)],
+axes[0].plot([1, 2], [np.mean(baseline), np.mean(restricciones)],
                 'k-', linewidth=3, marker='D', markersize=12,
                 label='Medias')
 
-axes[0, 0].set_xlim(0.5, 2.5)
-axes[0, 0].set_xticks([1, 2])
-axes[0, 0].set_xticklabels(['Baseline', 'Restricciones'])
-axes[0, 0].set_ylabel('Tiempo de compilación (s)')
-axes[0, 0].set_title('Datos Pareados: Mismo Kernel con Ambos Métodos')
-axes[0, 0].legend()
-axes[0, 0].grid(axis='y', alpha=0.3)
+axes[0].set_xlim(0.5, 2.5)
+axes[0].set_xticks([1, 2])
+axes[0].set_xticklabels(['Baseline', 'Restricciones'])
+axes[0].set_ylabel('Tiempo de compilación (s)')
+axes[0].set_title('Datos Pareados: Mismo Kernel con Ambos Métodos')
+axes[0].legend()
+axes[0].grid(axis='y', alpha=0.3)
 
 # 2. Histograma de diferencias
-axes[0, 1].hist(diferencias, bins=10, color='purple', alpha=0.7,
+axes[1].hist(diferencias, bins=10, color='purple', alpha=0.7,
                 edgecolor='black', density=True)
-axes[0, 1].axvline(d_bar, color='red', linewidth=2, linestyle='--',
+axes[1].axvline(d_bar, color='red', linewidth=2, linestyle='--',
                    label=f'd̄ = {d_bar:.3f}')
-axes[0, 1].axvline(0, color='green', linewidth=2, linestyle=':',
+axes[1].axvline(0, color='green', linewidth=2, linestyle=':',
                    label='H₀: diferencia = 0')
 
 # Superponer distribución normal
 x_range = np.linspace(min(diferencias), max(diferencias), 100)
-axes[0, 1].plot(x_range, stats.norm.pdf(x_range, d_bar, s_d),
+axes[1].plot(x_range, stats.norm.pdf(x_range, d_bar, s_d),
                 'r-', linewidth=2, alpha=0.7, label=f'N({d_bar:.2f}, {s_d:.2f}²)')
 
-axes[0, 1].set_xlabel('Diferencia (Baseline - Restricciones)')
-axes[0, 1].set_ylabel('Densidad')
-axes[0, 1].set_title('Distribución de las Diferencias')
-axes[0, 1].legend()
-axes[0, 1].grid(alpha=0.3)
+axes[1].set_xlabel('Diferencia (Baseline - Restricciones)')
+axes[1].set_ylabel('Densidad')
+axes[1].set_title('Distribución de las Diferencias')
+axes[1].legend()
+axes[1].grid(alpha=0.3)
+
+plt.tight_layout()
+plt.show()
+```
+
+Finalmente, miremos con detalle los datos que arrojó nuestro sistema de simulación:
+
+```{code-cell} ipython3
+import pandas as pd
+
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
 
 # 3. Distribución t y estadístico
 x = np.linspace(-4, 4, 1000)
 t_pdf = stats.t.pdf(x, df)
 
-axes[1, 0].plot(x, t_pdf, 'b-', linewidth=2, label=f't({df})')
-axes[1, 0].fill_between(x, 0, t_pdf, alpha=0.3, color='blue')
+axes[0].plot(x, t_pdf, 'b-', linewidth=2, label=f't({df})')
+axes[0].fill_between(x, 0, t_pdf, alpha=0.3, color='blue')
 
 # Regiones críticas
 x_left = x[x <= -t_critical]
 x_right = x[x >= t_critical]
-axes[1, 0].fill_between(x_left, 0, stats.t.pdf(x_left, df),
+axes[0].fill_between(x_left, 0, stats.t.pdf(x_left, df),
                         alpha=0.6, color='red', label='Región crítica')
-axes[1, 0].fill_between(x_right, 0, stats.t.pdf(x_right, df),
+axes[0].fill_between(x_right, 0, stats.t.pdf(x_right, df),
                         alpha=0.6, color='red')
 
-axes[1, 0].axvline(t_stat_paired, color='green', linewidth=3, linestyle='--',
+axes[0].axvline(t_stat_paired, color='green', linewidth=3, linestyle='--',
                    label=f't obs = {t_stat_paired:.2f}')
 
-axes[1, 0].set_xlabel('Estadístico t')
-axes[1, 0].set_ylabel('Densidad')
-axes[1, 0].set_title('Distribución t y Estadístico Observado')
-axes[1, 0].legend()
-axes[1, 0].grid(alpha=0.3)
+axes[0].set_xlabel('Estadístico t')
+axes[0].set_ylabel('Densidad')
+axes[0].set_title('Distribución t y Estadístico Observado')
+axes[0].legend()
+axes[0].grid(alpha=0.3)
 
 # 4. Tabla de datos
 tabla_data = {
@@ -739,9 +781,9 @@ tabla_data = {
 
 df_tabla = pd.DataFrame(tabla_data)
 
-axes[1, 1].axis('tight')
-axes[1, 1].axis('off')
-table = axes[1, 1].table(cellText=df_tabla.values,
+axes[1].axis('tight')
+axes[1].axis('off')
+table = axes[1].table(cellText=df_tabla.values,
                          colLabels=df_tabla.columns,
                          cellLoc='center',
                          loc='center',
@@ -756,7 +798,7 @@ for i in range(len(df_tabla.columns)):
     table[(0, i)].set_facecolor('#4CAF50')
     table[(0, i)].set_text_props(weight='bold', color='white')
 
-axes[1, 1].set_title(f'Primeros {min(10, n)} Pares de Datos\n(Mostrando dependencia par a par)',
+axes[1].set_title(f'Primeros {min(10, n)} Pares de Datos\n(Mostrando dependencia par a par)',
                      fontsize=12, fontweight='bold', pad=20)
 
 plt.tight_layout()

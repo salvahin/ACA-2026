@@ -420,7 +420,6 @@ Para comparación baseline vs. restricciones en tu proyecto, escribe párrafo qu
 ```{code-cell} ipython3
 import numpy as np
 from scipy import stats
-import matplotlib.pyplot as plt
 
 # Datos: tiempo de compilación (segundos)
 np.random.seed(42)
@@ -467,7 +466,11 @@ else:
     effect_interpretation = "Grande (d≥0.8)"
 
 print(f"Interpretación: {effect_interpretation}")
+```
 
+La siguiente fase consta de determinar nuestro grado de certeza al afirmar esto con un Intervalo de Confianza, y en consecuencia reflexionar respecto a la utilidad empírica de dicho rediseño.
+
+```{code-cell} ipython3
 # Paso 4: Intervalo de Confianza
 print("\n=== Paso 4: Intervalo de Confianza (95%) ===")
 se_diff = pooled_std * np.sqrt(1/n1 + 1/n2)
@@ -516,6 +519,12 @@ else:
     print("✗ NO IMPLEMENTAR")
     print("  Razón: Efecto muy pequeño o no significativo")
     print("  Mejor invertir esfuerzo en otras optimizaciones")
+```
+
+De la mano, graficar nuestros resultados subraya dramáticamente lo concluyente - o no - de nuestros descubrimientos.
+
+```{code-cell} ipython3
+import matplotlib.pyplot as plt
 
 # Paso 6: Visualización
 print("\n=== Paso 6: Visualización ===")
@@ -549,6 +558,7 @@ for i, (m, ci) in enumerate(zip(means, ci_bars)):
     ax2.text(i, m + ci + 0.1, f'{m:.2f}s', ha='center', fontweight='bold')
 
 plt.tight_layout()
+plt.show()
 
 print("Figura generada.")
 ```

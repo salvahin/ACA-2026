@@ -76,15 +76,10 @@ Representa todos los números posibles de kernels válidos en 100 intentos.
 ```{code-cell} ipython3
 import json
 import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
-
-# Configuración de estilo
-sns.set_style("whitegrid")
-plt.rcParams['figure.figsize'] = (10, 6)
+import pandas as pd
 
 # ── DATOS REALES del proyecto ──────────────────────────────
-# Fuente: notebook_test_report.json  (ejecución nbclient en CPU local)
+# Fuente: notebook_test_report.json (ejecución nbclient en CPU local)
 with open("../../notebook_test_report.json") as f:
     report = json.load(f)
 
@@ -102,8 +97,21 @@ total = sum(categorias.values())
 print(f"Experimento real: {total} notebooks ejecutados")
 print(f"Espacio muestral Ω = {{Success, Env Limit, Error}}")
 print()
+
 for cat, n in categorias.items():
     print(f"  P({cat}) = {n}/{total} = {n/total:.3f}  ({n/total:.1%})")
+```
+
+Habiendo calculado empíricamente las probabilidades de cada categoría en nuestro espacio muestral, podemos visualizarlas para tener una mejor perspetiva de la distribución de nuestros resultados.
+
+```{code-cell} ipython3
+import matplotlib.subplots as subplots
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Configuración de estilo
+sns.set_style("whitegrid")
+plt.rcParams['figure.figsize'] = (10, 6)
 
 # ──────────────────────────────────────────────────────────
 # Visualización: distribución real de resultados
@@ -130,7 +138,13 @@ ax2.set_title('Probabilidad de Cada Categoría\n(P(·) empírica del experimento
 
 plt.tight_layout()
 plt.show()
+```
 
+Como podemos observar en los gráficos, la mayoría de los errores provienen de limitaciones del entorno ("Env Limit") y no de bugs en el código per se. 
+
+Con estos datos en mano, podemos definir **eventos** específicos de interés y verificar los axiomas de la probabilidad:
+
+```{code-cell} ipython3
 # ── Eventos derivados ──────────────────────────────────────
 P_success = categorias['Success'] / total
 P_env = categorias['Env Limit'] / total
@@ -144,10 +158,10 @@ print(f"\nVerificación axioma de normalización:    {P_success + P_env + P_erro
 
 print(f"""
 💡 Interpretación:
-  • El 75% de los notebooks corren bien; los problemas son de ENTORNO (xgrammar/triton)
+  • El {P_success*100:.0f}% de los notebooks corren bien; los problemas son principalmente de ENTORNO (xgrammar/triton)
     no del código del curso → P(bug | falla) = {P_error / (P_env + P_error):.1%}
   • Para tu proyecto: mide qué % de kernels generados compilan.
-    Ese número es tu P(kernel válido).
+    Ese número estimará tu P(kernel válido).
 """)
 ```
 
@@ -224,10 +238,8 @@ Notemos que P(Compiló | Restricciones) > P(Compiló). Las restricciones parecen
 
 ```{code-cell} ipython3
 import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
 
-# Datos del experimento
+# Datos del experimento simulado
 data = {
     'Método': ['Baseline', 'Baseline', 'Restricciones', 'Restricciones'],
     'Resultado': ['Compiló', 'No compiló', 'Compiló', 'No compiló'],
@@ -246,6 +258,12 @@ print(f"P(Compiló) = {prob_compilo:.3f}")
 print(f"P(Compiló | Baseline) = {prob_compilo_baseline:.3f}")
 print(f"P(Compiló | Restricciones) = {prob_compilo_restricciones:.3f}")
 print(f"\nMejora con restricciones: {(prob_compilo_restricciones - prob_compilo_baseline):.3f} ({(prob_compilo_restricciones - prob_compilo_baseline)*100:.1f}%)")
+```
+
+Visualicemos estas diferencias para entender más claro el impacto de nuestro método de restricciones versus el baseline:
+
+```{code-cell} ipython3
+import matplotlib.pyplot as plt
 
 # Visualización
 fig, axes = plt.subplots(1, 2, figsize=(14, 5))
@@ -337,8 +355,6 @@ P(realmente optimizado | detector) = 0.95 × 0.05 / 0.1425 ≈ 0.333
 
 ```{code-cell} ipython3
 import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib.patches import Rectangle
 
 # Parámetros del problema de Bayes
 P_detector_dado_opt = 0.95  # P(detector dice "opt" | realmente opt)
@@ -358,6 +374,13 @@ print(f"P(realmente opt en población) = {P_opt:.2f}")
 print(f"\nP(detector dice 'opt') = {P_detector:.4f}")
 print(f"P(realmente opt | detector dice 'opt') = {P_opt_dado_detector:.3f}")
 print(f"\n¡Solo {P_opt_dado_detector*100:.1f}% de probabilidad de ser realmente optimizado!")
+```
+
+Esta dramática caída (del 95% de precisión aparente al 33% de probabilidad posterior) es un ejemplo clásico de la **Falacia de la Tasa Base**. Debido a que los kernels optimizados son muy raros (sólo un 5%), el gran volumen de kernels no optimizados generará más "falsos positivos" que el total de optimizados reales. Podemos ver este fenómeno visualmente mediante un árbol de probabilidades:
+
+```{code-cell} ipython3
+import matplotlib.pyplot as plt
+from matplotlib.patches import Rectangle
 
 # Visualización con diagrama de árbol de probabilidades
 fig, axes = plt.subplots(1, 2, figsize=(15, 6))
@@ -429,7 +452,7 @@ for bar, val in zip(bars, valores):
 plt.tight_layout()
 plt.show()
 
-print("\nInterpretación:")
+print("\nInterpretación Visual:")
 print("Aunque el detector tiene 95% de sensibilidad, la baja prevalencia (5%)")
 print("hace que la mayoría de detecciones positivas sean falsos positivos.")
 ```
@@ -518,7 +541,6 @@ Es útil porque nos dice si nuestros resultados son consistentes (varianza baja)
 
 ```{code-cell} ipython3
 import numpy as np
-import matplotlib.pyplot as plt
 
 # Función de masa de probabilidad (PMF)
 x = np.array([0, 1, 2, 3, 4, 5])
@@ -527,7 +549,7 @@ p_x = np.array([0.01, 0.05, 0.15, 0.30, 0.35, 0.14])
 # Calcular valor esperado
 E_X = np.sum(x * p_x)
 
-# Calcular varianza
+# Calcular varianza y desviación estándar
 E_X2 = np.sum(x**2 * p_x)
 Var_X = E_X2 - E_X**2
 SD_X = np.sqrt(Var_X)
@@ -541,11 +563,17 @@ for xi, pi in zip(x, p_x):
 print(f"\nValor Esperado: E[X] = {E_X:.2f} kernels")
 print(f"Varianza: Var(X) = {Var_X:.2f}")
 print(f"Desviación Estándar: SD(X) = {SD_X:.2f}")
+```
 
-# Visualización
+La visualización de estas medidas te ayudará a desarrollar un sentido intuitivo del Valor Esperado y la Distribución Acumulativa (CDF):
+
+```{code-cell} ipython3
+import matplotlib.pyplot as plt
+
+# Visualizaciones de PMF, CDF y E[X]
 fig, axes = plt.subplots(1, 3, figsize=(16, 5))
 
-# PMF
+# Plot 1: PMF
 axes[0].bar(x, p_x, color='steelblue', alpha=0.7, edgecolor='black', width=0.6)
 axes[0].set_xlabel('Número de kernels válidos (X)')
 axes[0].set_ylabel('Probabilidad P(X)')
@@ -556,7 +584,7 @@ axes[0].grid(axis='y', alpha=0.3)
 for xi, pi in zip(x, p_x):
     axes[0].text(xi, pi + 0.01, f'{pi:.2f}', ha='center', va='bottom', fontweight='bold')
 
-# CDF acumulativa
+# Plot 2: CDF acumulativa
 cdf = np.cumsum(p_x)
 axes[1].step(x, cdf, where='mid', linewidth=2, color='darkgreen', label='CDF')
 axes[1].scatter(x, cdf, s=100, color='darkgreen', zorder=3)
@@ -570,7 +598,7 @@ axes[1].legend()
 for xi, ci in zip(x, cdf):
     axes[1].text(xi + 0.1, ci - 0.05, f'{ci:.2f}', fontsize=9)
 
-# Visualización de E[X] y varianza
+# Plot 3: Visualización de E[X] y desviación estándar
 axes[2].bar(x, p_x, color='lightblue', alpha=0.7, edgecolor='black', width=0.6)
 axes[2].axvline(E_X, color='red', linewidth=3, linestyle='--', label=f'E[X] = {E_X:.2f}')
 axes[2].axvline(E_X - SD_X, color='orange', linewidth=2, linestyle=':', label=f'E[X] ± SD')
@@ -586,15 +614,19 @@ axes[2].legend()
 
 plt.tight_layout()
 plt.show()
+```
 
-# Simulación para verificar
+Por último, los conceptos de Variable Aleatoria y Valor Esperado rigen tanto a nivel teórico como experimental. Si tuviéramos que simular 10,000 intentos basados en nuestra PMF, los resultados convergirían exactamente con la teoría (Ley de los Grandes Números):
+
+```{code-cell} ipython3
+# Simulación empírica para verificar el cálculo teórico
 np.random.seed(42)
 num_simulaciones = 10000
 simulaciones = np.random.choice(x, size=num_simulaciones, p=p_x)
 
 print(f"\nVerificación con {num_simulaciones} simulaciones:")
-print(f"Media simulada: {np.mean(simulaciones):.2f} (teórico: {E_X:.2f})")
-print(f"Varianza simulada: {np.var(simulaciones, ddof=1):.2f} (teórico: {Var_X:.2f})")
+print(f"Media empírica simulada:  {np.mean(simulaciones):.3f} (teórico: {E_X:.2f})")
+print(f"Varianza muestral simulada: {np.var(simulaciones, ddof=1):.3f} (teórico: {Var_X:.2f})")
 ```
 
 ### Propiedades Importantes

@@ -413,7 +413,12 @@ ax2.boxplot([baseline, restricciones], labels=['Baseline', 'Restricciones'])
 ax2.set_ylabel('Tiempo (ms)')
 ax2.set_title('Box Plot')
 plt.tight_layout()
+plt.show()
+```
 
+Ahora que comprobamos la distribución de forma general de ambos sets de datos e identificamos anomalías, vamos a correr pruebas de normalidad. Para este fin, el Test de *Shapiro-Wilk* nos es de gran utilidad.
+
+```{code-cell} ipython3
 # Paso 2: Prueba de normalidad
 print("\n=== Paso 2: Prueba de Normalidad (Shapiro-Wilk) ===")
 stat_b, p_b = stats.shapiro(baseline)
@@ -430,7 +435,11 @@ if p_r < 0.05:
     print("  ⚠ Restricciones NO es normal (p<0.05)")
 else:
     print("  ✓ Restricciones es normal (p>0.05)")
+```
 
+Al final, dependiendo del resultado de nuestros tests de normalidad con respecto al caso base y alternativo, procederemos con un test univariado normal en caso de contar con sendos tests superados, o acudiremos a un test analítico sin asunciones para distribuciones dadas.
+
+```{code-cell} ipython3
 # Paso 3: Decisión
 print("\n=== Paso 3: Decisión ===")
 if p_b < 0.05 or p_r < 0.05:

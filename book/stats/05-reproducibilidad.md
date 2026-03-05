@@ -370,7 +370,11 @@ method_std = np.std(method_results, ddof=1)
 print("=== Análisis de Robustez ===")
 print(f"Baseline: {baseline_mean:.3f} ± {baseline_std:.3f}")
 print(f"Método:   {method_mean:.3f} ± {method_std:.3f}")
+```
 
+Una vez que comprobamos que nuestras medias nos favorecen preliminarmente, debemos re-validar con una prueba pareada para ver si la significancia se sostiene a pesar de la variabilidad, para luego extraer el porcentaje del Coeficiente de Variación.
+
+```{code-cell} ipython3
 # Test pareado (mismas seeds)
 t_stat, p_value = stats.ttest_rel(method_results, baseline_results)
 print(f"\nTest t pareado: t={t_stat:.2f}, p={p_value:.4f}")

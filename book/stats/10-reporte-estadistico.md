@@ -144,7 +144,11 @@ print("-" * 70)
 for metrica in stats_baseline.keys():
     print(f"{metrica:<20} {stats_baseline[metrica]:<25} {stats_restricciones[metrica]:<25}")
 print("-" * 70)
+```
 
+Acto seguido al volcado de nuestros datos en forma de resúmenes descriptivos de control, aplicamos la parte nuclear de nuestro análisis inferencial y testeos de hipótesis estadísticos subyacentes.
+
+```{code-cell} ipython3
 # Pruebas de hipótesis
 print("\n" + "ANÁLISIS INFERENCIAL".center(70))
 print("=" * 70)
@@ -204,10 +208,14 @@ if p_val_tiempo < 0.05:
     print(f"Conclusión: Las restricciones redujeron significativamente el tiempo.")
 else:
     print(f"Conclusión: No se encontró diferencia significativa.")
+```
 
+Un buen reporte siempre vendrá acompañado de las debidas representaciones gráficas estilizadas en su disposición y legibilidad para el entorno académico. Finalizaremos nuestro ejercicio encapsulando todo lo aprendido creando un resumen infográfico general y contundente:
+
+```{code-cell} ipython3
 # Visualización estilo publicación
-fig = plt.figure(figsize=(16, 10))
-gs = fig.add_gridspec(3, 3, hspace=0.3, wspace=0.3)
+fig = plt.figure(figsize=(16, 12))
+gs = fig.add_gridspec(3, 3, hspace=0.4, wspace=0.3)
 
 # 1. Validez - Gráfico de barras con error
 ax1 = fig.add_subplot(gs[0, 0])
@@ -639,7 +647,7 @@ print("  4. Títulos descriptivos")
 print("  5. Leyendas claras")
 print("  6. Alta resolución (≥300 DPI para publicación)")
 
-fig, axes = plt.subplots(2, 3, figsize=(16, 10))
+fig, axes = plt.subplots(2, 3, figsize=(16, 12))
 
 # 1. BUENO: Gráfico de barras con barras de error
 ax = axes[0, 0]
@@ -699,7 +707,11 @@ ax.set_ylabel('Tiempo de compilación (segundos)', fontsize=12, fontweight='bold
 ax.set_title('(C) Distribución con Datos Individuales',
              fontsize=12, fontweight='bold')
 ax.grid(axis='y', alpha=0.3, linestyle='--')
+```
 
+Alternativamente de forma gráfica, las subrepresentaciones de superposición y diferencias brindan un valor incalculable de cara a mostrar los solapamientos de efectividad y la significancia real observada.
+
+```{code-cell} ipython3
 # 4. BUENO: Histograma superpuesto con transparencia
 ax = axes[1, 0]
 ax.hist(baseline, bins=15, alpha=0.6, color='#1f77b4',
@@ -740,7 +752,11 @@ ax.set_ylabel('Frecuencia', fontsize=12, fontweight='bold')
 ax.set_title('(E) Distribución de Diferencias', fontsize=12, fontweight='bold')
 ax.legend(fontsize=10, framealpha=0.9)
 ax.grid(alpha=0.3, linestyle='--')
+```
 
+Terminamos con la tabla compacta descriptiva en nuestra visualización y emitimos las reglas finales para una visualización exitosa, resaltando buenas prácticas y vicios frecuentemente encontrados.
+
+```{code-cell} ipython3
 # 6. BUENO: Tabla resumen integrada
 ax = axes[1, 2]
 ax.axis('off')

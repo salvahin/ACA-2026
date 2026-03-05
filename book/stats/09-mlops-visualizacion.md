@@ -778,9 +778,13 @@ ax2.text(0.5, -1.3, '⚠ PROBLEMA:\nPie chart inadecuado\npara comparar tiempos'
          bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.5))
 
 plt.tight_layout()
-plt.savefig('visualization_bad.png', dpi=150)
-print("Figura INCORRECTA guardada como 'visualization_bad.png'")
+plt.show()
+print("Ejemplo de figura INCORRECTA mostrandos múltiples anti-patrones.")
+```
 
+Para sanear todos estos problemas a nivel de interpretación visual y analítica, debemos aplicar las mejores prácticas que garanticen precisión y accesibilidad en nuestras comunicaciones:
+
+```{code-cell} ipython3
 # --- VERSIÓN CORRECTA ---
 print("\n=== Versión CORRECTA (mejores prácticas) ===\n")
 
@@ -873,9 +877,13 @@ ax4.text(0.5, 0.95, '✓ BUENO:\n• Incertidumbre visible\n• Solapamiento cla
          bbox=dict(boxstyle='round', facecolor='lightgreen', alpha=0.5))
 
 plt.tight_layout()
-plt.savefig('visualization_good.png', dpi=300)
-print("Figura CORRECTA guardada como 'visualization_good.png'")
+plt.show()
+print("Opciones visuales más correctas prestando atención al detalle.")
+```
 
+Se vuelve imperativo contar con un listado estructurado mentalmente para auditar nuestras métricas previas de cara a presentarlos apropiadamente, y una buena lista base se condensa aquí:
+
+```{code-cell} ipython3
 # --- CHECKLIST DE VERIFICACIÓN ---
 print("\n=== Checklist de Verificación ===\n")
 

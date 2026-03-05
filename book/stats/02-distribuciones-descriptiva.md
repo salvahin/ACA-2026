@@ -111,9 +111,7 @@ Entonces esperas alrededor de 41 kernels válidos, con una desviación estándar
 
 ```{code-cell} ipython3
 import numpy as np
-import matplotlib.pyplot as plt
 from scipy.stats import binom, bernoulli
-import seaborn as sns
 
 # Parámetros
 n = 50
@@ -135,73 +133,90 @@ print(f"E[X] = {mean_binomial:.2f} kernels válidos")
 print(f"Var(X) = {var_binomial:.2f}")
 print(f"SD(X) = {std_binomial:.2f}")
 print(f"Rango esperado (±2 SD): [{mean_binomial - 2*std_binomial:.1f}, {mean_binomial + 2*std_binomial:.1f}]")
+```
+
+Para comprender de manera visual esta distribución y cómo se compara con un solo intento (Bernoulli), podemos graficarlas:
+
+```{code-cell} ipython3
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 # Visualización
-fig, axes = plt.subplots(2, 2, figsize=(14, 10))
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
 
 # 1. PMF Binomial
-axes[0, 0].bar(x, pmf_binomial, color='steelblue', alpha=0.7, edgecolor='black')
-axes[0, 0].axvline(mean_binomial, color='red', linewidth=2, linestyle='--',
+axes[0].bar(x, pmf_binomial, color='steelblue', alpha=0.7, edgecolor='black')
+axes[0].axvline(mean_binomial, color='red', linewidth=2, linestyle='--',
                    label=f'Media = {mean_binomial:.1f}')
-axes[0, 0].axvline(mean_binomial - std_binomial, color='orange', linewidth=2,
+axes[0].axvline(mean_binomial - std_binomial, color='orange', linewidth=2,
                    linestyle=':', label=f'±1 SD')
-axes[0, 0].axvline(mean_binomial + std_binomial, color='orange', linewidth=2, linestyle=':')
-axes[0, 0].fill_betweenx([0, max(pmf_binomial)],
+axes[0].axvline(mean_binomial + std_binomial, color='orange', linewidth=2, linestyle=':')
+axes[0].fill_betweenx([0, max(pmf_binomial)],
                           mean_binomial - std_binomial,
                           mean_binomial + std_binomial,
                           alpha=0.2, color='orange')
-axes[0, 0].set_xlabel('Número de kernels válidos')
-axes[0, 0].set_ylabel('Probabilidad')
-axes[0, 0].set_title(f'Distribución Binomial(n={n}, p={p})')
-axes[0, 0].legend()
-axes[0, 0].grid(axis='y', alpha=0.3)
+axes[0].set_xlabel('Número de kernels válidos')
+axes[0].set_ylabel('Probabilidad')
+axes[0].set_title(f'Distribución Binomial(n={n}, p={p})')
+axes[0].legend()
+axes[0].grid(axis='y', alpha=0.3)
 
 # 2. Comparación Bernoulli vs Binomial
-axes[0, 1].bar([0, 1], bernoulli.pmf([0, 1], p), color='lightcoral',
+axes[1].bar([0, 1], bernoulli.pmf([0, 1], p), color='lightcoral',
                alpha=0.7, edgecolor='black', width=0.3, label='Bernoulli(p=0.82)')
-axes[0, 1].set_xlabel('Resultado (0=Fallo, 1=Éxito)')
-axes[0, 1].set_ylabel('Probabilidad')
-axes[0, 1].set_title('Bernoulli: Una sola prueba')
-axes[0, 1].set_xticks([0, 1])
-axes[0, 1].legend()
-axes[0, 1].grid(axis='y', alpha=0.3)
+axes[1].set_xlabel('Resultado (0=Fallo, 1=Éxito)')
+axes[1].set_ylabel('Probabilidad')
+axes[1].set_title('Bernoulli: Una sola prueba')
+axes[1].set_xticks([0, 1])
+axes[1].legend()
+axes[1].grid(axis='y', alpha=0.3)
 
 for i, val in enumerate(bernoulli.pmf([0, 1], p)):
-    axes[0, 1].text(i, val + 0.02, f'{val:.2f}', ha='center', fontweight='bold')
+    axes[1].text(i, val + 0.02, f'{val:.2f}', ha='center', fontweight='bold')
+
+plt.tight_layout()
+plt.show()
+```
+
+Ahora, demostremos esto estadísticamente realizando una simulación y calculando nuestra Función de Distribución Acumulativa (CDF):
+
+```{code-cell} ipython3
+# Simulación y CDF
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
 
 # 3. Simulación
 np.random.seed(42)
 num_simulaciones = 1000
 simulaciones = np.random.binomial(n, p, num_simulaciones)
 
-axes[1, 0].hist(simulaciones, bins=20, density=True, alpha=0.6,
+axes[0].hist(simulaciones, bins=20, density=True, alpha=0.6,
                 color='lightblue', edgecolor='black', label='Simulación')
-axes[1, 0].plot(x, pmf_binomial, 'ro-', linewidth=2, markersize=4,
+axes[0].plot(x, pmf_binomial, 'ro-', linewidth=2, markersize=4,
                 label='Teórica', alpha=0.7)
-axes[1, 0].axvline(np.mean(simulaciones), color='green', linewidth=2,
+axes[0].axvline(np.mean(simulaciones), color='green', linewidth=2,
                    linestyle='--', label=f'Media sim = {np.mean(simulaciones):.1f}')
-axes[1, 0].set_xlabel('Número de kernels válidos')
-axes[1, 0].set_ylabel('Densidad de Probabilidad')
-axes[1, 0].set_title(f'Comparación: Teórica vs {num_simulaciones} Simulaciones')
-axes[1, 0].legend()
-axes[1, 0].grid(alpha=0.3)
+axes[0].set_xlabel('Número de kernels válidos')
+axes[0].set_ylabel('Densidad de Probabilidad')
+axes[0].set_title(f'Comparación: Teórica vs {num_simulaciones} Simulaciones')
+axes[0].legend()
+axes[0].grid(alpha=0.3)
 
 # 4. CDF
 cdf_binomial = binom.cdf(x, n, p)
-axes[1, 1].step(x, cdf_binomial, where='mid', linewidth=2, color='darkgreen')
-axes[1, 1].fill_between(x, 0, cdf_binomial, alpha=0.3, color='green', step='mid')
-axes[1, 1].set_xlabel('Número de kernels válidos')
-axes[1, 1].set_ylabel('Probabilidad Acumulada')
-axes[1, 1].set_title('Función de Distribución Acumulativa (CDF)')
-axes[1, 1].grid(alpha=0.3)
+axes[1].step(x, cdf_binomial, where='mid', linewidth=2, color='darkgreen')
+axes[1].fill_between(x, 0, cdf_binomial, alpha=0.3, color='green', step='mid')
+axes[1].set_xlabel('Número de kernels válidos')
+axes[1].set_ylabel('Probabilidad Acumulada')
+axes[1].set_title('Función de Distribución Acumulativa (CDF)')
+axes[1].grid(alpha=0.3)
 
 # Marcar percentiles importantes
 percentiles = [0.25, 0.5, 0.75]
 for perc in percentiles:
     val = binom.ppf(perc, n, p)
-    axes[1, 1].axhline(perc, color='red', linestyle=':', alpha=0.5)
-    axes[1, 1].axvline(val, color='red', linestyle=':', alpha=0.5)
-    axes[1, 1].text(val + 1, perc - 0.05, f'Q{int(perc*100)}={val:.0f}', fontsize=9)
+    axes[1].axhline(perc, color='red', linestyle=':', alpha=0.5)
+    axes[1].axvline(val, color='red', linestyle=':', alpha=0.5)
+    axes[1].text(val + 1, perc - 0.05, f'Q{int(perc*100)}={val:.0f}', fontsize=9)
 
 plt.tight_layout()
 plt.show()
@@ -285,7 +300,6 @@ P(X ≤ 2) = P(X=0) + P(X=1) + P(X=2) ≈ 0.1247
 
 ```{code-cell} ipython3
 import numpy as np
-import matplotlib.pyplot as plt
 from scipy.stats import poisson
 
 # Parámetro lambda
@@ -306,23 +320,29 @@ print(f"E[X] = Var(X) = λ = {lambda_val}")
 print(f"\nP(X = 3) = {prob_3:.4f}")
 print(f"P(X ≤ 2) = {prob_le_2:.4f}")
 print(f"P(X > 5) = {1 - poisson.cdf(5, lambda_val):.4f}")
+```
 
-# Visualización
-fig, axes = plt.subplots(2, 2, figsize=(14, 10))
+La siguiente celda visualiza una distribución de Poisson con un $\lambda = 5$ y también la contrasta con distintos valores de $\lambda$.
+
+```{code-cell} ipython3
+import matplotlib.pyplot as plt
+
+# Visualización de la PMF
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
 
 # 1. PMF de Poisson
-axes[0, 0].bar(x, pmf_poisson, color='purple', alpha=0.7, edgecolor='black')
-axes[0, 0].axvline(lambda_val, color='red', linewidth=2, linestyle='--',
+axes[0].bar(x, pmf_poisson, color='purple', alpha=0.7, edgecolor='black')
+axes[0].axvline(lambda_val, color='red', linewidth=2, linestyle='--',
                    label=f'λ = {lambda_val}')
-axes[0, 0].set_xlabel('Número de errores (X)')
-axes[0, 0].set_ylabel('Probabilidad')
-axes[0, 0].set_title(f'Distribución de Poisson(λ={lambda_val})')
-axes[0, 0].legend()
-axes[0, 0].grid(axis='y', alpha=0.3)
+axes[0].set_xlabel('Número de errores (X)')
+axes[0].set_ylabel('Probabilidad')
+axes[0].set_title(f'Distribución de Poisson(λ={lambda_val})')
+axes[0].legend()
+axes[0].grid(axis='y', alpha=0.3)
 
 # Resaltar P(X=3)
-axes[0, 0].bar(3, pmf_poisson[3], color='red', alpha=0.8, edgecolor='black')
-axes[0, 0].text(3, pmf_poisson[3] + 0.01, f'P(3)={prob_3:.4f}',
+axes[0].bar(3, pmf_poisson[3], color='red', alpha=0.8, edgecolor='black')
+axes[0].text(3, pmf_poisson[3] + 0.01, f'P(3)={prob_3:.4f}',
                 ha='center', fontweight='bold')
 
 # 2. Comparación de diferentes λ
@@ -331,41 +351,50 @@ x_extended = np.arange(0, 20)
 
 for lam in lambdas:
     pmf = poisson.pmf(x_extended, lam)
-    axes[0, 1].plot(x_extended, pmf, marker='o', label=f'λ={lam}', alpha=0.7)
+    axes[1].plot(x_extended, pmf, marker='o', label=f'λ={lam}', alpha=0.7)
 
-axes[0, 1].set_xlabel('Número de eventos (X)')
-axes[0, 1].set_ylabel('Probabilidad')
-axes[0, 1].set_title('Comparación de Distribuciones de Poisson')
-axes[0, 1].legend()
-axes[0, 1].grid(alpha=0.3)
+axes[1].set_xlabel('Número de eventos (X)')
+axes[1].set_ylabel('Probabilidad')
+axes[1].set_title('Comparación de Distribuciones de Poisson')
+axes[1].legend()
+axes[1].grid(alpha=0.3)
+
+plt.tight_layout()
+plt.show()
+```
+
+Análogamente al caso Binomial, podemos graficar la Función de Distribución Acumulatva (CDF) para entender la probabilidad acumulada de eventos que no superen una cantidad dada, así como realizar una simulación aleatoria de eventos:
+
+```{code-cell} ipython3
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
 
 # 3. CDF
 cdf_poisson = poisson.cdf(x, lambda_val)
-axes[1, 0].step(x, cdf_poisson, where='mid', linewidth=2, color='darkgreen')
-axes[1, 0].fill_between(x, 0, cdf_poisson, alpha=0.3, color='green', step='mid')
-axes[1, 0].axhline(prob_le_2, color='red', linestyle=':', linewidth=2,
+axes[0].step(x, cdf_poisson, where='mid', linewidth=2, color='darkgreen')
+axes[0].fill_between(x, 0, cdf_poisson, alpha=0.3, color='green', step='mid')
+axes[0].axhline(prob_le_2, color='red', linestyle=':', linewidth=2,
                    label=f'P(X≤2)={prob_le_2:.4f}')
-axes[1, 0].axvline(2, color='red', linestyle=':', linewidth=2)
-axes[1, 0].set_xlabel('Número de errores (X)')
-axes[1, 0].set_ylabel('Probabilidad Acumulada')
-axes[1, 0].set_title('CDF de Poisson')
-axes[1, 0].legend()
-axes[1, 0].grid(alpha=0.3)
+axes[0].axvline(2, color='red', linestyle=':', linewidth=2)
+axes[0].set_xlabel('Número de errores (X)')
+axes[0].set_ylabel('Probabilidad Acumulada')
+axes[0].set_title('CDF de Poisson')
+axes[0].legend()
+axes[0].grid(alpha=0.3)
 
 # 4. Simulación
 np.random.seed(42)
 num_simulaciones = 1000
 simulaciones = np.random.poisson(lambda_val, num_simulaciones)
 
-axes[1, 1].hist(simulaciones, bins=range(0, 16), density=True, alpha=0.6,
+axes[1].hist(simulaciones, bins=range(0, 16), density=True, alpha=0.6,
                 color='lightblue', edgecolor='black', label='Simulación')
-axes[1, 1].plot(x, pmf_poisson, 'ro-', linewidth=2, markersize=6,
+axes[1].plot(x, pmf_poisson, 'ro-', linewidth=2, markersize=6,
                 label='Teórica', alpha=0.7)
-axes[1, 1].set_xlabel('Número de errores')
-axes[1, 1].set_ylabel('Densidad de Probabilidad')
-axes[1, 1].set_title(f'Comparación: Teórica vs {num_simulaciones} Simulaciones')
-axes[1, 1].legend()
-axes[1, 1].grid(alpha=0.3)
+axes[1].set_xlabel('Número de errores')
+axes[1].set_ylabel('Densidad de Probabilidad')
+axes[1].set_title(f'Comparación: Teórica vs {num_simulaciones} Simulaciones')
+axes[1].legend()
+axes[1].grid(alpha=0.3)
 
 plt.tight_layout()
 plt.show()
@@ -451,7 +480,6 @@ Este kernel es 2.09 desviaciones estándar arriba de la media, lo que es bastant
 
 ```{code-cell} ipython3
 import numpy as np
-import matplotlib.pyplot as plt
 from scipy.stats import norm
 
 # Parámetros de la distribución normal
@@ -475,100 +503,115 @@ print(f"Z-score: {z_score:.2f}")
 print(f"P(X > {tiempo_kernel}) = {prob_mayor:.4f} ({prob_mayor*100:.2f}%)")
 print(f"\nInterpretación: Este kernel es {z_score:.2f} desviaciones estándar")
 print(f"por encima de la media, lo cual es inusual.")
+```
 
-# Visualización
-fig, axes = plt.subplots(2, 2, figsize=(14, 10))
+Visualmente, podemos observar la forma de la campana en la **Distribución Normal** y de manera relacionada existe la **Regla Empírica del 68-95-99.7%**:
+
+```{code-cell} ipython3
+import matplotlib.pyplot as plt
+
+# Visualización fundamental
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
 
 # 1. Distribución Normal con regiones
-axes[0, 0].plot(x, pdf, 'b-', linewidth=2, label='N(5.2, 1.1²)')
-axes[0, 0].fill_between(x, 0, pdf, alpha=0.3, color='blue')
+axes[0].plot(x, pdf, 'b-', linewidth=2, label='N(5.2, 1.1²)')
+axes[0].fill_between(x, 0, pdf, alpha=0.3, color='blue')
 
 # Marcar μ ± σ, μ ± 2σ, μ ± 3σ
 for k in range(1, 4):
-    axes[0, 0].axvline(mu + k*sigma, color='red', linestyle='--', alpha=0.5)
-    axes[0, 0].axvline(mu - k*sigma, color='red', linestyle='--', alpha=0.5)
+    axes[0].axvline(mu + k*sigma, color='red', linestyle='--', alpha=0.5)
+    axes[0].axvline(mu - k*sigma, color='red', linestyle='--', alpha=0.5)
 
-axes[0, 0].axvline(mu, color='red', linewidth=2, label=f'μ = {mu}')
-axes[0, 0].axvline(tiempo_kernel, color='green', linewidth=2, linestyle=':',
+axes[0].axvline(mu, color='red', linewidth=2, label=f'μ = {mu}')
+axes[0].axvline(tiempo_kernel, color='green', linewidth=2, linestyle=':',
                    label=f'Observado = {tiempo_kernel}s')
 
 # Sombrear región extrema
 x_extremo = x[x >= tiempo_kernel]
 pdf_extremo = norm.pdf(x_extremo, mu, sigma)
-axes[0, 0].fill_between(x_extremo, 0, pdf_extremo, alpha=0.6, color='red',
+axes[0].fill_between(x_extremo, 0, pdf_extremo, alpha=0.6, color='red',
                         label=f'P(X≥{tiempo_kernel}) = {prob_mayor:.4f}')
 
-axes[0, 0].set_xlabel('Tiempo de compilación (segundos)')
-axes[0, 0].set_ylabel('Densidad de Probabilidad')
-axes[0, 0].set_title('Distribución Normal del Tiempo de Compilación')
-axes[0, 0].legend()
-axes[0, 0].grid(alpha=0.3)
+axes[0].set_xlabel('Tiempo de compilación (segundos)')
+axes[0].set_ylabel('Densidad de Probabilidad')
+axes[0].set_title('Distribución Normal del Tiempo de Compilación')
+axes[0].legend()
+axes[0].grid(alpha=0.3)
 
 # 2. Regla empírica 68-95-99.7
 regiones = ['μ±1σ\n(68%)', 'μ±2σ\n(95%)', 'μ±3σ\n(99.7%)']
 porcentajes = [68, 95, 99.7]
 colores = ['lightgreen', 'lightyellow', 'lightcoral']
 
-bars = axes[0, 1].bar(regiones, porcentajes, color=colores, alpha=0.7,
+bars = axes[1].bar(regiones, porcentajes, color=colores, alpha=0.7,
                       edgecolor='black', linewidth=2)
-axes[0, 1].set_ylabel('Porcentaje de datos')
-axes[0, 1].set_title('Regla Empírica: 68-95-99.7')
-axes[0, 1].grid(axis='y', alpha=0.3)
+axes[1].set_ylabel('Porcentaje de datos')
+axes[1].set_title('Regla Empírica: 68-95-99.7')
+axes[1].grid(axis='y', alpha=0.3)
 
 for bar, val in zip(bars, porcentajes):
     height = bar.get_height()
-    axes[0, 1].text(bar.get_x() + bar.get_width()/2., height + 1,
+    axes[1].text(bar.get_x() + bar.get_width()/2., height + 1,
                     f'{val}%', ha='center', fontweight='bold', fontsize=12)
+
+plt.tight_layout()
+plt.show()
+```
+
+Por su parte, cuando **estandarizamos los valores**, usando *z-scores*, transformamos nuestra normal a una distribución de medias de valor 0 y desviación de valor 1. Así podemos visualizar fácilmente dónde caen distintos puntos de datos para ver si ameritan atención.
+
+```{code-cell} ipython3
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
 
 # 3. Distribución Normal Estándar (Z-scores)
 z_range = np.linspace(-4, 4, 1000)
 pdf_standard = norm.pdf(z_range, 0, 1)
 
-axes[1, 0].plot(z_range, pdf_standard, 'b-', linewidth=2, label='N(0, 1)')
-axes[1, 0].fill_between(z_range, 0, pdf_standard, alpha=0.3, color='blue')
+axes[0].plot(z_range, pdf_standard, 'b-', linewidth=2, label='N(0, 1)')
+axes[0].fill_between(z_range, 0, pdf_standard, alpha=0.3, color='blue')
 
 # Marcar el z-score del kernel
-axes[1, 0].axvline(z_score, color='red', linewidth=2, linestyle='--',
+axes[0].axvline(z_score, color='red', linewidth=2, linestyle='--',
                    label=f'Z = {z_score:.2f}')
 
 # Sombrear área extrema
 z_extremo = z_range[z_range >= z_score]
 pdf_z_extremo = norm.pdf(z_extremo, 0, 1)
-axes[1, 0].fill_between(z_extremo, 0, pdf_z_extremo, alpha=0.6, color='red')
+axes[0].fill_between(z_extremo, 0, pdf_z_extremo, alpha=0.6, color='red')
 
-axes[1, 0].set_xlabel('Z-score')
-axes[1, 0].set_ylabel('Densidad de Probabilidad')
-axes[1, 0].set_title('Distribución Normal Estándar (Estandarizada)')
-axes[1, 0].legend()
-axes[1, 0].grid(alpha=0.3)
+axes[0].set_xlabel('Z-score')
+axes[0].set_ylabel('Densidad de Probabilidad')
+axes[0].set_title('Distribución Normal Estándar (Estandarizada)')
+axes[0].legend()
+axes[0].grid(alpha=0.3)
 
 # Anotar regiones
-axes[1, 0].text(0, 0.2, '68%', ha='center', fontsize=10, bbox=dict(boxstyle='round', facecolor='lightgreen'))
-axes[1, 0].text(0, 0.15, '95%', ha='center', fontsize=10, bbox=dict(boxstyle='round', facecolor='lightyellow'))
+axes[0].text(0, 0.2, '68%', ha='center', fontsize=10, bbox=dict(boxstyle='round', facecolor='lightgreen'))
+axes[0].text(0, 0.15, '95%', ha='center', fontsize=10, bbox=dict(boxstyle='round', facecolor='lightyellow'))
 
 # 4. Comparación de múltiples valores y sus Z-scores
 tiempos_test = [3.0, 4.0, 5.2, 6.0, 7.5]
 z_scores = [(t - mu) / sigma for t in tiempos_test]
 probabilidades = [1 - norm.cdf(t, mu, sigma) for t in tiempos_test]
 
-axes[1, 1].scatter(tiempos_test, z_scores, s=200, c=probabilidades,
+scatter = axes[1].scatter(tiempos_test, z_scores, s=200, c=probabilidades,
                    cmap='RdYlGn_r', edgecolor='black', linewidth=2, zorder=3)
 
 for t, z, p in zip(tiempos_test, z_scores, probabilidades):
-    axes[1, 1].text(t, z + 0.15, f'{t}s\nZ={z:.2f}\nP={p:.3f}',
+    axes[1].text(t, z + 0.15, f'{t}s\nZ={z:.2f}\nP={p:.3f}',
                     ha='center', fontsize=9,
                     bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
 
-axes[1, 1].axhline(0, color='gray', linestyle='-', linewidth=1)
-axes[1, 1].axhline(1.96, color='orange', linestyle='--', alpha=0.5, label='Z=±1.96 (95%)')
-axes[1, 1].axhline(-1.96, color='orange', linestyle='--', alpha=0.5)
-axes[1, 1].set_xlabel('Tiempo de compilación (segundos)')
-axes[1, 1].set_ylabel('Z-score')
-axes[1, 1].set_title('Tiempos de Compilación y sus Z-scores')
-axes[1, 1].legend()
-axes[1, 1].grid(alpha=0.3)
+axes[1].axhline(0, color='gray', linestyle='-', linewidth=1)
+axes[1].axhline(1.96, color='orange', linestyle='--', alpha=0.5, label='Z=±1.96 (95%)')
+axes[1].axhline(-1.96, color='orange', linestyle='--', alpha=0.5)
+axes[1].set_xlabel('Tiempo de compilación (segundos)')
+axes[1].set_ylabel('Z-score')
+axes[1].set_title('Tiempos de Compilación y sus Z-scores')
+axes[1].legend()
+axes[1].grid(alpha=0.3)
 
-plt.colorbar(axes[1, 1].collections[0], ax=axes[1, 1], label='P(X > valor)')
+plt.colorbar(scatter, ax=axes[1], label='P(X > valor)')
 plt.tight_layout()
 plt.show()
 
@@ -685,7 +728,11 @@ demostrar_tcl('exponencial', 'Exponencial', {'scale': 2})
 # 2. Distribución Uniforme
 print("\n2. Distribución Uniforme")
 demostrar_tcl('uniforme', 'Uniforme', {'loc': 0, 'scale': 10})
+```
 
+Como vemos, aumentar el tamaño de la muestra nos acerca cada vez más a una distribución normal, que es predecible, simétrica y bien conocida. Esto es extremadamente útil porque nos permite usar estadística basada en normales (como pruebas Z o T) **incluso cuando los datos muestrales no lo son**. Veámoslo con nuestro caso práctico de los Kernels GPU:
+
+```{code-cell} ipython3
 # Ejemplo práctico: iteraciones del generador
 print("\nEjemplo Práctico: Iteraciones del Generador de Kernels")
 print("-" * 60)
@@ -856,42 +903,60 @@ print(f"  Q1 (25%) = {Q1:.2f}")
 print(f"  Q2 (50%) = {Q2:.2f} (mediana)")
 print(f"  Q3 (75%) = {Q3:.2f}")
 print(f"  IQR      = {IQR:.2f}")
+```
 
-# Visualización
-fig, axes = plt.subplots(2, 2, figsize=(14, 10))
+La forma más intuitiva de observar estas medidas, los cuartiles, la mediana y los datos atípicos, es mediante los Diagramas de Caja (*Box Plots*) contrastados con histogramas:
+
+```{code-cell} ipython3
+# Visualización general de datos y sus atípicos
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
 
 # 1. Histograma
-axes[0, 0].hist(datos, bins=5, color='steelblue', alpha=0.7,
+axes[0].hist(datos, bins=5, color='steelblue', alpha=0.7,
                 edgecolor='black', linewidth=2)
-axes[0, 0].axvline(media, color='red', linewidth=2, linestyle='--',
+axes[0].axvline(media, color='red', linewidth=2, linestyle='--',
                    label=f'Media = {media:.2f}')
-axes[0, 0].axvline(mediana, color='green', linewidth=2, linestyle=':',
+axes[0].axvline(mediana, color='green', linewidth=2, linestyle=':',
                    label=f'Mediana = {mediana:.2f}')
-axes[0, 0].set_xlabel('Tiempo de compilación (s)')
-axes[0, 0].set_ylabel('Frecuencia')
-axes[0, 0].set_title('Distribución de Tiempos de Compilación')
-axes[0, 0].legend()
-axes[0, 0].grid(axis='y', alpha=0.3)
+axes[0].set_xlabel('Tiempo de compilación (s)')
+axes[0].set_ylabel('Frecuencia')
+axes[0].set_title('Distribución de Tiempos de Compilación')
+axes[0].legend()
+axes[0].grid(axis='y', alpha=0.3)
 
 # 2. Box Plot
-bp = axes[0, 1].boxplot(datos, vert=True, patch_artist=True,
+bp = axes[1].boxplot(datos, vert=True, patch_artist=True,
                         notch=True, showmeans=True,
                         boxprops=dict(facecolor='lightblue', alpha=0.7),
                         medianprops=dict(color='red', linewidth=2),
                         meanprops=dict(marker='D', markerfacecolor='green',
                                       markersize=8))
 
-axes[0, 1].set_ylabel('Tiempo de compilación (s)')
-axes[0, 1].set_title('Box Plot: Visualización de Cuartiles y Atípicos')
-axes[0, 1].grid(axis='y', alpha=0.3)
+axes[1].set_ylabel('Tiempo de compilación (s)')
+axes[1].set_title('Box Plot: Visualización de Cuartiles y Atípicos')
+axes[1].grid(axis='y', alpha=0.3)
 
 # Anotar componentes del box plot
-axes[0, 1].text(1.15, Q1, f'Q1={Q1:.2f}', va='center', fontsize=10,
+axes[1].text(1.15, Q1, f'Q1={Q1:.2f}', va='center', fontsize=10,
                 bbox=dict(boxstyle='round', facecolor='yellow', alpha=0.7))
-axes[0, 1].text(1.15, Q2, f'Q2={Q2:.2f}', va='center', fontsize=10,
+axes[1].text(1.15, Q2, f'Q2={Q2:.2f}', va='center', fontsize=10,
                 bbox=dict(boxstyle='round', facecolor='red', alpha=0.7))
-axes[0, 1].text(1.15, Q3, f'Q3={Q3:.2f}', va='center', fontsize=10,
+axes[1].text(1.15, Q3, f'Q3={Q3:.2f}', va='center', fontsize=10,
                 bbox=dict(boxstyle='round', facecolor='yellow', alpha=0.7))
+
+plt.tight_layout()
+plt.show()
+
+print("\nInterpretación:")
+print(f"- La media ({media:.2f}) está fuertemente afectada por el atípico (15.5)")
+print(f"- La mediana ({mediana:.2f}) representa mejor el valor 'típico'")
+print(f"- El IQR ({IQR:.2f}) es robusto y muestra baja dispersión del 50% central")
+```
+
+Más allá de analizar un único conjunto de datos con un atípico, vale la pena contrastar la forma en que los atípicos y la varianza afectan las medidas en general. Haremos esto comparando un conjunto de datos muy disperso frente a otros más unificados.
+
+```{code-cell} ipython3
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
 
 # 3. Comparación Media vs Mediana en diferentes datasets
 datasets = {
@@ -905,50 +970,44 @@ medias_list = [np.mean(d) for d in datasets.values()]
 medianas_list = [np.median(d) for d in datasets.values()]
 
 width = 0.35
-axes[1, 0].bar(x_pos - width/2, medias_list, width, label='Media',
+axes[0].bar(x_pos - width/2, medias_list, width, label='Media',
                color='red', alpha=0.7, edgecolor='black')
-axes[1, 0].bar(x_pos + width/2, medianas_list, width, label='Mediana',
+axes[0].bar(x_pos + width/2, medianas_list, width, label='Mediana',
                color='green', alpha=0.7, edgecolor='black')
 
-axes[1, 0].set_ylabel('Valor')
-axes[1, 0].set_title('Comparación: Media vs Mediana\n(Robustez a Atípicos)')
-axes[1, 0].set_xticks(x_pos)
-axes[1, 0].set_xticklabels(datasets.keys())
-axes[1, 0].legend()
-axes[1, 0].grid(axis='y', alpha=0.3)
+axes[0].set_ylabel('Valor')
+axes[0].set_title('Comparación: Media vs Mediana\n(Robustez a Atípicos)')
+axes[0].set_xticks(x_pos)
+axes[0].set_xticklabels(datasets.keys())
+axes[0].legend()
+axes[0].grid(axis='y', alpha=0.3)
 
 # Anotar valores
 for i, (m, med) in enumerate(zip(medias_list, medianas_list)):
-    axes[1, 0].text(i - width/2, m + 0.5, f'{m:.1f}', ha='center', fontsize=9)
-    axes[1, 0].text(i + width/2, med + 0.5, f'{med:.1f}', ha='center', fontsize=9)
+    axes[0].text(i - width/2, m + 0.5, f'{m:.1f}', ha='center', fontsize=9)
+    axes[0].text(i + width/2, med + 0.5, f'{med:.1f}', ha='center', fontsize=9)
 
 # 4. Visualización de dispersión (varianza)
-# Generar dos datasets con misma media pero diferente varianza
 np.random.seed(42)
 consistente = np.random.normal(5, 0.5, 100)  # baja varianza
 erratico = np.random.normal(5, 2.0, 100)     # alta varianza
 
-axes[1, 1].hist(consistente, bins=20, alpha=0.6, color='green',
+axes[1].hist(consistente, bins=20, alpha=0.6, color='green',
                 edgecolor='black', label=f'Consistente (σ={np.std(consistente):.2f})')
-axes[1, 1].hist(erratico, bins=20, alpha=0.6, color='red',
+axes[1].hist(erratico, bins=20, alpha=0.6, color='red',
                 edgecolor='black', label=f'Errático (σ={np.std(erratico):.2f})')
 
-axes[1, 1].axvline(np.mean(consistente), color='green', linewidth=2, linestyle='--')
-axes[1, 1].axvline(np.mean(erratico), color='red', linewidth=2, linestyle='--')
+axes[1].axvline(np.mean(consistente), color='green', linewidth=2, linestyle='--')
+axes[1].axvline(np.mean(erratico), color='red', linewidth=2, linestyle='--')
 
-axes[1, 1].set_xlabel('Valor')
-axes[1, 1].set_ylabel('Frecuencia')
-axes[1, 1].set_title('Comparación de Varianza\n(Misma media, diferente dispersión)')
-axes[1, 1].legend()
-axes[1, 1].grid(alpha=0.3)
+axes[1].set_xlabel('Valor')
+axes[1].set_ylabel('Frecuencia')
+axes[1].set_title('Comparación de Varianza\n(Misma media, diferente dispersión)')
+axes[1].legend()
+axes[1].grid(alpha=0.3)
 
 plt.tight_layout()
 plt.show()
-
-print("\nInterpretación:")
-print(f"- La media ({media:.2f}) está fuertemente afectada por el atípico (15.5)")
-print(f"- La mediana ({mediana:.2f}) representa mejor el valor 'típico'")
-print(f"- El IQR ({IQR:.2f}) es robusto y muestra baja dispersión del 50% central")
 ```
 
 ### Detección de Valores Atípicos (Outliers)

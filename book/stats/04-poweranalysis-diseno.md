@@ -208,9 +208,7 @@ Muy bajo. Solo 45% de probabilidad de detectar tu efecto de 10%.
 
 ```{code-cell} ipython3
 import numpy as np
-import matplotlib.pyplot as plt
 from scipy import stats
-import seaborn as sns
 
 # Función para calcular tamaño muestral requerido (aproximación)
 def calcular_n_requerido(p1, p2, alpha=0.05, power=0.80):
@@ -264,31 +262,37 @@ for n in tamanios:
     poderes.append(poder)
 
 poderes = np.array(poderes)
+```
+
+Estos cálculos pueden expresarse visualmente para tener una mejor intuición de cómo se comporta el poder estadístico a medida que aumentamos nuestro tamaño muestral.
+
+```{code-cell} ipython3
+import matplotlib.pyplot as plt
 
 # Visualización
-fig, axes = plt.subplots(2, 2, figsize=(14, 10))
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
 
 # 1. Poder vs Tamaño Muestral
-axes[0, 0].plot(tamanios, poderes, 'b-', linewidth=2)
-axes[0, 0].axhline(0.80, color='red', linestyle='--', linewidth=2,
+axes[0].plot(tamanios, poderes, 'b-', linewidth=2)
+axes[0].axhline(0.80, color='red', linestyle='--', linewidth=2,
                    label='Poder objetivo = 0.80')
-axes[0, 0].axvline(n_requerido, color='green', linestyle='--', linewidth=2,
+axes[0].axvline(n_requerido, color='green', linestyle='--', linewidth=2,
                    label=f'n requerido = {n_requerido}')
-axes[0, 0].fill_between(tamanios, 0, poderes, where=(poderes >= 0.80),
+axes[0].fill_between(tamanios, 0, poderes, where=(poderes >= 0.80),
                         alpha=0.3, color='green', label='Poder adecuado')
-axes[0, 0].fill_between(tamanios, 0, poderes, where=(poderes < 0.80),
+axes[0].fill_between(tamanios, 0, poderes, where=(poderes < 0.80),
                         alpha=0.3, color='red', label='Poder insuficiente')
 
-axes[0, 0].set_xlabel('Tamaño muestral por grupo (n)')
-axes[0, 0].set_ylabel('Poder estadístico (1-β)')
-axes[0, 0].set_title('Curva de Poder: Tamaño Muestral vs Poder')
-axes[0, 0].legend()
-axes[0, 0].grid(alpha=0.3)
+axes[0].set_xlabel('Tamaño muestral por grupo (n)')
+axes[0].set_ylabel('Poder estadístico (1-β)')
+axes[0].set_title('Curva de Poder: Tamaño Muestral vs Poder')
+axes[0].legend()
+axes[0].grid(alpha=0.3)
 
 # Anotar punto de interés
 idx_80 = np.argmin(np.abs(poderes - 0.80))
-axes[0, 0].plot(tamanios[idx_80], 0.80, 'ro', markersize=10)
-axes[0, 0].text(tamanios[idx_80] + 20, 0.80,
+axes[0].plot(tamanios[idx_80], 0.80, 'ro', markersize=10)
+axes[0].text(tamanios[idx_80] + 20, 0.80,
                 f'({tamanios[idx_80]}, 0.80)',
                 fontsize=10, bbox=dict(boxstyle='round', facecolor='yellow'))
 
@@ -305,17 +309,26 @@ for diff in diferencias_test:
     poder = 1 - stats.norm.cdf(z_crit - z)
     poderes_efecto.append(poder)
 
-axes[0, 1].plot(diferencias_test * 100, poderes_efecto, 'b-', linewidth=2)
-axes[0, 1].axhline(0.80, color='red', linestyle='--', linewidth=2,
+axes[1].plot(diferencias_test * 100, poderes_efecto, 'b-', linewidth=2)
+axes[1].axhline(0.80, color='red', linestyle='--', linewidth=2,
                    label='Poder = 0.80')
-axes[0, 1].axvline(diferencia * 100, color='green', linestyle='--', linewidth=2,
+axes[1].axvline(diferencia * 100, color='green', linestyle='--', linewidth=2,
                    label=f'Diferencia esperada = {diferencia*100:.0f}%')
 
-axes[0, 1].set_xlabel('Tamaño del Efecto (diferencia en %)')
-axes[0, 1].set_ylabel('Poder estadístico')
-axes[0, 1].set_title(f'Curva de Poder: Tamaño del Efecto (n={n_fixed} fijo)')
-axes[0, 1].legend()
-axes[0, 1].grid(alpha=0.3)
+axes[1].set_xlabel('Tamaño del Efecto (diferencia en %)')
+axes[1].set_ylabel('Poder estadístico')
+axes[1].set_title(f'Curva de Poder: Tamaño del Efecto (n={n_fixed} fijo)')
+axes[1].legend()
+axes[1].grid(alpha=0.3)
+
+plt.tight_layout()
+plt.show()
+```
+
+Más interesante aún, es el *trade-off* que se presenta entre $\alpha$, nuestro umbral de tolerancia a falsos positivos, y el poder de nuestra prueba. Un nivel $\alpha$ más exigente repercute negativamente en el poder. Además es importante tener la intuición a mano del orden de magnitud que requiere un experimento en función del tamaño del efecto.
+
+```{code-cell} ipython3
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
 
 # 3. Trade-off: α vs Poder
 alphas = np.arange(0.01, 0.20, 0.01)
@@ -329,16 +342,16 @@ for alpha in alphas:
     poder = 1 - stats.norm.cdf(z_crit - z)
     poderes_alpha.append(poder)
 
-axes[1, 0].plot(alphas, poderes_alpha, 'b-', linewidth=2)
-axes[1, 0].axhline(0.80, color='red', linestyle='--', alpha=0.5)
-axes[1, 0].axvline(0.05, color='green', linestyle='--', linewidth=2,
+axes[0].plot(alphas, poderes_alpha, 'b-', linewidth=2)
+axes[0].axhline(0.80, color='red', linestyle='--', alpha=0.5)
+axes[0].axvline(0.05, color='green', linestyle='--', linewidth=2,
                    label='α estándar = 0.05')
 
-axes[1, 0].set_xlabel('Nivel de significancia (α)')
-axes[1, 0].set_ylabel('Poder estadístico (1-β)')
-axes[1, 0].set_title(f'Trade-off α vs Poder (n={n_requerido})')
-axes[1, 0].legend()
-axes[1, 0].grid(alpha=0.3)
+axes[0].set_xlabel('Nivel de significancia (α)')
+axes[0].set_ylabel('Poder estadístico (1-β)')
+axes[0].set_title(f'Trade-off α vs Poder (n={n_requerido})')
+axes[0].legend()
+axes[0].grid(alpha=0.3)
 
 # 4. Tabla resumen de escenarios
 escenarios = [
@@ -353,20 +366,20 @@ diferencias_esc = [e[1] * 100 for e in escenarios]
 n_req = [e[2] for e in escenarios]
 
 x_pos = np.arange(len(categorias))
-bars = axes[1, 1].bar(x_pos, n_req, color=['red', 'orange', 'yellow', 'green'],
+bars = axes[1].bar(x_pos, n_req, color=['red', 'orange', 'yellow', 'green'],
                       alpha=0.7, edgecolor='black', linewidth=2)
 
-axes[1, 1].set_ylabel('Tamaño muestral requerido (n por grupo)')
-axes[1, 1].set_title('Tamaño Muestral vs Tamaño del Efecto\n(α=0.05, poder=0.80)')
-axes[1, 1].set_xticks(x_pos)
-axes[1, 1].set_xticklabels([f'{cat}\n(Δ={diff:.0f}%)'
+axes[1].set_ylabel('Tamaño muestral requerido (n por grupo)')
+axes[1].set_title('Tamaño Muestral vs Tamaño del Efecto\n(α=0.05, poder=0.80)')
+axes[1].set_xticks(x_pos)
+axes[1].set_xticklabels([f'{cat}\n(Δ={diff:.0f}%)'
                             for cat, diff in zip(categorias, diferencias_esc)])
-axes[1, 1].set_yscale('log')
-axes[1, 1].grid(axis='y', alpha=0.3, which='both')
+axes[1].set_yscale('log')
+axes[1].grid(axis='y', alpha=0.3, which='both')
 
 for i, (bar, n) in enumerate(zip(bars, n_req)):
     height = bar.get_height()
-    axes[1, 1].text(bar.get_x() + bar.get_width()/2., height * 1.2,
+    axes[1].text(bar.get_x() + bar.get_width()/2., height * 1.2,
                     f'n={n}',
                     ha='center', va='bottom', fontweight='bold', fontsize=10)
 
@@ -424,7 +437,6 @@ h = 2 × arcsin(√p₂) - 2 × arcsin(√p₁)
 
 ```{code-cell} ipython3
 import numpy as np
-import matplotlib.pyplot as plt
 from scipy import stats
 
 # Función para calcular Cohen's d
@@ -490,37 +502,43 @@ else:
     interp_h = "grande"
 
 print(f"Interpretación: Efecto {interp_h}")
+```
+
+La magnitud de este tamaño del efecto puede apreciarse muy claramente al graficar cuán separadas están las curvas de probabilidad en función de sus correspondientes desviaciones estándar agrupadas y en cómo disminuyen los solapes.
+
+```{code-cell} ipython3
+import matplotlib.pyplot as plt
 
 # Visualización
-fig, axes = plt.subplots(2, 2, figsize=(14, 10))
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
 
 # 1. Visualización de Cohen's d
 x = np.linspace(-2, 10, 1000)
 dist1 = stats.norm.pdf(x, mean_baseline, std_baseline)
 dist2 = stats.norm.pdf(x, mean_restricciones, std_restricciones)
 
-axes[0, 0].plot(x, dist1, 'r-', linewidth=2, label=f'Baseline (μ={mean_baseline})')
-axes[0, 0].plot(x, dist2, 'b-', linewidth=2, label=f'Restricciones (μ={mean_restricciones})')
-axes[0, 0].fill_between(x, 0, dist1, alpha=0.3, color='red')
-axes[0, 0].fill_between(x, 0, dist2, alpha=0.3, color='blue')
+axes[0].plot(x, dist1, 'r-', linewidth=2, label=f'Baseline (μ={mean_baseline})')
+axes[0].plot(x, dist2, 'b-', linewidth=2, label=f'Restricciones (μ={mean_restricciones})')
+axes[0].fill_between(x, 0, dist1, alpha=0.3, color='red')
+axes[0].fill_between(x, 0, dist2, alpha=0.3, color='blue')
 
-axes[0, 0].axvline(mean_baseline, color='red', linestyle='--', linewidth=2)
-axes[0, 0].axvline(mean_restricciones, color='blue', linestyle='--', linewidth=2)
+axes[0].axvline(mean_baseline, color='red', linestyle='--', linewidth=2)
+axes[0].axvline(mean_restricciones, color='blue', linestyle='--', linewidth=2)
 
 # Anotar Cohen's d
-axes[0, 0].annotate('', xy=(mean_restricciones, max(dist1)/2),
+axes[0].annotate('', xy=(mean_restricciones, max(dist1)/2),
                     xytext=(mean_baseline, max(dist1)/2),
                     arrowprops=dict(arrowstyle='<->', color='green', lw=2))
-axes[0, 0].text((mean_baseline + mean_restricciones)/2, max(dist1)/2 + 0.02,
+axes[0].text((mean_baseline + mean_restricciones)/2, max(dist1)/2 + 0.02,
                 f'd = {d:.2f}\n({interpretacion})',
                 ha='center', fontsize=10, fontweight='bold',
                 bbox=dict(boxstyle='round', facecolor='yellow'))
 
-axes[0, 0].set_xlabel('Tiempo de compilación (s)')
-axes[0, 0].set_ylabel('Densidad de Probabilidad')
-axes[0, 0].set_title("Cohen's d: Visualización del Tamaño del Efecto")
-axes[0, 0].legend()
-axes[0, 0].grid(alpha=0.3)
+axes[0].set_xlabel('Tiempo de compilación (s)')
+axes[0].set_ylabel('Densidad de Probabilidad')
+axes[0].set_title("Cohen's d: Visualización del Tamaño del Efecto")
+axes[0].legend()
+axes[0].grid(alpha=0.3)
 
 # 2. Diferentes tamaños de efecto
 efectos_d = [0.2, 0.5, 0.8, 1.2]
@@ -530,35 +548,44 @@ nombres = ['Pequeño', 'Mediano', 'Grande', 'Muy Grande']
 for d_val, color, nombre in zip(efectos_d, colores, nombres):
     mu2 = 5 - d_val  # centrar en 5, mover por d
     dist = stats.norm.pdf(x, mu2, 1)
-    axes[0, 1].plot(x, dist, linewidth=2, label=f'{nombre} (d={d_val})')
+    axes[1].plot(x, dist, linewidth=2, label=f'{nombre} (d={d_val})')
 
 dist_ref = stats.norm.pdf(x, 5, 1)
-axes[0, 1].plot(x, dist_ref, 'k--', linewidth=2, label='Referencia (μ=5)')
+axes[1].plot(x, dist_ref, 'k--', linewidth=2, label='Referencia (μ=5)')
 
-axes[0, 1].set_xlabel('Valor')
-axes[0, 1].set_ylabel('Densidad')
-axes[0, 1].set_title("Comparación de Tamaños de Efecto (Cohen's d)")
-axes[0, 1].legend()
-axes[0, 1].grid(alpha=0.3)
+axes[1].set_xlabel('Valor')
+axes[1].set_ylabel('Densidad')
+axes[1].set_title("Comparación de Tamaños de Efecto (Cohen's d)")
+axes[1].legend()
+axes[1].grid(alpha=0.3)
+
+plt.tight_layout()
+plt.show()
+```
+
+Por otro lado, ¿cómo se vincula el solape al tamaño del efecto de forma cuantitativa y en diferentes tests? Miremos la curva referencial del Cohen's $h$ y los datos de solape del Cohen's $d$.
+
+```{code-cell} ipython3
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
 
 # 3. Proporciones y Cohen's h
 proporciones = np.linspace(0.1, 0.9, 50)
 h_values = [cohens_h(0.5, p) for p in proporciones]
 
-axes[1, 0].plot(proporciones * 100, h_values, 'b-', linewidth=2)
-axes[1, 0].axhline(0, color='gray', linestyle='-', linewidth=1)
-axes[1, 0].axhline(0.2, color='orange', linestyle='--', alpha=0.5, label='h=0.2 (pequeño)')
-axes[1, 0].axhline(0.5, color='yellow', linestyle='--', alpha=0.5, label='h=0.5 (mediano)')
-axes[1, 0].axhline(0.8, color='red', linestyle='--', alpha=0.5, label='h=0.8 (grande)')
+axes[0].plot(proporciones * 100, h_values, 'b-', linewidth=2)
+axes[0].axhline(0, color='gray', linestyle='-', linewidth=1)
+axes[0].axhline(0.2, color='orange', linestyle='--', alpha=0.5, label='h=0.2 (pequeño)')
+axes[0].axhline(0.5, color='yellow', linestyle='--', alpha=0.5, label='h=0.5 (mediano)')
+axes[0].axhline(0.8, color='red', linestyle='--', alpha=0.5, label='h=0.8 (grande)')
 
-axes[1, 0].axvline(p1 * 100, color='red', linestyle=':', linewidth=2)
-axes[1, 0].axvline(p2 * 100, color='blue', linestyle=':', linewidth=2)
+axes[0].axvline(p1 * 100, color='red', linestyle=':', linewidth=2)
+axes[0].axvline(p2 * 100, color='blue', linestyle=':', linewidth=2)
 
-axes[1, 0].set_xlabel('Proporción p₂ (%)')
-axes[1, 0].set_ylabel("Cohen's h")
-axes[1, 0].set_title(f"Cohen's h para Proporciones\n(Referencia p₁ = 50%)")
-axes[1, 0].legend()
-axes[1, 0].grid(alpha=0.3)
+axes[0].set_xlabel('Proporción p₂ (%)')
+axes[0].set_ylabel("Cohen's h")
+axes[0].set_title(f"Cohen's h para Proporciones\n(Referencia p₁ = 50%)")
+axes[0].legend()
+axes[0].grid(alpha=0.3)
 
 # 4. Tabla de interpretaciones
 categorias = ['d/h', 'Interpretación', 'Overlap', '% no-overlap']
@@ -569,9 +596,9 @@ muy_grande = ['1.2', 'Muy Grande', '38%', '62%']
 
 tabla_data = [pequeño, mediano, grande, muy_grande]
 
-axes[1, 1].axis('tight')
-axes[1, 1].axis('off')
-table = axes[1, 1].table(cellText=tabla_data,
+axes[1].axis('tight')
+axes[1].axis('off')
+table = axes[1].table(cellText=tabla_data,
                          colLabels=categorias,
                          cellLoc='center',
                          loc='center',
@@ -592,7 +619,7 @@ for i in range(len(categorias)):
     table[(0, i)].set_facecolor('#4CAF50')
     table[(0, i)].set_text_props(weight='bold', color='white')
 
-axes[1, 1].set_title("Guía de Interpretación del Tamaño del Efecto",
+axes[1].set_title("Guía de Interpretación del Tamaño del Efecto",
                      fontsize=12, fontweight='bold', pad=20)
 
 plt.tight_layout()

@@ -195,76 +195,89 @@ for i, p in enumerate(p_ordenados[:5]):  # mostrar primeros 5
 
 print(f"   ...")
 print(f"   Total significantes: {significantes_holm}/{num_pruebas}")
+```
 
+La enorme diferencia puede apreciarse si visualizamos directamente la proporción de los falsos positivos junto a las variaciones graduales del factor $\alpha$. A medida que se incrementa la cantidad de comparaciones, el FWER escala rápidamente sin ajuste.
+
+```{code-cell} ipython3
 # Visualización
-fig, axes = plt.subplots(2, 2, figsize=(14, 10))
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
 
 # 1. FWER vs Número de Pruebas
 num_pruebas_range = np.arange(1, 51)
 fwer_values = 1 - (1 - alpha)**num_pruebas_range
 
-axes[0, 0].plot(num_pruebas_range, fwer_values, 'b-', linewidth=2)
-axes[0, 0].axhline(alpha, color='red', linestyle='--', linewidth=2,
+axes[0].plot(num_pruebas_range, fwer_values, 'b-', linewidth=2)
+axes[0].axhline(alpha, color='red', linestyle='--', linewidth=2,
                    label=f'α nominal = {alpha}')
-axes[0, 0].axvline(num_pruebas, color='green', linestyle=':', linewidth=2,
+axes[0].axvline(num_pruebas, color='green', linestyle=':', linewidth=2,
                    label=f'k = {num_pruebas}')
-axes[0, 0].fill_between(num_pruebas_range, 0, fwer_values,
+axes[0].fill_between(num_pruebas_range, 0, fwer_values,
                         where=(fwer_values > alpha),
                         alpha=0.3, color='red',
                         label='FWER inflado')
 
-axes[0, 0].set_xlabel('Número de pruebas (k)')
-axes[0, 0].set_ylabel('FWER (Tasa de Error Family-wise)')
-axes[0, 0].set_title('Inflación del Error Tipo I con Múltiples Pruebas')
-axes[0, 0].legend()
-axes[0, 0].grid(alpha=0.3)
+axes[0].set_xlabel('Número de pruebas (k)')
+axes[0].set_ylabel('FWER (Tasa de Error Family-wise)')
+axes[0].set_title('Inflación del Error Tipo I con Múltiples Pruebas')
+axes[0].legend()
+axes[0].grid(alpha=0.3)
 
 # Anotar punto específico
-axes[0, 0].plot(num_pruebas, fwer_sin_correccion, 'ro', markersize=10)
-axes[0, 0].text(num_pruebas + 2, fwer_sin_correccion,
+axes[0].plot(num_pruebas, fwer_sin_correccion, 'ro', markersize=10)
+axes[0].text(num_pruebas + 2, fwer_sin_correccion,
                 f'({num_pruebas}, {fwer_sin_correccion:.2f})',
                 fontsize=9, bbox=dict(boxstyle='round', facecolor='yellow'))
 
 # 2. P-valores ordenados con umbrales de corrección
-axes[0, 1].scatter(range(1, num_pruebas+1), p_ordenados,
+axes[1].scatter(range(1, num_pruebas+1), p_ordenados,
                    s=100, alpha=0.7, edgecolor='black', linewidth=2,
                    c=p_ordenados, cmap='RdYlGn_r')
 
 # Líneas de umbral
 x_range = np.arange(1, num_pruebas+1)
-axes[0, 1].axhline(alpha, color='red', linestyle='-', linewidth=2,
+axes[1].axhline(alpha, color='red', linestyle='-', linewidth=2,
                    label=f'Sin corrección (α={alpha})')
 
 # Bonferroni
-axes[0, 1].axhline(alpha_bonferroni, color='blue', linestyle='--', linewidth=2,
+axes[1].axhline(alpha_bonferroni, color='blue', linestyle='--', linewidth=2,
                    label=f'Bonferroni (α/{num_pruebas})')
 
 # Holm (línea descendente)
 umbrales_holm = [alpha / (num_pruebas - i) for i in range(num_pruebas)]
-axes[0, 1].plot(x_range, umbrales_holm, 'g--', linewidth=2, label='Holm')
+axes[1].plot(x_range, umbrales_holm, 'g--', linewidth=2, label='Holm')
 
-axes[0, 1].set_xlabel('Prueba (ordenada por p-valor)')
-axes[0, 1].set_ylabel('P-valor')
-axes[0, 1].set_title('P-valores y Umbrales de Corrección')
-axes[0, 1].legend()
-axes[0, 1].set_yscale('log')
-axes[0, 1].grid(alpha=0.3)
+axes[1].set_xlabel('Prueba (ordenada por p-valor)')
+axes[1].set_ylabel('P-valor')
+axes[1].set_title('P-valores y Umbrales de Corrección')
+axes[1].legend()
+axes[1].set_yscale('log')
+axes[1].grid(alpha=0.3)
+
+plt.tight_layout()
+plt.show()
+```
+
+Por otro lado, comparando la cantidad de pruebas estadísticamente significantes vs las obtenidas en simulaciones exhaustivas del FDR, confirmamos que Bonferroni y Holm ofrecen mayor rigor y menor tasa de falsos descubrimientos.
+
+```{code-cell} ipython3
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
 
 # 3. Comparación de métodos
 metodos = ['Sin\ncorrección', 'Bonferroni', 'Holm']
 num_sig = [significantes_sin, significantes_bonf, significantes_holm]
 colores = ['red', 'blue', 'green']
 
-bars = axes[1, 0].bar(metodos, num_sig, color=colores, alpha=0.7,
+bars = axes[0].bar(metodos, num_sig, color=colores, alpha=0.7,
                       edgecolor='black', linewidth=2)
 
-axes[1, 0].set_ylabel('Número de pruebas significantes')
-axes[1, 0].set_title('Comparación de Métodos de Corrección')
-axes[1, 0].grid(axis='y', alpha=0.3)
+axes[0].set_ylabel('Número de pruebas significantes')
+axes[0].set_title('Comparación de Métodos de Corrección')
+axes[0].grid(axis='y', alpha=0.3)
 
 for bar, val in zip(bars, num_sig):
     height = bar.get_height()
-    axes[1, 0].text(bar.get_x() + bar.get_width()/2., height + 0.2,
+    axes[0].text(bar.get_x() + bar.get_width()/2., height + 0.2,
                     str(val), ha='center', va='bottom', fontweight='bold', fontsize=12)
 
 # 4. Simulación: Tasa de descubrimientos falsos
@@ -299,22 +312,22 @@ for _ in range(num_simulaciones):
     if sum(sig_bonf) > 0:
         tasas_fp_bonf.append(fp_bonf / sum(sig_bonf))
 
-axes[1, 1].hist(tasas_fp_sin, bins=20, alpha=0.6, color='red',
+axes[1].hist(tasas_fp_sin, bins=20, alpha=0.6, color='red',
                 edgecolor='black', label='Sin corrección')
-axes[1, 1].hist(tasas_fp_bonf, bins=20, alpha=0.6, color='blue',
+axes[1].hist(tasas_fp_bonf, bins=20, alpha=0.6, color='blue',
                 edgecolor='black', label='Bonferroni')
 
-axes[1, 1].axvline(np.mean(tasas_fp_sin), color='red', linestyle='--',
+axes[1].axvline(np.mean(tasas_fp_sin), color='red', linestyle='--',
                    linewidth=2, label=f'Media sin corr = {np.mean(tasas_fp_sin):.2f}')
 if len(tasas_fp_bonf) > 0:
-    axes[1, 1].axvline(np.mean(tasas_fp_bonf), color='blue', linestyle='--',
+    axes[1].axvline(np.mean(tasas_fp_bonf), color='blue', linestyle='--',
                        linewidth=2, label=f'Media Bonf = {np.mean(tasas_fp_bonf):.2f}')
 
-axes[1, 1].set_xlabel('Tasa de Descubrimientos Falsos (FDR)')
-axes[1, 1].set_ylabel('Frecuencia')
-axes[1, 1].set_title(f'Simulación: FDR en {num_simulaciones} experimentos')
-axes[1, 1].legend()
-axes[1, 1].grid(alpha=0.3)
+axes[1].set_xlabel('Tasa de Descubrimientos Falsos (FDR)')
+axes[1].set_ylabel('Frecuencia')
+axes[1].set_title(f'Simulación: FDR en {num_simulaciones} experimentos')
+axes[1].legend()
+axes[1].grid(alpha=0.3)
 
 plt.tight_layout()
 plt.show()
@@ -439,13 +452,17 @@ print(f"  SSW (Within)       = {SSW:.2f}")
 print(f"  MSB = SSB/df_b     = {MSB:.2f}")
 print(f"  MSW = SSW/df_w     = {MSW:.2f}")
 print(f"  F = MSB/MSW        = {MSB/MSW:.2f}")
+```
 
+El resultado visual de estas comprobaciones es claro, al constatar la fuerte divergencia entre los resultados de ambos métodos en la distribución ANOVA y sus regiones críticas respectivas.
+
+```{code-cell} ipython3
 # Visualización
-fig, axes = plt.subplots(2, 2, figsize=(14, 10))
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
 
 # 1. Box plots de los tres grupos
 datos_plot = [metodo_A, metodo_B, metodo_C]
-bp = axes[0, 0].boxplot(datos_plot, labels=['Método A', 'Método B', 'Método C'],
+bp = axes[0].boxplot(datos_plot, labels=['Método A', 'Método B', 'Método C'],
                         patch_artist=True, notch=True, showmeans=True)
 
 colores = ['red', 'blue', 'green']
@@ -453,69 +470,78 @@ for patch, color in zip(bp['boxes'], colores):
     patch.set_facecolor(color)
     patch.set_alpha(0.6)
 
-axes[0, 0].set_ylabel('Iteraciones')
-axes[0, 0].set_title('Comparación de Tres Métodos de Decoding')
-axes[0, 0].grid(axis='y', alpha=0.3)
+axes[0].set_ylabel('Iteraciones')
+axes[0].set_title('Comparación de Tres Métodos de Decoding')
+axes[0].grid(axis='y', alpha=0.3)
 
 # Anotar medias
 for i, (datos, color) in enumerate(zip(datos_plot, colores)):
-    axes[0, 0].plot(i+1, np.mean(datos), 'D', markersize=10,
+    axes[0].plot(i+1, np.mean(datos), 'D', markersize=10,
                     color=color, markeredgecolor='black', markeredgewidth=2)
 
 # 2. Distribución F y región crítica
 x = np.linspace(0, 10, 1000)
 f_pdf = stats.f.pdf(x, df_between, df_within)
 
-axes[0, 1].plot(x, f_pdf, 'b-', linewidth=2, label=f'F({df_between}, {df_within})')
-axes[0, 1].fill_between(x, 0, f_pdf, alpha=0.3, color='blue')
+axes[1].plot(x, f_pdf, 'b-', linewidth=2, label=f'F({df_between}, {df_within})')
+axes[1].fill_between(x, 0, f_pdf, alpha=0.3, color='blue')
 
 # Región crítica
 f_critical = stats.f.ppf(0.95, df_between, df_within)
 x_crit = x[x >= f_critical]
-axes[0, 1].fill_between(x_crit, 0, stats.f.pdf(x_crit, df_between, df_within),
+axes[1].fill_between(x_crit, 0, stats.f.pdf(x_crit, df_between, df_within),
                         alpha=0.6, color='red', label='Región crítica (α=0.05)')
 
 # Marcar F observado
-axes[0, 1].axvline(F_stat, color='green', linewidth=3, linestyle='--',
+axes[1].axvline(F_stat, color='green', linewidth=3, linestyle='--',
                    label=f'F observado = {F_stat:.2f}')
-axes[0, 1].axvline(f_critical, color='red', linewidth=2, linestyle=':',
+axes[1].axvline(f_critical, color='red', linewidth=2, linestyle=':',
                    label=f'F crítico = {f_critical:.2f}')
 
-axes[0, 1].set_xlabel('Estadístico F')
-axes[0, 1].set_ylabel('Densidad de Probabilidad')
-axes[0, 1].set_title('Distribución F y Prueba ANOVA')
-axes[0, 1].legend()
-axes[0, 1].grid(alpha=0.3)
+axes[1].set_xlabel('Estadístico F')
+axes[1].set_ylabel('Densidad de Probabilidad')
+axes[1].set_title('Distribución F y Prueba ANOVA')
+axes[1].legend()
+axes[1].grid(alpha=0.3)
+
+plt.tight_layout()
+plt.show()
+```
+
+Por otro lado, miremos cómo lucen los resultados pautando las medias entre los diferentes grupos de la varianza *Between* e iterando visualmente sobre la variabilidad base, así como una tabla con el análisis de varianza ANOVA correspondiente que acabamos de derivar:
+
+```{code-cell} ipython3
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
 
 # 3. Visualización de varianza Between vs Within
-axes[1, 0].scatter([1]*len(metodo_A), metodo_A, s=100, alpha=0.6,
+axes[0].scatter([1]*len(metodo_A), metodo_A, s=100, alpha=0.6,
                    color='red', edgecolor='black', label='Método A')
-axes[1, 0].scatter([2]*len(metodo_B), metodo_B, s=100, alpha=0.6,
+axes[0].scatter([2]*len(metodo_B), metodo_B, s=100, alpha=0.6,
                    color='blue', edgecolor='black', label='Método B')
-axes[1, 0].scatter([3]*len(metodo_C), metodo_C, s=100, alpha=0.6,
+axes[0].scatter([3]*len(metodo_C), metodo_C, s=100, alpha=0.6,
                    color='green', edgecolor='black', label='Método C')
 
 # Medias de grupo
-axes[1, 0].plot([1, 2, 3], [media_A, media_B, media_C],
+axes[0].plot([1, 2, 3], [media_A, media_B, media_C],
                 'ko-', markersize=15, linewidth=3, label='Medias de grupo')
 
 # Media total
-axes[1, 0].axhline(media_total, color='purple', linestyle='--',
+axes[0].axhline(media_total, color='purple', linestyle='--',
                    linewidth=2, label=f'Media total = {media_total:.1f}')
 
 # Anotar varianza between
-axes[1, 0].annotate('', xy=(1, media_total), xytext=(1, media_A),
+axes[0].annotate('', xy=(1, media_total), xytext=(1, media_A),
                     arrowprops=dict(arrowstyle='<->', color='orange', lw=2))
-axes[1, 0].text(1.2, (media_total + media_A)/2, 'Between\nvariance',
+axes[0].text(1.2, (media_total + media_A)/2, 'Between\nvariance',
                 fontsize=9, bbox=dict(boxstyle='round', facecolor='yellow'))
 
-axes[1, 0].set_xlim(0.5, 3.5)
-axes[1, 0].set_xticks([1, 2, 3])
-axes[1, 0].set_xticklabels(['A', 'B', 'C'])
-axes[1, 0].set_ylabel('Iteraciones')
-axes[1, 0].set_title('Varianza Between (entre grupos) vs Within (dentro de grupos)')
-axes[1, 0].legend()
-axes[1, 0].grid(alpha=0.3)
+axes[0].set_xlim(0.5, 3.5)
+axes[0].set_xticks([1, 2, 3])
+axes[0].set_xticklabels(['A', 'B', 'C'])
+axes[0].set_ylabel('Iteraciones')
+axes[0].set_title('Varianza Between (entre grupos) vs Within (dentro de grupos)')
+axes[0].legend()
+axes[0].grid(alpha=0.3)
 
 # 4. Tabla ANOVA
 tabla_anova = [
@@ -524,9 +550,9 @@ tabla_anova = [
     ['Total', f'{SST:.2f}', str(n_total-1), '', '', '']
 ]
 
-axes[1, 1].axis('tight')
-axes[1, 1].axis('off')
-table = axes[1, 1].table(cellText=tabla_anova,
+axes[1].axis('tight')
+axes[1].axis('off')
+table = axes[1].table(cellText=tabla_anova,
                          colLabels=['Fuente', 'SS', 'df', 'MS', 'F', 'p-valor'],
                          cellLoc='center',
                          loc='center',
@@ -546,7 +572,7 @@ table[(1, 0)].set_facecolor('lightblue')
 table[(2, 0)].set_facecolor('lightcoral')
 table[(3, 0)].set_facecolor('lightgray')
 
-axes[1, 1].set_title('Tabla ANOVA (Analysis of Variance)',
+axes[1].set_title('Tabla ANOVA (Analysis of Variance)',
                      fontsize=12, fontweight='bold', pad=20)
 
 plt.tight_layout()
@@ -648,27 +674,33 @@ for i, j in comparaciones:
 
     print(f"  {nombres[i]:<10} vs {nombres[j]:<10} {diff:>6.2f}       "
           f"{se:>6.3f}  {q:>6.2f}  {p_val:>6.4f} {resultados[-1]['sig']}")
+```
+
+Veamos la representación visual global de estas pruebas, comparando los rangos de tolerancia estadística e ilustrando los intervalos de confianza en su interjección comparativamente:
+
+```{code-cell} ipython3
+import matplotlib.pyplot as plt
 
 # Visualización
-fig, axes = plt.subplots(2, 2, figsize=(14, 10))
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
 
 # 1. Distribuciones con comparaciones
-axes[0, 0].hist(metodo_A, bins=10, alpha=0.5, color='red',
+axes[0].hist(metodo_A, bins=10, alpha=0.5, color='red',
                 edgecolor='black', label='Método A', density=True)
-axes[0, 0].hist(metodo_B, bins=10, alpha=0.5, color='blue',
+axes[0].hist(metodo_B, bins=10, alpha=0.5, color='blue',
                 edgecolor='black', label='Método B', density=True)
-axes[0, 0].hist(metodo_C, bins=10, alpha=0.5, color='green',
+axes[0].hist(metodo_C, bins=10, alpha=0.5, color='green',
                 edgecolor='black', label='Método C', density=True)
 
-axes[0, 0].axvline(np.mean(metodo_A), color='red', linewidth=2, linestyle='--')
-axes[0, 0].axvline(np.mean(metodo_B), color='blue', linewidth=2, linestyle='--')
-axes[0, 0].axvline(np.mean(metodo_C), color='green', linewidth=2, linestyle='--')
+axes[0].axvline(np.mean(metodo_A), color='red', linewidth=2, linestyle='--')
+axes[0].axvline(np.mean(metodo_B), color='blue', linewidth=2, linestyle='--')
+axes[0].axvline(np.mean(metodo_C), color='green', linewidth=2, linestyle='--')
 
-axes[0, 0].set_xlabel('Iteraciones')
-axes[0, 0].set_ylabel('Densidad')
-axes[0, 0].set_title('Distribuciones de los Tres Métodos')
-axes[0, 0].legend()
-axes[0, 0].grid(alpha=0.3)
+axes[0].set_xlabel('Iteraciones')
+axes[0].set_ylabel('Densidad')
+axes[0].set_title('Distribuciones de los Tres Métodos')
+axes[0].legend()
+axes[0].grid(alpha=0.3)
 
 # 2. Diagrama de medias con intervalos de confianza
 medias = [np.mean(g) for g in grupos]
@@ -677,12 +709,12 @@ errores = [stats.sem(g) * stats.t.ppf(0.975, len(g)-1) for g in grupos]
 x_pos = [1, 2, 3]
 colores_bars = ['red', 'blue', 'green']
 
-axes[0, 1].errorbar(x_pos, medias, yerr=errores,
+axes[1].errorbar(x_pos, medias, yerr=errores,
                     fmt='o', markersize=12, capsize=10, capthick=2,
                     color='black', elinewidth=2)
 
 for i, (x, m, c) in enumerate(zip(x_pos, medias, colores_bars)):
-    axes[0, 1].scatter(x, m, s=200, color=c, alpha=0.6,
+    axes[1].scatter(x, m, s=200, color=c, alpha=0.6,
                       edgecolor='black', linewidth=2, zorder=3)
 
 # Anotar diferencias significativas
@@ -694,19 +726,28 @@ for res in resultados:
         idx_j = nombres.index(nombres_split[1])
 
         y_max = max(medias[idx_i], medias[idx_j]) + max(errores[idx_i], errores[idx_j]) + 1
-        axes[0, 1].plot([x_pos[idx_i], x_pos[idx_j]], [y_max, y_max],
+        axes[1].plot([x_pos[idx_i], x_pos[idx_j]], [y_max, y_max],
                        'k-', linewidth=1.5)
-        axes[0, 1].text((x_pos[idx_i] + x_pos[idx_j])/2, y_max + 0.3,
+        axes[1].text((x_pos[idx_i] + x_pos[idx_j])/2, y_max + 0.3,
                        f'p={res["p"]:.3f}*',
                        ha='center', fontsize=8,
                        bbox=dict(boxstyle='round', facecolor='yellow', alpha=0.7))
 
-axes[0, 1].set_xlim(0.5, 3.5)
-axes[0, 1].set_xticks(x_pos)
-axes[0, 1].set_xticklabels(['A', 'B', 'C'])
-axes[0, 1].set_ylabel('Iteraciones (media ± IC 95%)')
-axes[0, 1].set_title('Comparaciones Post-Hoc con Intervalos de Confianza')
-axes[0, 1].grid(axis='y', alpha=0.3)
+axes[1].set_xlim(0.5, 3.5)
+axes[1].set_xticks(x_pos)
+axes[1].set_xticklabels(['A', 'B', 'C'])
+axes[1].set_ylabel('Iteraciones (media ± IC 95%)')
+axes[1].set_title('Comparaciones Post-Hoc con Intervalos de Confianza')
+axes[1].grid(axis='y', alpha=0.3)
+
+plt.tight_layout()
+plt.show()
+```
+
+Por último, observemos un mapa de calor para representar los p-valores generados y la tabla final con los estadísticos clave de cara a las conclusiones:
+
+```{code-cell} ipython3
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
 
 # 3. Matriz de p-valores (heatmap)
 p_matrix = np.ones((k, k))
@@ -717,38 +758,38 @@ for res in resultados:
     p_matrix[idx_i, idx_j] = res['p']
     p_matrix[idx_j, idx_i] = res['p']
 
-im = axes[1, 0].imshow(p_matrix, cmap='RdYlGn_r', aspect='auto', vmin=0, vmax=0.10)
-axes[1, 0].set_xticks([0, 1, 2])
-axes[1, 0].set_yticks([0, 1, 2])
-axes[1, 0].set_xticklabels(['A', 'B', 'C'])
-axes[1, 0].set_yticklabels(['A', 'B', 'C'])
+im = axes[0].imshow(p_matrix, cmap='RdYlGn_r', aspect='auto', vmin=0, vmax=0.10)
+axes[0].set_xticks([0, 1, 2])
+axes[0].set_yticks([0, 1, 2])
+axes[0].set_xticklabels(['A', 'B', 'C'])
+axes[0].set_yticklabels(['A', 'B', 'C'])
 
 # Anotar p-valores
 for i in range(k):
     for j in range(k):
         if i != j:
-            text = axes[1, 0].text(j, i, f'{p_matrix[i, j]:.4f}',
+            text = axes[0].text(j, i, f'{p_matrix[i, j]:.4f}',
                                   ha='center', va='center',
                                   color='white' if p_matrix[i, j] < 0.03 else 'black',
                                   fontweight='bold')
         else:
-            axes[1, 0].text(j, i, '-', ha='center', va='center',
+            axes[0].text(j, i, '-', ha='center', va='center',
                           fontsize=16, fontweight='bold')
 
-axes[1, 0].set_title('Matriz de P-valores (Comparaciones Pareadas)')
-plt.colorbar(im, ax=axes[1, 0], label='p-valor')
+axes[0].set_title('Matriz de P-valores (Comparaciones Pareadas)')
+plt.colorbar(im, ax=axes[0], label='p-valor')
 
 # 4. Resumen de significancia
 pares = [r['par'].split(' vs ') for r in resultados]
 significantes = [r['sig'] == '✓' for r in resultados]
 
-axes[1, 1].axis('tight')
-axes[1, 1].axis('off')
+axes[1].axis('tight')
+axes[1].axis('off')
 
 tabla_data = [[r['par'], f"{r['diff']:.2f}", f"{r['q']:.2f}",
                f"{r['p']:.4f}", r['sig']] for r in resultados]
 
-table = axes[1, 1].table(cellText=tabla_data,
+table = axes[1].table(cellText=tabla_data,
                          colLabels=['Comparación', 'Diferencia', 'q', 'p-valor', 'Sig'],
                          cellLoc='center',
                          loc='center',
@@ -769,7 +810,7 @@ for i, sig in enumerate(significantes):
     for j in range(5):
         table[(i+1, j)].set_facecolor(color)
 
-axes[1, 1].set_title('Resumen de Pruebas Post-Hoc (Tukey HSD)',
+axes[1].set_title('Resumen de Pruebas Post-Hoc (Tukey HSD)',
                      fontsize=12, fontweight='bold', pad=20)
 
 plt.tight_layout()

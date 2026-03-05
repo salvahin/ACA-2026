@@ -11,6 +11,20 @@ kernelspec:
 
 # Prompt Engineering para Generación de Código
 
+```{admonition} Ejecutar en Google Colab
+:class: tip
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/salvahin/ACA-2026/blob/main/book/notebooks/03_prompt_engineering.ipynb)
+```
+
+```{code-cell} ipython3
+:tags: [remove-input, setup]
+
+# Setup Colab Environment
+!pip install -q numpy pandas matplotlib seaborn scikit-learn torch transformers accelerate triton xgrammar
+print('Dependencies installed!')
+```
+
 > **Módulo:** Project 1 - LLM & Constrained Generation
 > **Semana:** 3
 > **Tiempo de lectura:** ~25 minutos

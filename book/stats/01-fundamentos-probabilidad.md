@@ -10,6 +10,20 @@ kernelspec:
 ---
 
 # Fundamentos de Probabilidad
+
+```{admonition} Ejecutar en Google Colab
+:class: tip
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/salvahin/ACA-2026/blob/main/book/notebooks/01-fundamentos-probabilidad.ipynb)
+```
+
+```{code-cell} ipython3
+:tags: [remove-input, setup]
+
+# Setup Colab Environment
+!pip install -q numpy pandas matplotlib seaborn scikit-learn triton
+print('Dependencies installed!')
+```
 ## Semana 1 - Estadística para Generación de Kernels GPU
 
 ```{admonition} Objetivos de Aprendizaje

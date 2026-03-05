@@ -11,6 +11,20 @@ kernelspec:
 
 # Marco Teórico: Construir los Cimientos Intelectuales de tu Investigación
 
+```{admonition} Ejecutar en Google Colab
+:class: tip
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/salvahin/ACA-2026/blob/main/book/notebooks/04-marco-teorico.ipynb)
+```
+
+```{code-cell} ipython3
+:tags: [remove-input, setup]
+
+# Setup Colab Environment
+!pip install -q numpy pandas matplotlib seaborn scikit-learn torch transformers accelerate triton xgrammar
+print('Dependencies installed!')
+```
+
 > **Módulo:** Research
 > **Semana:** 4
 > **Tiempo de lectura:** ~27 minutos

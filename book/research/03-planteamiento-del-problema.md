@@ -11,6 +11,20 @@ kernelspec:
 
 # Planteamiento del Problema: Convertir Curiosidad en Preguntas de Investigación
 
+```{admonition} Ejecutar en Google Colab
+:class: tip
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/salvahin/ACA-2026/blob/main/book/notebooks/03-planteamiento-del-problema.ipynb)
+```
+
+```{code-cell} ipython3
+:tags: [remove-input, setup]
+
+# Setup Colab Environment
+!pip install -q numpy pandas matplotlib seaborn scikit-learn torch transformers accelerate triton xgrammar
+print('Dependencies installed!')
+```
+
 > **Módulo:** Research
 > **Semana:** 3
 > **Tiempo de lectura:** ~26 minutos

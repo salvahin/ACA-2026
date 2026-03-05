@@ -11,6 +11,20 @@ kernelspec:
 
 # Estilo Académico: La Voz Profesional de tu Investigación
 
+```{admonition} Ejecutar en Google Colab
+:class: tip
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/salvahin/ACA-2026/blob/main/book/notebooks/06-estilo-academico.ipynb)
+```
+
+```{code-cell} ipython3
+:tags: [remove-input, setup]
+
+# Setup Colab Environment
+!pip install -q numpy pandas matplotlib seaborn scikit-learn torch transformers accelerate triton xgrammar
+print('Dependencies installed!')
+```
+
 > **Módulo:** Research
 > **Semana:** 6
 > **Tiempo de lectura:** ~27 minutos

@@ -11,6 +11,20 @@ kernelspec:
 
 # Pipeline FSM de XGrammar: De Gramática a Autómata Eficiente
 
+```{admonition} Ejecutar en Google Colab
+:class: tip
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/salvahin/ACA-2026/blob/main/book/notebooks/06-pipeline-fsm-xgrammar.ipynb)
+```
+
+```{code-cell} ipython3
+:tags: [remove-input, setup]
+
+# Setup Colab Environment
+!pip install -q numpy pandas matplotlib seaborn scikit-learn torch transformers accelerate triton xgrammar
+print('Dependencies installed!')
+```
+
 ```{admonition} Objetivos de Aprendizaje
 :class: tip
 Al finalizar esta lectura podrás:
@@ -613,6 +627,13 @@ def calculate_first_follow(grammar):
 
     return grammar
 
+```
+
+### Probando con una Gramática de Expresiones Aritméticas
+
+Vamos a aplicar nuestra función a una gramática real para ver cómo los conjuntos `FIRST` y `FOLLOW` revelan la estructura del lenguaje antes de que el código siquiera se ejecute.
+
+```{code-cell} ipython3
 # Ejemplo 1: Expresiones aritméticas
 grammar1 = {
     'rules': [
@@ -632,8 +653,15 @@ grammar1 = {
     }
 }
 
+# ACA Framework: Imprimamos y analicemos visualmente las reglas paso a paso
 calculate_first_follow(grammar1)
+```
 
+### Expandiendo a estructuras de control (IF/ELSE)
+
+El mismo motor puede usarse para estructuras más complejas. Observa cómo cambian los conjuntos válidos.
+
+```{code-cell} ipython3
 # Ejemplo 2: Statements con if-else
 grammar2 = {
     'rules': [
@@ -660,7 +688,13 @@ grammar2 = {
 }
 
 calculate_first_follow(grammar2)
+```
 
+### Simulando la Inferencia Constreñida (Constrained Decoding)
+
+Todo este esfuerzo matemático es para que, al momento en el que el LLM intenta predecir la siguiente palabra, nosotros podamos "taparle" el vocabulario no válido.
+
+```{code-cell} ipython3
 # Ejercicio práctico: Usar FIRST/FOLLOW para constrained decoding
 print(f"\n{'='*70}")
 print("APLICACIÓN: Constrained Decoding con FIRST/FOLLOW")

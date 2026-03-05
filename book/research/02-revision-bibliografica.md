@@ -11,6 +11,20 @@ kernelspec:
 
 # Revisión Bibliográfica: Aprender a Leer Papers como un Investigador
 
+```{admonition} Ejecutar en Google Colab
+:class: tip
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/salvahin/ACA-2026/blob/main/book/notebooks/02-revision-bibliografica.ipynb)
+```
+
+```{code-cell} ipython3
+:tags: [remove-input, setup]
+
+# Setup Colab Environment
+!pip install -q numpy pandas matplotlib seaborn scikit-learn torch transformers accelerate triton xgrammar
+print('Dependencies installed!')
+```
+
 > **Módulo:** Research
 > **Semana:** 2
 > **Tiempo de lectura:** ~28 minutos

@@ -280,6 +280,30 @@ Los bloques se lanzan dinámicamente a los SMs disponibles
 
 ---
 
+### ACA Framework: Simulando el Grid en Python Puro
+
+Antes de ver código compilado para GPU (CUDA o Triton), construyamos el modelo mental de cómo los identificadores mágicos (`blockIdx`, `threadIdx`) mapean tu posición 3D a un arreglo lineal (1D) en memoria. En Python, esto es simple aritmética modular que todo thread de GPU ejecuta en hardware.
+
+```{code-cell} ipython3
+# Simulación en Python puro de la indexación GPU
+def simulate_gpu_grid_mapping(grid_dim_x, block_dim_x):
+    print(f"\nLanzando Kernel simulado: Grid de {grid_dim_x} bloques, {block_dim_x} threads por bloque")
+    print(f"Total de threads que se ejecutarán en paralelo: {grid_dim_x * block_dim_x}")
+    print("="*70)
+    
+    # Simulamos lo que cada thread calcula internamente
+    for blockIdx_x in range(grid_dim_x):
+        for threadIdx_x in range(block_dim_x):
+            
+            # FÓRMULA MÁGICA DE CUDA/TRITON (De 2D a 1D)
+            global_id = (blockIdx_x * block_dim_x) + threadIdx_x
+            
+            print(f"Bloque [{blockIdx_x}], Thread local [{threadIdx_x}] -> Accederá al índice Global de Memoria: [{global_id}]")
+
+# Lanzar 3 bloques, cada uno con 4 threads
+simulate_gpu_grid_mapping(grid_dim_x=3, block_dim_x=4)
+```
+
 ## Jerarquía de Memoria GPU
 
 Si bien las GPUs tienen miles de cores, su verdadero superpoder es el **ancho de banda de memoria**.

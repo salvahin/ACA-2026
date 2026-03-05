@@ -11,6 +11,20 @@ kernelspec:
 
 # Calendario del Curso
 
+```{admonition} Ejecutar en Google Colab
+:class: tip
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/salvahin/ACA-2026/blob/main/book/notebooks/calendario.ipynb)
+```
+
+```{code-cell} ipython3
+:tags: [remove-input, setup]
+
+# Setup Colab Environment
+!pip install -q numpy pandas matplotlib seaborn scikit-learn torch transformers accelerate triton xgrammar
+print('Dependencies installed!')
+```
+
 > **Duración:** 10 semanas | **Carga:** 12 horas/semana (6 módulos × 2 horas)
 > **Inicio:** 23 de marzo 2026 | **Fin:** 3 de junio 2026
 

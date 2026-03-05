@@ -383,7 +383,11 @@ def merge_pair(vocab, pair):
         new_word = word.replace(merged, replacement)
         new_vocab[new_word] = freq
     return new_vocab
+```
 
+Con estas funciones auxiliares establecidas, podemos diseñar el bucle principal de entrenamiento. Nota cómo el criterio de selección es la fórmula matemática de máxima verosimilitud (likelihood) en lugar de la pura frecuencia usada en BPE.
+
+```{code-cell} ipython3
 def wordpiece_train(corpus, num_merges=8):
     """
     Entrenamiento simplificado de WordPiece.
@@ -415,7 +419,7 @@ def wordpiece_train(corpus, num_merges=8):
             for tok in word.split():
                 token_counts[tok] += freq
         
-        # Seleccionar par con mayor score de WordPiece
+        # Seleccionar par con mayor score probabilistico de WordPiece
         best_pair = max(pairs, key=lambda p: wordpiece_score(p, token_counts))
         best_score = wordpiece_score(best_pair, token_counts)
         merged_token = ''.join(best_pair)
@@ -431,7 +435,11 @@ def wordpiece_train(corpus, num_merges=8):
     print(f"\nVocabulario final ({len(final_vocab)} tokens):")
     print(sorted(final_vocab))
     return vocab, merge_history
+```
 
+A continuación simularemos el modelo procesando un subconjunto de palabras que podrían encontrarse iterando código Triton.
+
+```{code-cell} ipython3
 # Corpus de prueba con términos de código Triton
 corpus_triton = "pointer offset mask load store pointer offset load mask pointer"
 vocab_final, history = wordpiece_train(corpus_triton, num_merges=6)
@@ -566,7 +574,11 @@ print(f"Logits:         {logits.numpy()}")
 print(f"Probabilidades: {probs.detach().numpy().round(3)}")
 # tensor([0.659, 0.242, 0.099]) — suman a 1.0
 print(f"Suma: {probs.sum().item():.4f}")
+```
 
+La temperatura (Temperature scaling) nos permite modificar la confianza matemática resultante antes de hacer el muestreo de tokens:
+
+```{code-cell} ipython3
 # --- Temperature scaling ---
 def softmax_temp(logits, T=1.0):
     return F.softmax(logits / T, dim=-1)
@@ -574,7 +586,11 @@ def softmax_temp(logits, T=1.0):
 print("\nEfecto de la temperatura (ver Lectura 3 para detalles):")
 for T in [0.5, 1.0, 2.0]:
     print(f"  T={T}: {softmax_temp(logits, T).detach().numpy().round(3)}")
+```
 
+Finalmente, evaluamos el error del modelo comparando pre-dicciones con la respuesta esperada mediante Cross-Entropy Loss:
+
+```{code-cell} ipython3
 # --- Cross-Entropy Loss (usada durante entrenamiento) ---
 loss_fn = nn.CrossEntropyLoss()
 logits_batch = torch.tensor([[2.0, 1.0, 0.1]])  # batch=1, vocab_size=3
@@ -679,11 +695,15 @@ for ax, T in zip(axes, temperatures):
 plt.tight_layout()
 plt.savefig('temperature_comparison.png', dpi=100, bbox_inches='tight')
 plt.show()
+```
 
-# Interpretación
-print("T=0.5: Distribución concentrada (más determinista)")
-print("T=1.0: Distribución original")
-print("T=2.0: Distribución más uniforme (más aleatorio)")
+Como podemos constatar analíticamente, reducir `T` por debajo de 1 endurece el modelo.
+
+```{code-cell} ipython3
+# Interpretación de la visualización
+print("T=0.5: Distribución concentrada (Top-K amplificado, menos riesgoso/más determinista)")
+print("T=1.0: Distribución probabilística estadísticamente fiel al modelo original")
+print("T=2.0: Distribución plana atenuada (muy riesgoso/más alucinaciones y dispersión)")
 ```
 
 ---
@@ -723,4 +743,10 @@ print("T=2.0: Distribución más uniforme (más aleatorio)")
 - Brown, T. et al. (2020). [Language Models are Few-Shot Learners](https://arxiv.org/abs/2005.14165). NeurIPS 2020.
 - Sennrich, R., Haddow, B., & Birch, A. (2016). [Neural Machine Translation of Rare Words with Subword Units](https://arxiv.org/abs/1508.07909). ACL 2016.
 - Kudo, T. & Richardson, J. (2018). [SentencePiece: A Simple and Language Independent Subword Tokenizer](https://arxiv.org/abs/1808.06226). EMNLP 2018.
-- Wei, J. et al. (2022). [Emergent Abilities of Large Language Models](https://arxiv.org/abs/2206.07682). TMLR.
+
+---
+
+## Lecturas Recomendadas
+
+- **D2L: BERT** - [Capítulo 15.8](https://d2l.ai/chapter_natural-language-processing-pretraining/bert.html). Profundiza en la arquitectura y el pre-entrenamiento de BERT.
+- **D2L: Subword Embedding** - [Capítulo 15.6](https://d2l.ai/chapter_natural-language-processing-pretraining/subword-embedding.html). Explicación detallada de BPE, WordPiece y SentencePiece.

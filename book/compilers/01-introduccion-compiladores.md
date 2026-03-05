@@ -914,3 +914,9 @@ c) ¿Por qué XGrammar usa una CFG (Tipo 2) y no una gramática de Tipo 1 para r
 - Aho, A., Lam, M., Sethi, R., & Ullman, J. (2006). [Compilers: Principles, Techniques, and Tools](https://suif.stanford.edu/dragonbook/) (2nd ed.). Pearson. ("Dragon Book")
 - Chomsky, N. (1956). [Three Models for the Description of Language](https://www.jstor.org/stable/1705753). IRE Transactions on Information Theory.
 - Hopcroft, J. & Ullman, J. (1979). Introduction to Automata Theory, Languages, and Computation. Addison-Wesley.
+
+---
+
+## Lecturas Recomendadas
+
+- **D2L: Compilers and Interpreters** - [Capítulo 13.1](https://d2l.ai/chapter_computational-performance/hybridize.html). Explica la diferencia entre ejecución imperativa y simbólica, fundamental para entender JIT y Triton.

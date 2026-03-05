@@ -92,7 +92,6 @@ Sin funciones de activación, aunque stapiles múltiples capas, el resultado ser
 
 ```{code-cell} ipython3
 import numpy as np
-import matplotlib.pyplot as plt
 
 # Definir funciones de activación
 def sigmoid(z):
@@ -106,8 +105,16 @@ def relu(z):
 
 def leaky_relu(z, alpha=0.01):
     return np.where(z > 0, z, alpha * z)
+```
 
-# Crear valores de entrada
+Las funciones de activación matemáticas son componentes críticos de las redes neuronales, ya que introducen la no linealidad necesaria para aprender patrones complejos. Sin ellas, una red neuronal, sin importar cuán profunda sea, sería equivalente a una simple regresión lineal.
+
+A continuación, visualizaremos estas funciones para entender mejor su comportamiento y características visuales clave:
+
+```{code-cell} ipython3
+import matplotlib.pyplot as plt
+
+# Crear valores de entrada simétricos
 z = np.linspace(-5, 5, 200)
 
 # Crear gráficas
@@ -339,7 +346,13 @@ a2 = sigmoid(z2)
 print(f"  a2 = sigmoid(z2) = {a2}")
 
 print(f"\nPredicción final: {a2[0]:.4f}")
+```
 
+La abstracción de estos cálculos en álgebra de tensores es lo que hace eficiente el entrenamiento. Cada capa aplica operaciones en paralelo utilizando multiplicación de matrices en lugar de iterar por cada neurona individualmente. 
+
+Para consolidar este concepto, veamos visualmente la arquitectura de la red neuronal que acabamos de transformar a matemáticas, prestando atención a cómo viajan y se transforman los valores (`x` → `a1` → `a2`) a lo largo de las capas.
+
+```{code-cell} ipython3
 # Visualización del flujo de datos
 import matplotlib.pyplot as plt
 
@@ -416,11 +429,10 @@ En `PyTorch`: `optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)`
 
 ```{code-cell} ipython3
 import numpy as np
-import matplotlib.pyplot as plt
 
-# Definir funciones de pérdida
+# Definir funciones de pérdida comunes
 def binary_crossentropy(y_true, y_pred):
-    epsilon = 1e-15  # Para evitar log(0)
+    epsilon = 1e-15  # Constante pequeña para evitar log(0) que causa error matemático
     y_pred = np.clip(y_pred, epsilon, 1 - epsilon)
     return -np.mean(y_true * np.log(y_pred) + (1 - y_true) * np.log(1 - y_pred))
 
@@ -429,12 +441,20 @@ def mse(y_true, y_pred):
 
 def mae(y_true, y_pred):
     return np.mean(np.abs(y_true - y_pred))
+```
 
-# Visualización de funciones de pérdida
+Al igual que entender la arquitectura requiere intuición, elegir la función de pérdida correcta importa, ya que dicta cómo penalizamos el error (de manera lineal, cuadrática, o exponencial). 
+
+Veamos cómo se comportan estas funciones de pérdida ante diferentes grados de error:
+
+```{code-cell} ipython3
+import matplotlib.pyplot as plt
+
+# Visualización del comportamiento de las funciones de pérdida
 fig, axes = plt.subplots(1, 3, figsize=(16, 4))
 
-# Binary Cross-Entropy
-y_true = 1  # Verdadera etiqueta
+# 1. Comportamiento de Binary Cross-Entropy (BCE)
+y_true = 1  # Asumimos que la respuesta real es la clase 1
 y_pred_range = np.linspace(0.01, 0.99, 100)
 bce_loss = -np.log(y_pred_range)
 
@@ -445,17 +465,16 @@ axes[0].set_title('Binary Cross-Entropy\n(y_true = 1)', fontsize=12)
 axes[0].grid(True, alpha=0.3)
 axes[0].axvline(x=1.0, color='green', linestyle='--', alpha=0.5, label='Predicción perfecta')
 axes[0].legend()
-axes[0].text(0.5, 2, 'Penaliza fuertemente\npredicciones incorrectas',
-             bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.5), fontsize=9)
+axes[0].text(0.5, 2, 'Penaliza exponencialmente\npredicciones muy incorrectas', bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.5), fontsize=9)
 
-# MSE vs MAE para regresión
+# 2. MSE vs MAE para regresión
 y_true_val = 5
 y_pred_range2 = np.linspace(0, 10, 100)
 mse_vals = (y_true_val - y_pred_range2) ** 2
 mae_vals = np.abs(y_true_val - y_pred_range2)
 
-axes[1].plot(y_pred_range2, mse_vals, 'r-', linewidth=2, label='MSE')
-axes[1].plot(y_pred_range2, mae_vals, 'g-', linewidth=2, label='MAE')
+axes[1].plot(y_pred_range2, mse_vals, 'r-', linewidth=2, label='MSE (Crecimiento cuadrático)')
+axes[1].plot(y_pred_range2, mae_vals, 'g-', linewidth=2, label='MAE (Crecimiento lineal)')
 axes[1].axvline(x=y_true_val, color='blue', linestyle='--', alpha=0.5, label='Valor real')
 axes[1].set_xlabel('Predicción (ŷ)', fontsize=11)
 axes[1].set_ylabel('Loss', fontsize=11)
@@ -463,7 +482,7 @@ axes[1].set_title('MSE vs MAE\n(y_true = 5)', fontsize=12)
 axes[1].grid(True, alpha=0.3)
 axes[1].legend()
 
-# Comparación de sensibilidad a outliers
+# 3. Comparación de sensibilidad a outliers (Valores atípicos)
 errors = np.array([0.5, 1.0, 2.0, 5.0])
 mse_errors = errors ** 2
 mae_errors = errors
@@ -473,23 +492,22 @@ width = 0.35
 
 axes[2].bar(x_pos - width/2, mse_errors, width, label='MSE', color='red', alpha=0.7)
 axes[2].bar(x_pos + width/2, mae_errors, width, label='MAE', color='green', alpha=0.7)
-axes[2].set_xlabel('Error Absoluto', fontsize=11)
-axes[2].set_ylabel('Valor de Loss', fontsize=11)
+axes[2].set_xlabel('Error Absoluto de la Predicción', fontsize=11)
+axes[2].set_ylabel('Valor de Loss Computado', fontsize=11)
 axes[2].set_title('MSE vs MAE: Sensibilidad a Outliers', fontsize=12)
 axes[2].set_xticks(x_pos)
 axes[2].set_xticklabels(errors)
 axes[2].legend()
 axes[2].grid(True, alpha=0.3, axis='y')
-axes[2].text(2, 15, 'MSE penaliza más\nlos errores grandes',
-             bbox=dict(boxstyle='round', facecolor='lightcoral', alpha=0.5), fontsize=9)
+axes[2].text(2, 15, 'MSE penaliza gigantescamente\nlos errores grandes', bbox=dict(boxstyle='round', facecolor='lightcoral', alpha=0.5), fontsize=9)
 
 plt.tight_layout()
 plt.show()
 
-print("Resumen:")
-print("- Binary Cross-Entropy: Para clasificación binaria, crece exponencialmente con errores")
-print("- MSE: Penaliza errores grandes cuadráticamente, sensible a outliers")
-print("- MAE: Penaliza errores linealmente, más robusto a outliers")
+print("Resumen de Diseño:")
+print("- Binary Cross-Entropy: Crucial para clasificación binaria, garantiza penalizaciones altas para alta confianza en errores.")
+print("- MSE: Penaliza errores grandes cuadráticamente, haciéndolo muy sensible a valores atípicos.")
+print("- MAE: Penaliza proporcionalmente la magnitud, haciéndolo más robusto.")
 ```
 
 El objetivo del entrenamiento es minimizar esta pérdida.
@@ -590,12 +608,11 @@ Error propagates: [Capa N] → [Capa N-1] → ... → [Capa 1]
 
 ```{code-cell} ipython3
 import numpy as np
-import matplotlib.pyplot as plt
 
 # Implementación educativa de backpropagation
 class SimpleNetwork:
     def __init__(self):
-        # Red simple: 2 → 3 → 1
+        # Red simple: Capa entrada (2) → Capa oculta (3) → Capa salida (1)
         np.random.seed(42)
         self.W1 = np.random.randn(2, 3) * 0.5
         self.b1 = np.zeros((1, 3))
@@ -609,10 +626,11 @@ class SimpleNetwork:
         return 1 / (1 + np.exp(-np.clip(z, -500, 500)))
 
     def sigmoid_derivative(self, a):
+        # La derivada de la Sigmoid expresada convenientemente usando su salida 'a'
         return a * (1 - a)
 
     def forward(self, X):
-        """Forward pass con guardado de valores intermedios"""
+        """Forward pass guardando valores intermedios (vital para backprop)"""
         self.X = X
         self.Z1 = X @ self.W1 + self.b1
         self.A1 = self.sigmoid(self.Z1)
@@ -621,30 +639,30 @@ class SimpleNetwork:
         return self.A2
 
     def backward(self, y, learning_rate=0.1):
-        """Backward pass con cálculo de gradientes"""
+        """Backward pass: Mágica regla de la cadena computarizada"""
         m = y.shape[0]
 
-        # Gradiente de la pérdida respecto a la salida
+        # 1. Gradiente de la pérdida final respecto a la salida
         dA2 = (self.A2 - y)
 
-        # Capa 2
+        # 2. Propagando a Capa 2
         dZ2 = dA2 * self.sigmoid_derivative(self.A2)
         dW2 = self.A1.T @ dZ2 / m
         db2 = np.sum(dZ2, axis=0, keepdims=True) / m
 
-        # Capa 1
+        # 3. Propagando a Capa 1
         dA1 = dZ2 @ self.W2.T
         dZ1 = dA1 * self.sigmoid_derivative(self.A1)
         dW1 = self.X.T @ dZ1 / m
         db1 = np.sum(dZ1, axis=0, keepdims=True) / m
 
-        # Guardar magnitudes de gradientes para visualización
+        # Guardar magnitudes de gradientes para analizarlas luego
         self.gradients_history.append({
             'dW1': np.linalg.norm(dW1),
             'dW2': np.linalg.norm(dW2)
         })
 
-        # Actualizar pesos
+        # 4. Actualizar Pesos (Gradient Descent)
         self.W1 -= learning_rate * dW1
         self.b1 -= learning_rate * db1
         self.W2 -= learning_rate * dW2
@@ -653,23 +671,21 @@ class SimpleNetwork:
         return dW1, dW2
 
     def train_step(self, X, y, learning_rate=0.1):
-        """Un paso de entrenamiento completo"""
-        # Forward
+        """Paso completo: Observar, Evaluar, Ajustar"""
         predictions = self.forward(X)
-
-        # Calcular pérdida
         loss = np.mean((predictions - y) ** 2)
-
-        # Backward
         self.backward(y, learning_rate)
-
         return loss
+```
 
+Ahora que tenemos la arquitectura estructurada en código, vamos a usarla para resolver el famoso problema clásico de puerta lógica XOR, el cual no puede ser resuelto por un modelo lineal simple.
+
+```{code-cell} ipython3
 # Generar datos de ejemplo (problema XOR)
 X = np.array([[0, 0], [0, 1], [1, 0], [1, 1]])
 y = np.array([[0], [1], [1], [0]])
 
-# Entrenar red
+# Instanciar y Entrenar red
 network = SimpleNetwork()
 losses = []
 num_epochs = 2000
@@ -678,7 +694,23 @@ for epoch in range(num_epochs):
     loss = network.train_step(X, y, learning_rate=1.0)
     losses.append(loss)
 
-# Visualización
+print("Resultados del Entrenamiento")
+print("=" * 60)
+print(f"Pérdida inicial: {losses[0]:.6f}")
+print(f"Pérdida final: {losses[-1]:.6f}")
+print(f"Mejora: {(1 - losses[-1]/losses[0])*100:.2f}%")
+print("\nPredicciones finales:")
+final_preds = network.forward(X)
+for i, (x_val, y_val, pred) in enumerate(zip(X, y, final_preds)):
+    print(f"  Input: {x_val} | Target: {y_val[0]} | Predicción: {pred[0]:.4f}")
+```
+
+Un buen entrenamiento es visible. Grafiquemos todas las piezas del rompecabezas: el flujo de gradientes, la curva de la pérdida y la predicción final. Este tablero nos muestra el progreso real del backpropagation época por época.
+
+```{code-cell} ipython3
+import matplotlib.pyplot as plt
+
+# Visualización analítica intensa
 fig = plt.figure(figsize=(16, 10))
 gs = fig.add_gridspec(3, 3, hspace=0.4, wspace=0.3)
 
@@ -746,8 +778,8 @@ ax3.set_yscale('log')
 
 # 4. Predicciones finales
 ax4 = fig.add_subplot(gs[1, 2])
-final_preds = network.forward(X)
 x_pos = np.arange(len(X))
+# 'final_preds' and 'y' available from the prev cell context
 ax4.bar(x_pos - 0.2, y.flatten(), 0.4, label='Ground Truth', alpha=0.7, color='green')
 ax4.bar(x_pos + 0.2, final_preds.flatten(), 0.4, label='Predicción', alpha=0.7, color='orange')
 ax4.set_xlabel('Muestra', fontsize=11)
@@ -786,11 +818,9 @@ EJEMPLO DE BACKPROPAGATION - ÚLTIMA ÉPOCA
    ∂Loss/∂Z1 = ∂Loss/∂A1 * sigmoid'(A1) (regla de la cadena)
    ∂Loss/∂W1 = Xᵀ @ ∂Loss/∂Z1 (gradiente para W1)
 
-4. ACTUALIZAR PESOS:
+4. ACTUALIZAR PESOS (Gradient Descent step repetido muchas iteraciones):
    W1 = W1 - learning_rate * ∂Loss/∂W1
    W2 = W2 - learning_rate * ∂Loss/∂W2
-
-Resultado: Los pesos se ajustan para reducir el error en la próxima iteración.
 """
 
 ax5.text(0.05, 0.95, step_by_step, fontsize=9, verticalalignment='top',
@@ -798,15 +828,6 @@ ax5.text(0.05, 0.95, step_by_step, fontsize=9, verticalalignment='top',
 
 plt.suptitle('Visualización Completa de Backpropagation', fontsize=14, weight='bold')
 plt.show()
-
-print("Resultados del Entrenamiento")
-print("=" * 60)
-print(f"Pérdida inicial: {losses[0]:.6f}")
-print(f"Pérdida final: {losses[-1]:.6f}")
-print(f"Mejora: {(1 - losses[-1]/losses[0])*100:.2f}%")
-print("\nPredicciones finales:")
-for i, (x_val, y_val, pred) in enumerate(zip(X, y, final_preds)):
-    print(f"  Input: {x_val} | Target: {y_val[0]} | Predicción: {pred[0]:.4f}")
 ```
 
 ---

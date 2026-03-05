@@ -368,7 +368,11 @@ from plotly.subplots import make_subplots
 np.random.seed(42)
 probs = np.array([0.35, 0.25, 0.15, 0.10, 0.08, 0.04, 0.02, 0.01])
 tokens = [f'tok_{i}' for i in range(len(probs))]
+```
 
+A continuación establecemos los límites correspondientes para Top-K (los *k* tokens más probables aislándolos) y Top-P (recortando el subconjunto de tokens que suman al menos una masa probabilística acumulada de *p*). 
+
+```{code-cell} ipython3
 fig = make_subplots(rows=1, cols=3, subplot_titles=('Original', 'Top-K (K=3)', 'Top-P (P=0.9)'))
 
 # Original
@@ -597,18 +601,23 @@ response = model.generate(
 import torch
 import torch.nn.functional as F
 
-# Simular vocabulario de tokenizador
+# 1. Definir el entorno del tokenizador
 vocab_size = 50257  # Tamaño típico de GPT-2
 
-# Simular logits del modelo (scores sin normalizar)
+# 2. Simular logits emitidos por el modelo (scores sin normalizar)
 torch.manual_seed(42)
 logits = torch.randn(vocab_size)
 
 # TAREA: Solo permitir respuestas "Sí" (token 43521) o "No" (token 2949)
 allowed_tokens = [43521, 2949]
+```
 
-# Crear bitmask
+Para aplicar nuestro *constrained decoding* duro (restringir exhaustivamente vocabulario completo), crearemos un tensor booleano y forzaremos implacablemente los logits no permitidos hacia `-infinito`.
+
+```{code-cell} ipython3
+# 3. Crear matriz de la máscara (bitmask) inicializandola en falso
 bitmask = torch.zeros(vocab_size, dtype=torch.bool)
+
 for token_id in allowed_tokens:
     bitmask[token_id] = True
 
@@ -616,25 +625,29 @@ for token_id in allowed_tokens:
 logits_masked = logits.clone()
 logits_masked[~bitmask] = -float("inf")
 
-# Convertir a probabilidades
+# 6. Transformar en Espacio de Probabilidad usando Softmax
 probs_original = F.softmax(logits, dim=-1)
 probs_masked = F.softmax(logits_masked, dim=-1)
+```
 
-# Verificar resultados
-print("SIN máscara:")
-print(f"  Top 5 tokens: {torch.topk(probs_original, 5).indices.tolist()}")
-print(f"  Suma de probabilidades: {probs_original.sum():.4f}")
+Veamos los resultados probabilísticos ahora que hemos forzado agresivamente la distribución y re-aplicado el regulador *Softmax*.
+
+```{code-cell} ipython3
+# 7. Imprimir Auditoría Visual Comparativa
+print("SIN restricciones:")
+print(f"  Top 5 tokens más probables originalmente: {torch.topk(probs_original, 5).indices.tolist()}")
+print(f"  Confirmar suma global de probabilidades: {probs_original.sum():.4f}")
 
 print("\nCON máscara (solo 'Sí' o 'No'):")
 print(f"  Tokens permitidos: {allowed_tokens}")
-print(f"  P(token 43521): {probs_masked[43521]:.4f}")
-print(f"  P(token 2949): {probs_masked[2949]:.4f}")
-print(f"  Suma de probabilidades: {probs_masked.sum():.4f}")
+print(f"  Probabilidad re-ajustada del 'Sí' (43521): {probs_masked[43521]:.4f}")
+print(f"  Probabilidad re-ajustada del 'No' (2949): {probs_masked[2949]:.4f}")
+print(f"  Suma validada de P() del vocabulario restrictivo: {probs_masked.sum():.4f}")
 
-# Samplear
+# 8. Muestreo seguro 
 sampled_token = torch.multinomial(probs_masked, 1).item()
-print(f"\nToken seleccionado: {sampled_token}")
-print(f"  ¿Es válido?: {sampled_token in allowed_tokens}")
+print(f"\nToken finalmente seleccionado durante inferencia: {sampled_token}")
+print(f"  ¿Es un token esperado?: {sampled_token in allowed_tokens}")
 ```
 
 ```{admonition} ✅ Verifica tu comprensión

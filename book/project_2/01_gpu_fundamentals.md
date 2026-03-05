@@ -673,3 +673,10 @@ print(f"\nCon 512 threads/bloque: {result2['waves']} waves")
 - NVIDIA. [CUDA C++ Programming Guide](https://docs.nvidia.com/cuda/cuda-c-programming-guide/). NVIDIA Developer.
 - Harris, M. (2013). [How to Optimize Data Transfers in CUDA](https://developer.nvidia.com/blog/how-optimize-data-transfers-cuda-cc/). NVIDIA Blog.
 - Hwu, W., Kirk, D., & El Hajj, I. (2022). Programming Massively Parallel Processors (4th ed.). Morgan Kaufmann.
+
+---
+
+## Lecturas Recomendadas
+
+- **D2L: GPUs** - [Capítulo 6.7](https://d2l.ai/chapter_builders-guide/use-gpu.html). Conceptos básicos de gestión de memoria y arrays en GPUs con PyTorch.
+- **D2L: Hardware** - [Capítulo 13.4](https://d2l.ai/chapter_computational-performance/hardware.html). Una excelente base para entender la jerarquía de memoria y arquitectura de cómputo antes de entrar a Triton.

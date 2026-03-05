@@ -447,7 +447,11 @@ def top_p_sampling(probs, p=0.9):
 logits = np.array([2.3, 0.5, 8.1, 7.9, 6.2, -2.1, 1.0, 3.5])
 tokens = ['PAD', 'EOS', 'el', 'gato', 'saltó', 'perro', 'casa', 'corre']
 probs = softmax(logits)
+```
 
+Podemos ver visualmente cómo se distribuyen estas probabilidades tras aplicar las estrategias de *Sampling* para "recortar" o enfatizar ciertas decisiones durante el decoding algorítmico.
+
+```{code-cell} ipython3
 # Visualización de estrategias
 fig, axes = plt.subplots(2, 2, figsize=(14, 10))
 
@@ -666,6 +670,8 @@ for rank, (lp, seq) in enumerate(best_beams, 1):
     words_seq = [vocab[t] for t in seq]
     print(f"  Beam {rank}: {' '.join(words_seq):30s}  log-prob={lp:.3f}  prob={np.exp(lp):.6f}")
 ```
+
+Un árbol de búsqueda de Beam Search ilustra a la perfección por qué es tan computacionalmente costoso en memoria este método exploratorio de caminos algorítmicos.
 
 ```{code-cell} ipython3
 # Visualización del árbol de búsqueda
@@ -897,7 +903,11 @@ for i in range(num_merges):
 print(f"\nHistorial de fusiones:")
 for i, (a, b) in enumerate(merges_history, 1):
     print(f"  {i}. '{a}' + '{b}' → '{a}{b}'")
+```
 
+Ahora, veamos analíticamente cómo esta estrategia heurística iterativa ayuda a reducir el costo computacional de codificar cadenas de texto (es decir, reducir el la cantidad de *tokens* requeridos por oración).
+
+```{code-cell} ipython3
 # Visualización
 import matplotlib.pyplot as plt
 
@@ -1010,7 +1020,11 @@ inputs = tokenizer(text, return_tensors="pt")
 
 print(f"Texto original: '{text}'")
 print(f"Tokens de entrada (IDs): {inputs['input_ids'][0].tolist()}")
+```
 
+Una vez que configuramos el Prompt junto con el *Tokenizer/Embeddings*, observemos detalladamente en este ciclo `for` iterativo cómo se extrae el vector logit, se decide el token, **y se retroalimenta para el siguiente turno**, es decir: *generación autoregresiva manual*.
+
+```{code-cell} ipython3
 # 3. Generación Autoregresiva Manual (Paso a paso)
 max_new_tokens = 5
 current_input_ids = inputs['input_ids']

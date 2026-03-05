@@ -658,8 +658,12 @@ def calcular_params_lora(hidden_dim, num_layers, rank, target_modules):
     total_params = num_layers * len(target_modules) * params_per_module
 
     return total_params
+```
 
-# Ejemplo: Llama 2 7B
+Vamos a poner a prueba nuestra función utilizando la arquitectura base del **Llama 2 (7B)** como referencia para calcular la fracción exacta de parámetros que ajustaríamos:
+
+```{code-cell} ipython3
+# Ejemplo Analítico: Llama 2 7B
 hidden_dim = 4096
 num_layers = 32
 rank = 8
@@ -682,9 +686,13 @@ print()
 print(f"  Tamaño en disco (float16):")
 print(f"    LoRA: {params_lora * 2 / (1024**2):.2f} MB")
 print(f"    Modelo completo: {params_modelo_completo * 2 / (1024**3):.2f} GB")
+```
 
-# Comparar con diferentes configuraciones
-print("\nComparación de configuraciones:")
+Las matemáticas del ahorro en memoria VRAM son asombrosas. Ahora iteraremos sobre distintas configuraciones hiperparamétricas (Rank y módulos target) para observar la progresión del costo computacional de entrenar estas matrices.
+
+```{code-cell} ipython3
+# Evaluar impacto técnico de hiperparámetros
+print("\nComparación Múltiple de Configuraciones LoRA:")
 print(f"{'Rank':<6} {'Modules':<20} {'Params':<15} {'Ratio':<10}")
 print("-" * 60)
 
@@ -727,4 +735,9 @@ for r in [4, 8, 16, 32]:
 - Dettmers, T. et al. (2023). [QLoRA: Efficient Finetuning of Quantized LLMs](https://arxiv.org/abs/2305.14314). NeurIPS 2023.
 - Chen, M. et al. (2021). [Evaluating Large Language Models Trained on Code](https://arxiv.org/abs/2107.03374). arXiv (Codex/HumanEval).
 - Papineni, K. et al. (2002). [BLEU: A Method for Automatic Evaluation of Machine Translation](https://aclanthology.org/P02-1040/). ACL.
-- Zheng, L. et al. (2023). [Judging LLM-as-a-Judge](https://arxiv.org/abs/2306.05685). arXiv.
+
+---
+
+## Lecturas Recomendadas
+
+- **D2L: Fine-Tuning BERT** - [Capítulo 16.6](https://d2l.ai/chapter_natural-language-processing-applications/finetuning-bert.html). Guía práctica sobre cómo adaptar modelos pre-entrenados a tareas específicas.

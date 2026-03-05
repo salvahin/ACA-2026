@@ -211,7 +211,6 @@ Esta es la fórmula más importante de los Transformers. La verás en cada confi
 
 ```{code-cell} ipython3
 import numpy as np
-import matplotlib.pyplot as plt
 
 def softmax(x):
     """Softmax numerically stable"""
@@ -237,7 +236,11 @@ def attention(Q, K, V):
     output = attention_weights @ V
 
     return output, attention_weights
+```
 
+Ahora que tenemos la función matemática que representa la atención escalada, vamos a instanciar un ejemplo sencillo de 4 palabras (`"el", "gato", "saltó", "cerca"`) y ver cómo se procesarían teóricamente sus matrices de embeddings (Query, Key, Value).  
+
+```{code-cell} ipython3
 # Ejemplo simple: 4 palabras
 np.random.seed(42)
 seq_len = 4
@@ -247,7 +250,7 @@ d_v = 8  # Dimensión de los values
 # Crear embeddings simulados para 4 palabras: "el", "gato", "saltó", "cerca"
 words = ['el', 'gato', 'saltó', 'cerca']
 
-# Generar Q, K, V (normalmente vienen de proyecciones lineales)
+# Generar Q, K, V con valores aleatorios (normalmente vienen de proyecciones lineales)
 Q = np.random.randn(seq_len, d_k) * 0.5
 K = np.random.randn(seq_len, d_k) * 0.5
 V = np.random.randn(seq_len, d_v) * 0.5
@@ -275,11 +278,17 @@ for i, word_i in enumerate(words):
     print(f"  (suma={attn_weights[i].sum():.3f})")
 
 print("\nInterpretación:")
-print("- Cada fila muestra cómo una palabra 'atiende' a todas las palabras")
+print("- Cada fila muestra cómo una palabra 'atiende' a todas las palabras de la secuencia")
 print("- Los valores son probabilidades (suman a 1.0)")
-print("- Valores altos = mayor relevancia")
+print("- Valores altos indican mayor relevancia")
+```
 
-# Visualización
+Una visualización nos ayuda a entender rápido quién está atendiendo a quién. Este "heatmap" de atención es la herramienta de diagnóstico número uno cuando se analiza en qué se está fijando un LLM generado. 
+
+```{code-cell} ipython3
+import matplotlib.pyplot as plt
+
+# Visualización analítica de atención
 fig, axes = plt.subplots(1, 2, figsize=(14, 5))
 
 # Heatmap de pesos de atención
@@ -301,7 +310,7 @@ for i in range(seq_len):
 plt.colorbar(im, ax=axes[0], label='Peso de Atención')
 
 # Visualización de atención para una palabra específica
-word_idx = 2  # "saltó"
+word_idx = 2  # Nos enfocamos en el verbo "saltó"
 axes[1].bar(words, attn_weights[word_idx], color='steelblue', alpha=0.7, edgecolor='black')
 axes[1].set_ylabel('Peso de Atención', fontsize=11)
 axes[1].set_title(f'Atención de "{words[word_idx]}" a todas las palabras', fontsize=12, weight='bold')
@@ -315,23 +324,23 @@ for i, (word, weight) in enumerate(zip(words, attn_weights[word_idx])):
 plt.tight_layout()
 plt.show()
 
-# Mostrar cálculo paso a paso para un ejemplo
+# Mostrar cálculo paso a paso para desmitificar las matemáticas detrás
 print("\n\nCálculo Paso a Paso (Query de 'saltó' atendiendo a todas):")
 print("=" * 60)
-q_salto = Q[2]  # Query para "saltó"
-print(f"1. Query 'saltó': {q_salto[:3].round(2)}... (dim={d_k})")
+q_salto = Q[2]  # Query de la palabra saltó
+print(f"1. Query vector 'saltó': {q_salto[:3].round(2)}... (dim={d_k})")
 
-print(f"\n2. Scores (similitud con cada Key):")
+print(f"\n2. Scores brutos (producto punto con cada vector Key):")
 scores = q_salto @ K.T / np.sqrt(d_k)
 for i, word in enumerate(words):
     print(f"   Score con '{word}': {scores[i]:.4f}")
 
-print(f"\n3. Softmax (convertir a probabilidades):")
+print(f"\n3. Softmax Aplicado (convertir en probabilidades que sumen 1):")
 for i, word in enumerate(words):
-    print(f"   Atención a '{word}': {attn_weights[2, i]:.4f} ({attn_weights[2, i]*100:.1f}%)")
+    print(f"   Atención delegada a '{word}': {attn_weights[2, i]:.4f} ({attn_weights[2, i]*100:.1f}%)")
 
-print(f"\n4. Output = weighted sum de Values")
-print(f"   Output 'saltó': {output[2][:3].round(2)}... (dim={d_v})")
+print(f"\n4. Salida calculada = sumatoria ponderada de los vectores Values")
+print(f"   Vector final 'saltó': {output[2][:3].round(2)}... (dim={d_v})")
 ```
 
 ---
@@ -344,7 +353,6 @@ Pero para **generación de texto** (GPT), hay un problema: si el modelo puede ve
 
 ```{code-cell} ipython3
 import numpy as np
-import matplotlib.pyplot as plt
 
 def softmax(x):
     exp_x = np.exp(x - np.max(x, axis=-1, keepdims=True))
@@ -369,10 +377,17 @@ def causal_attention(Q, K, V):
     
     # Máscara causal: -1e9 en posiciones futuras (triángulo superior)
     causal_mask = np.triu(np.ones((seq_len, seq_len)) * -1e9, k=1)
+    # Los tokens futuros ahora tienen un score matemáticamente inalcanzable
     scores = scores + causal_mask
     
     weights = softmax(scores)
     return weights @ V, weights
+```
+
+Vamos a poner a prueba ambos tipos de atención utilizando la frase "El gato saltó sobre la cerca". Fíjate bien en la matriz de la atención causal en su forma de triángulo perfecto; esa es la razón por la que los LLMs que generan texto no pueden hacer "trampa".
+
+```{code-cell} ipython3
+import matplotlib.pyplot as plt
 
 # Ejemplo: frase "El gato saltó sobre la cerca"
 np.random.seed(42)
@@ -419,11 +434,11 @@ plt.suptitle('Comparación: ¿A qué tokens puede atender cada posición?',
              y=1.02, fontsize=13, weight='bold')
 plt.show()
 
-print("Observa:")
-print("  Bidireccional: cada fila suma 1.0 distribuido en TODOS los tokens")
-print("  Causal:        cada fila suma 1.0 distribuido solo en tokens ANTERIORES")
-print(f"\n  'saltó' (pos 2) en causal solo ve: {words[:3]}")
-print(f"  'saltó' (pos 2) en bidir   ve todos: {words}")
+print("Observaciones clave de la máscara:")
+print("  Bidireccional: la suma de probabilidad 1.0 se distribuye en TODOS los tokens")
+print("  Causal:        la suma de probabilidad 1.0 se distribuye ÚNICAMENTE en tokens ANTERIORES")
+print(f"\n  Por ejemplo, 'saltó' (pos 2) en atención causal solo ve el pasado de la frase: {words[:3]}")
+print(f"  Pero 'saltó' (pos 2) en bidireccional ve todo incluyendo el futuro: {words}")
 ```
 
 ```{admonition} 🔑 Implicación para BERT vs GPT
@@ -540,7 +555,7 @@ def positional_encoding(max_len, d_model):
 
     return pe
 
-# Generar codificaciones posicionales
+# Generar codificaciones posicionales de ejemplo
 max_len = 100
 d_model = 128
 
@@ -548,79 +563,91 @@ pe = positional_encoding(max_len, d_model)
 
 print("Codificación Posicional de Transformers")
 print("=" * 60)
-print(f"Longitud máxima de secuencia: {max_len}")
-print(f"Dimensión del modelo: {d_model}")
-print(f"\nForma de PE: {pe.shape}")
+print(f"Longitud máxima de la secuencia (tokens): {max_len}")
+print(f"Dimensión del embedding del modelo: {d_model}")
+print(f"\nFormato final de la Matriz de PE: {pe.shape}")
+```
 
-# Visualización
+La clave detrás de este intrincado cálculo con osciladores matemáticos (seno y coseno) es poder inyectar un patrón único a cada token sin tener que entrenar parámetros adicionales. 
+
+Para desmitificar estas fórmulas, visualicemos el patrón generado y cómo se ve representado posicionalmente:
+
+```{code-cell} ipython3
+import matplotlib.pyplot as plt
+
+# Visualización analítica de PE
 fig, axes = plt.subplots(2, 2, figsize=(14, 10))
 
 # 1. Heatmap completo de codificaciones posicionales
 im = axes[0, 0].imshow(pe.T, cmap='RdBu', aspect='auto', vmin=-1, vmax=1)
-axes[0, 0].set_xlabel('Posición en la Secuencia', fontsize=11)
-axes[0, 0].set_ylabel('Dimensión del Embedding', fontsize=11)
-axes[0, 0].set_title('Codificaciones Posicionales (Heatmap)', fontsize=12, weight='bold')
-plt.colorbar(im, ax=axes[0, 0], label='Valor')
+axes[0, 0].set_xlabel('Posición temporal en la Secuencia', fontsize=11)
+axes[0, 0].set_ylabel('Dimensión individual del Embedding', fontsize=11)
+axes[0, 0].set_title('Codificaciones Posicionales (Heatmap completo)', fontsize=12, weight='bold')
+plt.colorbar(im, ax=axes[0, 0], label='Valor de Frecuencia Oscilatoria')
 
-# 2. Primeras 10 dimensiones para las primeras 50 posiciones
+# 2. Zoom In: Primeras 10 dimensiones para las primeras 50 posiciones
 axes[0, 1].imshow(pe[:50, :10].T, cmap='RdBu', aspect='auto', vmin=-1, vmax=1)
 axes[0, 1].set_xlabel('Posición', fontsize=11)
 axes[0, 1].set_ylabel('Dimensión', fontsize=11)
 axes[0, 1].set_title('Zoom: Primeras 10 dimensiones, 50 posiciones', fontsize=12, weight='bold')
 plt.colorbar(axes[0, 1].images[0], ax=axes[0, 1])
 
-# 3. Patrones sinusoidales para diferentes dimensiones
+# 3. Ondas puras: Patrones sinusoidales para diferentes dimensiones
 positions = np.arange(max_len)
 dims_to_plot = [0, 4, 16, 64]
 for dim in dims_to_plot:
     axes[1, 0].plot(positions, pe[:, dim], label=f'Dim {dim}', linewidth=1.5)
 
-axes[1, 0].set_xlabel('Posición en la Secuencia', fontsize=11)
-axes[1, 0].set_ylabel('Valor de PE', fontsize=11)
-axes[1, 0].set_title('Patrones Sinusoidales por Dimensión', fontsize=12, weight='bold')
+axes[1, 0].set_xlabel('Posición relativa en la Secuencia', fontsize=11)
+axes[1, 0].set_ylabel('Valor Numérico de PE', fontsize=11)
+axes[1, 0].set_title('Patrones Sinusoidales por Dimensión individual', fontsize=12, weight='bold')
 axes[1, 0].legend()
 axes[1, 0].grid(True, alpha=0.3)
 
-# 4. Similitud entre posiciones (producto punto)
-# Calcular similitud entre posición 0 y todas las demás
+# 4. Similitud entre posiciones cercanas vs lejanas (producto punto / cosine similarity)
 pos_0 = pe[0]
 similarities = [np.dot(pos_0, pe[i]) / (np.linalg.norm(pos_0) * np.linalg.norm(pe[i]))
                 for i in range(max_len)]
 
 axes[1, 1].plot(positions, similarities, 'b-', linewidth=2)
-axes[1, 1].set_xlabel('Posición', fontsize=11)
-axes[1, 1].set_ylabel('Similitud con Posición 0', fontsize=11)
-axes[1, 1].set_title('Similitud Posicional (Cosine Similarity)', fontsize=12, weight='bold')
+axes[1, 1].set_xlabel('Token subsecuente (Posición en N)', fontsize=11)
+axes[1, 1].set_ylabel('Similitud Cosmética relativa a Posición 0', fontsize=11)
+axes[1, 1].set_title('Decaimiento de Similitud Posicional a Mayor Distancia', fontsize=12, weight='bold')
 axes[1, 1].grid(True, alpha=0.3)
 axes[1, 1].axhline(y=0, color='red', linestyle='--', alpha=0.5)
 
 plt.tight_layout()
 plt.show()
+```
 
-# Mostrar valores específicos
-print("\nEjemplos de Codificaciones Posicionales:")
+Como vemos en la gráfica de *Similitud Posicional*, la relevancia disminuye suavemente a medida que nos alejamos del token evaluado, imitando el funcionamiento cognitivo de un lector respecto a cuan relevante son palabras cercanas contra palabras distantes.
+
+```{code-cell} ipython3
+import numpy as np
+
+# Extraer y mostrar valores fraccionales concretos
+print("Ejemplos en bruto de Positional Encodings (PE):")
 print("-" * 60)
 for pos in [0, 1, 5, 10]:
-    print(f"Posición {pos}: {pe[pos, :5].round(3)}... (primeras 5 dims)")
+    print(f"Posición escalar {pos}: {pe[pos, :5].round(3)}... (solo primeras 5 dimensiones mostradas)")
 
-print("\n¿Por qué funciona?")
+print("\n¿Por qué usamos esta arquitectura matemática en lugar de solo asignar '0, 1, 2, ...'?")
 print("-" * 60)
-print("1. Frecuencias diferentes capturan relaciones a diferentes escalas")
-print("2. Seno/Coseno permiten interpolar posiciones no vistas")
-print("3. Posiciones relativas mantienen patrones consistentes")
-print("4. El modelo puede aprender a usar estas señales posicionales")
+print("1. Frecuencias distintas capturan ciclos y relaciones semánticas a diferentes escalas.")
+print("2. Seno/Coseno permite interpolar fácilmente posiciones en secuencias más largas de lo esperado.")
+print("3. La diferencia relativa entre posiciones mantiene patrones matemáticos consistentes y diferenciables.")
+print("4. El algoritmo de auto-atención aprovecha estas señales relacionales sin coste de backpropagation extra.")
 
-# Demostrar adición a embeddings
-print("\n\nAdición de PE a Embeddings:")
+# Adición escalar a un embedding artificial
+print("\n\nSuma Directa: Agregando el PE al Embedding Semántico Original")
 print("-" * 60)
-# Simular un embedding de palabra
-word_embedding = np.random.randn(d_model) * 0.5
-pos = 5
+word_embedding = np.random.randn(d_model) * 0.5  # Ejemplo: vector semántico de "gato"
+pos = 5                                          # Ejemplo: palabra colocada en la posicion 5 del array
+final_embedding = word_embedding + pe[pos]       # Agregando el concepto de "tiempo" (posición espacial)
 
-print(f"Embedding original (pos {pos}): {word_embedding[:5].round(3)}...")
-print(f"PE para posición {pos}:         {pe[pos, :5].round(3)}...")
-final_embedding = word_embedding + pe[pos]
-print(f"Embedding final:                {final_embedding[:5].round(3)}...")
+print(f"Embedding puramente semántico original: {word_embedding[:5].round(3)}... (dim: {d_model})")
+print(f"Vector posicional para el índice [pos={pos}]:      {pe[pos, :5].round(3)}...")
+print(f"Embedding final con esteroides temporales: {final_embedding[:5].round(3)}...")
 ```
 
 Esto crea patrones sinusoidales a diferentes frecuencias, permitiendo al modelo aprender relaciones posicionales.
@@ -706,8 +733,14 @@ for i in range(batch_size):
     norm_mean = np.mean(activations_norm[i])
     norm_var = np.var(activations_norm[i])
     print(f"{i:<10} {orig_mean:<20.4f} {orig_var:<20.4f} {norm_mean:<15.6f} {norm_var:<15.4f}")
+```
 
-# Visualización
+La normalización no solo afecta los números aislados, reorganiza distribuciones completas de probabilidad evitando predecir valores inestables. Las gráficas siguientes son reveladoras porque demuestran visualmente este efecto estabilizador:
+
+```{code-cell} ipython3
+import matplotlib.pyplot as plt
+
+# Interfaz comparativa de estabilización
 fig, axes = plt.subplots(2, 2, figsize=(14, 10))
 
 # 1. Distribución antes de normalización
@@ -751,8 +784,10 @@ axes[1, 1].grid(True, alpha=0.3, axis='y')
 
 plt.tight_layout()
 plt.show()
+```
 
-print("\n\nBeneficios de Layer Normalization:")
+# Imprimir lecciones de MLOps
+print("\n\nBeneficios tangibles de Layer Normalization:")
 print("-" * 60)
 print("1. Estabiliza el entrenamiento al mantener distribuciones consistentes")
 print("2. Permite usar tasas de aprendizaje más altas")
@@ -792,7 +827,6 @@ Ejemplo (d_model=768):
 
 ```{code-cell} ipython3
 import numpy as np
-import matplotlib.pyplot as plt
 
 def relu(x):
     return np.maximum(0, x)
@@ -806,7 +840,7 @@ def feed_forward_network(x, W1, b1, W2, b2):
     W2: weights capa 2 (d_ff, d_model)
     b2: bias capa 2 (d_model,)
     """
-    # Capa 1: expandir a dimensión mayor
+    # Capa 1: expandir a dimensión mayor y aplicar no linealidad
     hidden = relu(x @ W1 + b1)
 
     # Capa 2: proyectar de vuelta a dimensión original
@@ -817,18 +851,18 @@ def feed_forward_network(x, W1, b1, W2, b2):
 # Configuración
 np.random.seed(42)
 d_model = 64  # Dimensión del modelo
-d_ff = 256    # Dimensión de la capa intermedia (4x)
+d_ff = 256    # Dimensión de la capa intermedia (usualmente 4x el d_model)
 
-# Inicializar pesos
+# Inicializar pesos aleatoriamente
 W1 = np.random.randn(d_model, d_ff) * 0.1
 b1 = np.zeros(d_ff)
 W2 = np.random.randn(d_ff, d_model) * 0.1
 b2 = np.zeros(d_model)
 
-# Input simulado (salida de atención)
+# Input simulado (salida conceptual de la etapa de atención)
 x = np.random.randn(d_model)
 
-# Forward pass
+# Ejecutar el pase hacia adelante
 output, hidden = feed_forward_network(x, W1, b1, W2, b2)
 
 print("Feed-Forward Network (FFN) en Transformers")
@@ -847,11 +881,17 @@ print(f"\nEjemplo Forward Pass:")
 print(f"  Input:  {x[:5].round(3)}... (primeros 5 valores)")
 print(f"  Hidden: {hidden[:5].round(3)}... (después de ReLU, primeros 5)")
 print(f"  Output: {output[:5].round(3)}... (primeros 5 valores)")
+```
 
-# Visualización
+A diferencia de la Atención Global, este mini-modelo interno (FFN) solo se centra en el token posicionado individualmente, extrayendo reglas abstractas con la ayuda de la no linealidad que nos da el ReLU.
+
+```{code-cell} ipython3
+import matplotlib.pyplot as plt
+
+# Visualización analítica de FFN
 fig, axes = plt.subplots(2, 2, figsize=(14, 10))
 
-# 1. Arquitectura visual
+# 1. Arquitectura visual de cono-expansión
 ax = axes[0, 0]
 ax.axis('off')
 
@@ -860,22 +900,11 @@ input_y = np.linspace(0.1, 0.9, min(10, d_model))
 hidden_y = np.linspace(0.05, 0.95, min(20, d_ff))
 output_y = np.linspace(0.1, 0.9, min(10, d_model))
 
-# Input layer
-for y in input_y:
-    circle = plt.Circle((0.1, y), 0.02, color='lightblue', ec='black', zorder=3)
-    ax.add_patch(circle)
+# Capas representativas
+for y in input_y: ax.add_patch(plt.Circle((0.1, y), 0.02, color='lightblue', ec='black', zorder=3))
+for y in hidden_y: ax.add_patch(plt.Circle((0.5, y), 0.015, color='lightgreen', ec='black', zorder=3))
+for y in output_y: ax.add_patch(plt.Circle((0.9, y), 0.02, color='lightcoral', ec='black', zorder=3))
 
-# Hidden layer
-for y in hidden_y:
-    circle = plt.Circle((0.5, y), 0.015, color='lightgreen', ec='black', zorder=3)
-    ax.add_patch(circle)
-
-# Output layer
-for y in output_y:
-    circle = plt.Circle((0.9, y), 0.02, color='lightcoral', ec='black', zorder=3)
-    ax.add_patch(circle)
-
-# Conexiones (muestra solo algunas)
 for yi in input_y[::2]:
     for yh in hidden_y[::4]:
         ax.plot([0.12, 0.485], [yi, yh], 'gray', alpha=0.2, linewidth=0.5, zorder=1)
@@ -884,61 +913,55 @@ for yh in hidden_y[::4]:
     for yo in output_y[::2]:
         ax.plot([0.515, 0.88], [yh, yo], 'gray', alpha=0.2, linewidth=0.5, zorder=1)
 
-# Labels
 ax.text(0.1, 0.05, f'Input\n({d_model})', ha='center', fontsize=10, weight='bold')
 ax.text(0.5, 0.02, f'Hidden + ReLU\n({d_ff})', ha='center', fontsize=10, weight='bold')
 ax.text(0.9, 0.05, f'Output\n({d_model})', ha='center', fontsize=10, weight='bold')
-
 ax.set_xlim(0, 1)
 ax.set_ylim(0, 1)
-ax.set_title('Arquitectura FFN', fontsize=12, weight='bold')
+ax.set_title('Arquitectura Funcional FFN', fontsize=12, weight='bold')
 
 # 2. Distribución de activaciones
 axes[0, 1].hist(x, bins=30, alpha=0.7, color='blue', edgecolor='black', label='Input')
 axes[0, 1].hist(output, bins=30, alpha=0.7, color='red', edgecolor='black', label='Output')
 axes[0, 1].set_xlabel('Valor', fontsize=11)
 axes[0, 1].set_ylabel('Frecuencia', fontsize=11)
-axes[0, 1].set_title('Distribución de Activaciones', fontsize=12, weight='bold')
+axes[0, 1].set_title('Distribución de Cargas', fontsize=12, weight='bold')
 axes[0, 1].legend()
 axes[0, 1].grid(True, alpha=0.3, axis='y')
 
-# 3. Efecto de ReLU en capa oculta
+# 3. Efecto de ReLU aniquilador de negatividad
 pre_relu = x @ W1 + b1
 post_relu = hidden
 
-axes[1, 0].scatter(range(len(pre_relu[:50])), pre_relu[:50],
-                  alpha=0.6, s=20, label='Antes de ReLU', color='orange')
-axes[1, 0].scatter(range(len(post_relu[:50])), post_relu[:50],
-                  alpha=0.6, s=20, label='Después de ReLU', color='green')
+axes[1, 0].scatter(range(len(pre_relu[:50])), pre_relu[:50], alpha=0.6, s=20, label='Antes de ReLU', color='orange')
+axes[1, 0].scatter(range(len(post_relu[:50])), post_relu[:50], alpha=0.6, s=20, label='Después de ReLU', color='green')
 axes[1, 0].axhline(y=0, color='red', linestyle='--', linewidth=2, alpha=0.7)
 axes[1, 0].set_xlabel('Neurona (primeras 50)', fontsize=11)
 axes[1, 0].set_ylabel('Activación', fontsize=11)
-axes[1, 0].set_title('Efecto de ReLU en Capa Oculta', fontsize=12, weight='bold')
+axes[1, 0].set_title('Efecto de ReLU en Capa Oculta ("Dead Neurons")', fontsize=12, weight='bold')
 axes[1, 0].legend()
 axes[1, 0].grid(True, alpha=0.3)
 
 # 4. Comparación input vs output
 axes[1, 1].plot(x[:50], 'b-', linewidth=2, label='Input', alpha=0.7)
 axes[1, 1].plot(output[:50], 'r-', linewidth=2, label='Output', alpha=0.7)
-axes[1, 1].set_xlabel('Dimensión (primeras 50)', fontsize=11)
-axes[1, 1].set_ylabel('Valor', fontsize=11)
-axes[1, 1].set_title('Input vs Output del FFN', fontsize=12, weight='bold')
+axes[1, 1].set_xlabel('Dimensión observada', fontsize=11)
+axes[1, 1].set_ylabel('Valor del Peso', fontsize=11)
+axes[1, 1].set_title('Señal Input vs Señal Output', fontsize=12, weight='bold')
 axes[1, 1].legend()
 axes[1, 1].grid(True, alpha=0.3)
-axes[1, 1].axhline(y=0, color='black', linestyle='--', linewidth=1, alpha=0.3)
 
 plt.tight_layout()
 plt.show()
 
-print("\n\nPropósito del FFN:")
+print("\n\nPropósitos arquitectónicos del Feed-Forward:")
 print("-" * 60)
-print("1. Introduce NO-LINEALIDAD adicional (crucial para capacidad del modelo)")
-print("2. Procesa cada posición INDEPENDIENTEMENTE (no hay interacción entre tokens)")
-print("3. Expande y comprime información (bottleneck ayuda a generalizar)")
-print("4. Factor 4x es estándar, pero varía (GPT-3 usa ~4x, algunos usan hasta 8x)")
+print("1. NO-LINEALIDAD adicional: Expresa mayor capacidad de retención relacional profunda.")
+print("2. Procesamiento INDIVIDUAL: Analiza este token sin interactuar posicionalmente con los vecinos temporales.")
+print("3. Efecto Cuello de Botella: Expande para explorar relaciones y comprime para refinar abstracciones latentes.")
 
 sparsity = np.sum(hidden == 0) / len(hidden) * 100
-print(f"\nEsparsidad en capa oculta (% de ceros por ReLU): {sparsity:.1f}%")
+print(f"\nEsparsidad calculada (Métrica de cuantas neuronas son apagadas por el umbral 0 del ReLU): {sparsity:.1f}%")
 ```
 
 Esta red **introduce no-linealidad adicional** y permite aprender transformaciones más complejas por token.
@@ -1097,8 +1120,14 @@ print(f"  Output final:    {x_output.shape}")
 print(f"\nEstadísticas:")
 print(f"  Input - media: {x_input.mean():.4f}, std: {x_input.std():.4f}")
 print(f"  Output - media: {x_output.mean():.4f}, std: {x_output.std():.4f}")
+```
 
-# Visualización
+La verdadera belleza de la arquitectura Transformers se vuelve evidente cuando destripamos sus estados internos gráficamente. ¡Al examinar el diagrama de flujo y las estadísticas, notaremos que las representaciones abstractas de cada token maduran sin que el modelo colapse! Todo gracias a la normalización constante y a las conexiones residuales. 
+
+```{code-cell} ipython3
+import matplotlib.pyplot as plt
+
+# Visualización analítica de los procesos intermedios
 fig = plt.figure(figsize=(16, 10))
 gs = fig.add_gridspec(3, 3, hspace=0.3, wspace=0.3)
 
@@ -1193,10 +1222,14 @@ ax7.axhline(y=0, color='black', linestyle='-', linewidth=0.5)
 
 plt.suptitle('Bloque Transformer: Visualización Completa', fontsize=14, weight='bold', y=0.995)
 plt.show()
+```
 
-print("\n\nComponentes Clave:")
+Por último, cerramos con el resumen de la genialidad técnica de Vaswani et al. que cimentó la base matemática para *Attention is All You Need*.
+
+```{code-cell} ipython3
+print("Resumen de Anatomía Modular del Transformer:")
 print("-" * 60)
-print("1. ATENCIÓN: Permite que cada token 'vea' otros tokens")
+print("1. ATENCIÓN: Permite que cada token 'vea' a los otros para construir contexto relativo.")
 print("2. RESIDUAL CONNECTIONS: x + sublayer(x) → ayuda al flujo de gradientes")
 print("3. LAYER NORM: Estabiliza distribuciones → entrenamiento más rápido")
 print("4. FFN: Introduce no-linealidad y capacidad expresiva")
@@ -1371,4 +1404,10 @@ Predicción:             Siguiente token más probable
 - Ba, J., Kiros, J., & Hinton, G. (2016). [Layer Normalization](https://arxiv.org/abs/1607.06450). arXiv:1607.06450.
 - He, K. et al. (2016). [Deep Residual Learning for Image Recognition](https://arxiv.org/abs/1512.03385). CVPR.
 - Bahdanau, D., Cho, K., & Bengio, Y. (2015). [Neural Machine Translation by Jointly Learning to Align and Translate](https://arxiv.org/abs/1409.0473). ICLR 2015.
+
+---
+
+## Lecturas Recomendadas
+
+- **D2L: The Transformer Architecture** - [Capítulo 11.7](https://d2l.ai/chapter_attention-mechanisms-and-transformers/transformer.html). Una de las mejores explicaciones visuales y de código del Transformer original.
 

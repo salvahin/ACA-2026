@@ -4,6 +4,7 @@ parts:
   - caption: Información General
     chapters:
       - file: calendario
+      - file: syllabus
 
   - caption: Inteligencia Artificial
     chapters:

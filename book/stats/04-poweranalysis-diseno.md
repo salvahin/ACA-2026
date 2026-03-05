@@ -746,3 +746,9 @@ Para tu diseño experimental:
 - Cohen, J. (1988). [Statistical Power Analysis for the Behavioral Sciences](https://www.routledge.com/Statistical-Power-Analysis-for-the-Behavioral-Sciences/Cohen/p/book/9780805802832) (2nd ed.). Routledge.
 - Cohen, J. (1992). [A Power Primer](https://doi.org/10.1037/0033-2909.112.1.155). Psychological Bulletin.
 - Campbell, D. & Stanley, J. (1963). Experimental and Quasi-Experimental Designs for Research. Houghton Mifflin.
+
+---
+
+## Lecturas Recomendadas
+
+- **D2L: What Is Hyperparameter Optimization?** - [Capítulo 19.1](https://d2l.ai/chapter_hyperparameter-optimization/hyperopt-intro.html). Útil como contexto avanzado para el diseño experimental.

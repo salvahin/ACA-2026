@@ -641,7 +641,11 @@ train_loss_overfit = 2.0 * np.exp(-0.12 * epochs) + np.random.normal(0, 0.02, 50
 val_loss_overfit = 2.0 * np.exp(-0.08 * epochs[:20]).tolist() + \
                    (0.8 + 0.02 * np.arange(30)).tolist()
 val_loss_overfit = np.array(val_loss_overfit) + np.random.normal(0, 0.05, 50)
+```
 
+Un buen científico de datos sabe **leer curvas**. Generalmente, se grafican ambos indicadores `(Train / Validation)` para vigilar este punto de inflexión donde empezamos a sobre-entrenar (memorizar) en lugar de aprender.
+
+```{code-cell} ipython3
 # Visualización
 fig, axes = plt.subplots(1, 2, figsize=(14, 5))
 
@@ -669,7 +673,11 @@ axes[1].set_ylim(0, 2.5)
 plt.tight_layout()
 plt.savefig('overfitting_detection.png', dpi=150, bbox_inches='tight')
 plt.show()
+```
 
+Por supuesto, no podemos depender siempre del ojo humano para detectar estos estallidos. Técnicamente hablando, el patrón visual de la derecha puede ser modelado como un algoritmo de automatización ("Autocorrector" de Early Stopping) monitorizando qué tantas épocas consecutivas duran sin reducir el Loss.
+
+```{code-cell} ipython3
 # Análisis automático
 def detectar_overfitting(train_loss, val_loss, patience=5):
     """
@@ -776,8 +784,12 @@ def get_git_info():
         pass
 
     return info
+```
 
-# Ejemplo de uso
+Una vez que tenemos los envoltorios definidos en base a subprocesos, simplemente los consultamos e interrogamos el entorno local:
+
+```{code-cell} ipython3
+# Ejemplo de uso interrogativo
 print("Git Hash corto:")
 print(f"  {get_git_hash()}")
 
@@ -785,8 +797,12 @@ print("\nInformación completa de Git:")
 git_info = get_git_info()
 for key, value in git_info.items():
     print(f"  {key}: {value}")
+```
 
-# Ejemplo: Incluir en config de experimento
+La forma habitual en que inyectamos esto en nuestro script diario de modelaje es incluir esta metadata en nuestro YAML de Hydra (u objeto de experimento como Weights+Biases), documentando todo de manera transparente.
+
+```{code-cell} ipython3
+# Ejemplo: Empaquetar estado para incluír en la base de datos experimental
 experiment_config = {
     "model": "codellama-7b",
     "learning_rate": 1e-4,

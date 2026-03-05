@@ -311,15 +311,30 @@ class Perceptron:
     def predict(self, X):
         linear_output = np.dot(X, self.weights) + self.bias
         return np.where(linear_output >= 0, 1, 0)
+```
 
-# Demostración: Problema AND (linealmente separable)
+A continuación, vamos a evaluar cómo nuestro brillante (pero limitado) perceptrón intenta resolver dos problemas matemáticos elementales clásicos: **La compuerta AND** (Linealmente separable) y **La compuerta XOR** (No Lineal).
+
+```{code-cell} ipython3
+# Demostración en problemas analíticos lógicos
+# 1. Compuerta AND (Debería funcionar)
 X_and = np.array([[0, 0], [0, 1], [1, 0], [1, 1]])
 y_and = np.array([0, 0, 0, 1])
 
 perceptron = Perceptron()
 perceptron.fit(X_and, y_and)
 
-# Visualización
+# 2. Compuerta XOR (Debería fallar catastróficamente por limitación matemática)
+X_xor = np.array([[0, 0], [0, 1], [1, 0], [1, 1]])
+y_xor = np.array([0, 1, 1, 0])
+```
+
+Para demostrar lo que sucede topológicamente, vamos a trazar la frontera geométrica de decisión sobre un plano cartesiano intentando segmentar ambos conjuntos.
+
+```{code-cell} ipython3
+import matplotlib.pyplot as plt
+
+# Visualización comparativa
 fig, axes = plt.subplots(1, 2, figsize=(12, 5))
 
 # AND (funciona)
@@ -342,10 +357,7 @@ axes[0].set_ylabel('x2')
 axes[0].legend()
 axes[0].grid(True, alpha=0.3)
 
-# XOR (no funciona)
-X_xor = np.array([[0, 0], [0, 1], [1, 0], [1, 1]])
-y_xor = np.array([0, 1, 1, 0])
-
+# Dibujando el problema XOR (no funciona puesto que no es linealmente separable)
 axes[1].scatter(X_xor[y_xor==0][:, 0], X_xor[y_xor==0][:, 1],
                 c='blue', s=100, label='Clase 0', edgecolors='k')
 axes[1].scatter(X_xor[y_xor==1][:, 0], X_xor[y_xor==1][:, 1],
@@ -450,16 +462,28 @@ class NeuralNetwork:
                 self.biases[i] -= self.lr * np.sum(deltas[i], axis=0, keepdims=True)
 
         return losses
+```
 
-# Generar datos no lineales (problema XOR-like)
+Teniendo la red estructural base definida ahora creamos un "Dataset No Lineal" con topología de Lunas cruzadas, el modelo será entrenado durante mil épocas iterativas con una tasa de aprendizaje alta.
+
+```{code-cell} ipython3
+from sklearn.datasets import make_moons
+
+# Generar datos no lineales bidimensionales (topología XOR-like)
 X, y = make_moons(n_samples=300, noise=0.15, random_state=42)
 y = y.reshape(-1, 1)
 
-# Entrenar red neuronal multicapa
+# Instanciar y Entrenar red neuronal multicapa profunda [Input, Hidden_1, Hidden_2, Output]
 nn = NeuralNetwork([2, 8, 4, 1], learning_rate=0.3)
 losses = nn.train(X, y, epochs=1000)
+```
 
-# Visualización
+Por último verifiquemos computacionalmente dibujando la "curva de aprendizaje" a lo largo de las mil épocas y también trazando topológicamente la nueva y sinuosa barrera que fue capaz de inferir nuestro modelo sobre el espacio bi-dimensional.
+
+```{code-cell} ipython3
+import matplotlib.pyplot as plt
+
+# Interfaz Visual Múltiple
 fig, axes = plt.subplots(1, 3, figsize=(16, 5))
 
 # 1. Datos y frontera de decisión

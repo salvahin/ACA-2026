@@ -620,3 +620,9 @@ def mystery_kernel(x_ptr, y_ptr, n, BLOCK_SIZE: tl.constexpr):
 - NVIDIA. [Matrix Multiplication Background](https://docs.nvidia.com/deeplearning/performance/dl-performance-matrix-multiplication/). NVIDIA Docs.
 - Triton. [Matrix Multiplication Tutorial](https://triton-lang.org/main/getting-started/tutorials/03-matrix-multiplication.html). Triton Docs.
 - Hwu, W., Kirk, D., & El Hajj, I. (2022). Programming Massively Parallel Processors (4th ed.). Morgan Kaufmann.
+
+---
+
+## Lecturas Recomendadas
+
+- **D2L: Training on Multiple GPUs** - [Capítulo 13.5](https://d2l.ai/chapter_computational-performance/multiple-gpus.html). Conceptos avanzados de paralelismo fundamentales para escalar el rendimiento.

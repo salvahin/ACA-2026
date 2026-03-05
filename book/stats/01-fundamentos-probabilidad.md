@@ -723,3 +723,9 @@ Si X = número de kernels válidos en 10 intentos y p(X=k) = C(10,k) × 0.8^k ×
 - Kolmogorov, A. (1933). Foundations of the Theory of Probability. Chelsea Publishing.
 - Ross, S. (2014). [A First Course in Probability](https://www.pearson.com/us/higher-education/program/Ross-First-Course-in-Probability-A-9th-Edition/PGM110742.html) (9th ed.). Pearson.
 - DeGroot, M. & Schervish, M. (2012). Probability and Statistics (4th ed.). Pearson.
+
+---
+
+## Lecturas Recomendadas
+
+- **D2L: Probability and Statistics** - [Capítulo 2.6](https://d2l.ai/chapter_preliminaries/probability.html). Referencia sólida para los fundamentos de probabilidad aplicados a ML.

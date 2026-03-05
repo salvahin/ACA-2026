@@ -44,6 +44,13 @@ Al finalizar esta lectura podrás:
 ## Contexto
 Aprenderás cómo los LLMs generan texto token por token mediante procesos autoregresivos. Comprenderás estrategias de muestreo (greedy, Top-K, Top-P) y su impacto en creatividad vs coherencia.
 
+```{admonition} 📚 Prerequisito
+:class: note
+Antes de esta lección debes haber leido:
+- **Lectura 1: IA Clásica vs Generativa** — Paradigmas de IA
+- **Lectura 2: Fundamentos de Deep Learning** — Redes neuronales, activaciones y backprop
+```
+
 ## Introducción
 
 Hasta ahora, hemos entendido cómo funcionan los Transformers: procesan entrada, aplican atención, y producen representaciones. Pero ¿cómo generan texto un token por vez, como lo hace ChatGPT?
@@ -302,7 +309,7 @@ import numpy as np
 import plotly.graph_objects as go
 
 logits = np.array([2.0, 1.0, 0.5, 0.1, -0.5])
-tokens = ['the', 'a', 'an', 'my', 'his']
+tokens = ['el', 'un', 'una', 'mi', 'su']
 
 temperatures = [0.1, 0.5, 1.0, 1.5, 2.0]
 fig = go.Figure()
@@ -586,10 +593,146 @@ Paso 4: Mantén los K mejores caminos
 Repite hasta longitud máxima o hasta que generes [END]
 ```
 
-**Ventaja:** Explora múltiples caminos, mejor probabilidad general
+**Ventaja:** Explora múltiples caminos, mejor probabilidad general  
 **Desventaja:** Computacionalmente costoso; requiere mantener múltiples secuencias
 
+### Implementación de Beam Search
+
+```{code-cell} ipython3
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
+
+def beam_search(log_prob_fn, initial_token, vocab, beam_width=3, max_steps=4):
+    """
+    Beam Search simplificado.
+    
+    Args:
+        log_prob_fn: función que dado una secuencia devuelve log-probs del siguiente token
+        initial_token: token de inicio (índice en vocab)
+        vocab: lista de tokens (strings)
+        beam_width: número de beams a mantener (K)
+        max_steps: número máximo de tokens a generar
+    
+    Returns:
+        Lista de (log_prob, secuencia) de los mejores beams al final
+        Historia de expansiones para visualización
+    """
+    # Cada beam: (log_probabilidad_acumulada, lista_de_tokens)
+    beams = [(0.0, [initial_token])]
+    history = [list(beams)]  # para visualizar el árbol
+
+    for step in range(max_steps):
+        candidates = []
+        for log_prob, tokens in beams:
+            # Obtener distribución sobre siguiente token
+            next_log_probs = log_prob_fn(tokens)
+            
+            # Expandir: considerar todos los tokens del vocabulario
+            for token_idx, token_log_prob in enumerate(next_log_probs):
+                new_log_prob = log_prob + token_log_prob
+                candidates.append((new_log_prob, tokens + [token_idx]))
+        
+        # Mantener solo los K mejores candidatos (por log-prob acumulada)
+        candidates.sort(key=lambda x: x[0], reverse=True)
+        beams = candidates[:beam_width]
+        history.append(list(beams))
+
+    return beams, history
+
+
+# Vocabulario simplificado de prueba
+vocab = ['[START]', 'el', 'gato', 'saltó', 'sobre', 'la', 'cerca', '[END]']
+V = len(vocab)
+
+# Distribución de siguiente token simulada (para demostración)
+# En la práctica, esto sería el LLM
+np.random.seed(7)
+transition_matrix = np.random.dirichlet(np.ones(V) * 0.5, size=V)
+
+def log_prob_fn(token_sequence):
+    """Distribución de siguiente token dado el último token."""
+    last_token = token_sequence[-1]
+    return np.log(transition_matrix[last_token] + 1e-10)
+
+# Ejecutar beam search desde [START] (token 0)
+best_beams, history = beam_search(log_prob_fn, initial_token=0, vocab=vocab,
+                                   beam_width=3, max_steps=4)
+
+# Resultados
+print("=== Beam Search (K=3) ===")
+print(f"Vocabulario: {vocab}\n")
+for rank, (lp, seq) in enumerate(best_beams, 1):
+    words_seq = [vocab[t] for t in seq]
+    print(f"  Beam {rank}: {' '.join(words_seq):30s}  log-prob={lp:.3f}  prob={np.exp(lp):.6f}")
+```
+
+```{code-cell} ipython3
+# Visualización del árbol de búsqueda
+fig, ax = plt.subplots(figsize=(14, 6))
+
+colors = ['#2196F3', '#FF5722', '#4CAF50']  # azul, naranja, verde para cada beam
+
+step_labels = ['Inicio', 'Paso 1', 'Paso 2', 'Paso 3', 'Paso 4']
+x_positions = np.linspace(0.05, 0.95, len(history))
+
+# Dibujar nodos y conexiones
+prev_coords = {}  # mapa de seq_tuple → (x, y) de nodo anterior
+
+for step_idx, (step_beams, x_pos) in enumerate(zip(history, x_positions)):
+    n = len(step_beams)
+    y_positions = np.linspace(0.15, 0.85, max(n, 1))
+    
+    for beam_rank, ((lp, seq), y_pos) in enumerate(zip(step_beams, y_positions)):
+        label = vocab[seq[-1]] if seq else '[START]'
+        color = colors[beam_rank % len(colors)]
+        
+        # Nodo
+        ax.plot(x_pos, y_pos, 'o', markersize=22,
+                color=color, alpha=0.85, zorder=3)
+        ax.text(x_pos, y_pos, label, ha='center', va='center',
+                fontsize=8, weight='bold', color='white', zorder=4)
+        ax.text(x_pos, y_pos - 0.09, f'{lp:.2f}',
+                ha='center', va='top', fontsize=7, color='#555555')
+        
+        # Línea al padre
+        if step_idx > 0:
+            parent_seq = tuple(seq[:-1])
+            if parent_seq in prev_coords:
+                px, py = prev_coords[parent_seq]
+                ax.plot([px, x_pos], [py, y_pos], '-',
+                        color=color, alpha=0.4, linewidth=1.5, zorder=2)
+        
+        prev_coords[tuple(seq)] = (x_pos, y_pos)
+
+# Etiquetas de pasos
+for i, (label, x) in enumerate(zip(step_labels, x_positions)):
+    ax.text(x, 0.97, label, ha='center', va='top',
+            fontsize=10, weight='bold', color='#333333',
+            transform=ax.transAxes if False else ax.transData)
+
+ax.set_xlim(-0.02, 1.02)
+ax.set_ylim(0.0, 1.0)
+ax.axis('off')
+ax.set_title(f'Árbol de Búsqueda — Beam Search (K=3)\n'
+             f'Cada color es un beam; se muestran los 3 mejores en cada paso',
+             fontsize=12, weight='bold')
+
+legend_handles = [mpatches.Patch(color=c, label=f'Beam {i+1}')
+                  for i, c in enumerate(colors)]
+ax.legend(handles=legend_handles, loc='lower right', fontsize=9)
+
+plt.tight_layout()
+plt.show()
+
+print("\nComparación de estrategias de decoding:")
+print(f"  Greedy:      1 camino,  determinístico, rápido")
+print(f"  Top-K/Top-P: 1 camino,  estocástico,   rápido")
+print(f"  Beam Search: {3} caminos, determinístico, más lento")
+```
+
 ---
+
 
 ## Parte 5: Entrenamiento - Cross-Entropy Loss
 

@@ -279,12 +279,56 @@ Un **sistema funcional** que genera kernels GPU correctos y optimizados usando L
 
 ---
 
+## 📐 Convención de Código del Curso
+
+Para mantener coherencia en todo el repositorio seguimos esta convención:
+
+```{admonition} Convención: Español para comunicar, Inglés para programar
+:class: important
+
+| Elemento | Idioma | Ejemplo |
+|---|---|---|
+| **Comentarios** | 🇲🇽 Español | `# Calcular el error cuadrático medio` |
+| **Variables / Funciones** | 🇺🇸 Inglés | `learning_rate`, `batch_size`, `forward_pass()` |
+| **Strings de texto** | 🇲🇽 Español | `print("Error de entrenamiento:")` |
+| **Docstrings** | 🇲🇽 Español | `"""Calcula la pérdida MSE entre predicción y target."""` |
+| **Nombres de clases** | 🇺🇸 Inglés | `class TransformerBlock:`, `class NeuralNetwork:` |
+
+**Rationale:** Las variables y funciones en inglés son estándar en la industria global. Los comentarios en español facilitan la comprensión para todos los estudiantes del curso.
+```
+
+```python
+# ✅ CORRECTO — sigue la convención
+def compute_loss(predictions, targets):
+    """Calcula el error cuadrático medio entre predicciones y objetivos."""
+    # Diferencia entre predicción y valor real
+    error = predictions - targets
+    return (error ** 2).mean()
+
+learning_rate = 0.001
+num_epochs    = 100
+
+# ❌ INCORRECTO — comentario en inglés
+def compute_loss(predictions, targets):
+    # Compute MSE between predictions and targets
+    error = predictions - targets
+    return (error ** 2).mean()
+
+# ❌ INCORRECTO — variable en español
+tasa_aprendizaje = 0.001
+```
+
+---
+
 ## Comienza Ahora
 
 ```{admonition} Siguiente Paso
 :class: tip
 
 Empieza por el módulo de **Inteligencia Artificial** para construir las bases de LLMs y generación de texto, o explora el **índice completo** abajo.
+
+📴 **Sin Internet:** Consulta [Alternativas Offline](alternativas_offline.md) para equivalentes de texto/código de todos los videos de YouTube del curso.
+🔑 **Sin GPU:** Revisa el [Notebook de Verificación de Entorno](notebooks/00_verificacion_entorno.ipynb) para confirmar tu configuración y opciones de CPU Fallback.
 ```
 
 ---

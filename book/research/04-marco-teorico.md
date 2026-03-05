@@ -21,7 +21,9 @@ kernelspec:
 :tags: [remove-input, setup]
 
 # Setup Colab Environment
-!pip install -q numpy pandas matplotlib seaborn scikit-learn torch transformers accelerate triton xgrammar
+# Este módulo no requiere instalaciones de Python adicionales.
+# Asegúrate de haber ejecutado 00_verificacion_entorno.ipynb antes de iniciar el proyecto.
+print("Módulo Research — sin dependencias de código adicionales.")
 print('Dependencies installed!')
 ```
 
@@ -344,3 +346,44 @@ Con tu marco teórico en lugar, estás listo para la sección más crítica de t
 
 - Swales, J. & Feak, C. (2012). Academic Writing for Graduate Students (3rd ed.). University of Michigan Press.
 - Creswell, J. (2014). Research Design: Qualitative, Quantitative, and Mixed Methods Approaches (4th ed.). SAGE.
+
+---
+
+## 📚 Referencias Clave del Dominio (Para tu Marco Teórico)
+
+Los siguientes trabajos son el fundamento bibliográfico del tema de este curso. Úsalos para construir tu sección de *Trabajos Relacionados*:
+
+### Restricciones Gramaticales en LLMs
+
+- **XGrammar (2024)** — La herramienta que usamos en este curso:
+  > Dong, Y., et al. (2024). *XGrammar: Flexible and Efficient Structured Generation Engine for Large Language Models*. arXiv preprint. [https://arxiv.org/abs/2411.15100](https://arxiv.org/abs/2411.15100)
+  >
+  > *Cómo citarla en tu marco teórico:* "XGrammar (Dong et al., 2024) propone un motor de generación estructurada que compila gramáticas EBNF a autómatas de estados adaptativos, permitiendo constrained decoding con overhead mínimo (<5% de latencia adicional)."
+
+- **Constrained Beam Search** — Trabajo fundacional:
+  > Post, M. & Vilar, D. (2018). *Fast Lexically Constrained Decoding with Dynamic Beam Allocation for Neural Machine Translation*. NAACL-HLT. [https://arxiv.org/abs/1804.06189](https://arxiv.org/abs/1804.06189)
+
+- **Outlines** — Alternativa popular a XGrammar:
+  > Willard, B. T. & Louf, R. (2023). *Efficient Guided Generation for Large Language Models*. arXiv preprint. [https://arxiv.org/abs/2307.09702](https://arxiv.org/abs/2307.09702)
+
+### Generación de Código con LLMs
+
+- **CodeLlama** — Modelo base para generación de código:
+  > Rozière, B., et al. (2023). *Code Llama: Open Foundation Models for Code*. arXiv preprint. [https://arxiv.org/abs/2308.12950](https://arxiv.org/abs/2308.12950)
+
+- **DeepSeek-Coder** — Modelo de generación de código de alto rendimiento:
+  > Guo, D., et al. (2024). *DeepSeek-Coder: When the Large Language Model Meets Programming*. arXiv preprint. [https://arxiv.org/abs/2401.14196](https://arxiv.org/abs/2401.14196)
+
+### Kernels GPU y Triton
+
+- **OpenAI Triton** — El lenguaje de programación que usamos:
+  > Tillet, P., Kung, H. T., & Cox, D. (2019). *Triton: An Intermediate Language and Compiler for Tiled Neural Network Computations*. MAPL Workshop. [https://doi.org/10.1145/3315508.3329973](https://doi.org/10.1145/3315508.3329973)
+
+```{admonition} 💡 Cómo usar estas referencias
+:class: tip
+En tu **Marco Teórico**: cita los papers para definir conceptos (XGrammar para constrained decoding, Triton para kernels GPU).
+
+En tu **Trabajos Relacionados**: usa los papers para identificar el gap que tu investigación llena. "XGrammar (Dong et al., 2024) demuestra X, pero no aborda Y, que es lo que nosotros exploramos."
+
+Usa [Google Scholar](https://scholar.google.com) o [Semantic Scholar](https://www.semanticscholar.org/) para encontrar papers que citan a estos y obtener el trabajo más reciente.
+```

@@ -34,6 +34,14 @@ Al finalizar esta lectura podrás:
 **[Word Embedding and Tokenization (StatQuest)](https://www.youtube.com/watch?v=viZrOnJclY0)** - Animaciones sencillas y didácticas sobre cómo dividimos texto para los modelos de lenguaje.
 ```
 
+```{admonition} 📚 Prerequisito
+:class: note
+Antes de esta lección debes haber leido:
+- **Lectura 2:** Fundamentos de Deep Learning — Redes neuronales y activaciones
+- **Lectura 3:** Generación Autoregresiva — Tokenización BPE, sampling y temperatura
+- **Lectura 4:** Arquitectura Transformer — Atención, multi-head, encoder vs decoder
+```
+
 ```{admonition} 🔧 Herramienta Interactiva
 :class: seealso
 
@@ -339,11 +347,107 @@ tokens = sp.encode_as_pieces("Hello world")
 | Prefijo | Ninguno | ## para continuación | ▁ para inicio |
 | Usado en | GPT, CodeX | BERT, DistilBERT | T5, LLaMA |
 
-```{admonition} 🎮 Simulación Interactiva: Visualización de Tokenización BPE
-:class: tip
+### WordPiece en Python Puro (BERT-style)
 
-Observa cómo se descompone una palabra en tokens BPE.
+Al igual que vimos BPE desde cero en la Lectura 3, aquí implementamos **WordPiece** para entender la diferencia clave: BPE elige el par más **frecuente**; WordPiece elige el par que **maximiza la probabilidad** del corpus (score = freq(AB) / (freq(A) × freq(B))).
+
+```{code-cell} ipython3
+from collections import Counter
+import math
+
+def wordpiece_score(pair_count, token_counts):
+    """
+    Score de WordPiece: prefiere pares cuya combinación es
+    mucho más probable que sus partes por separado.
+    
+    score(A,B) = count(AB) / (count(A) * count(B))
+    """
+    a, b = pair_count
+    return token_counts[a + b] / (token_counts[a] * token_counts[b] + 1e-10)
+
+def get_pairs(vocab):
+    """Obtiene todos los pares de tokens adyacentes con sus frecuencias."""
+    pairs = Counter()
+    for word, freq in vocab.items():
+        tokens = word.split()
+        for i in range(len(tokens) - 1):
+            pairs[(tokens[i], tokens[i+1])] += freq
+    return pairs
+
+def merge_pair(vocab, pair):
+    """Fusiona el par ganador en todo el vocabulario."""
+    merged = ' '.join(pair)
+    replacement = ''.join(pair)
+    new_vocab = {}
+    for word, freq in vocab.items():
+        new_word = word.replace(merged, replacement)
+        new_vocab[new_word] = freq
+    return new_vocab
+
+def wordpiece_train(corpus, num_merges=8):
+    """
+    Entrenamiento simplificado de WordPiece.
+    Diferencia vs BPE: el criterio de selección del par.
+    """
+    # Tokenización inicial: caracteres + marcador ## para continuaciones
+    vocab = {}
+    for word in corpus.split():
+        chars = list(word)
+        # BERT-style: el primer carácter es normal, los demás van con ##
+        chars_wp = [chars[0]] + ['##' + c for c in chars[1:]]
+        key = ' '.join(chars_wp)
+        vocab[key] = vocab.get(key, 0) + 1
+    
+    print("=== WordPiece Simplificado ===")
+    print(f"Vocabulario inicial: {set(' '.join(vocab.keys()).split())}")
+    print()
+    
+    merge_history = []
+    
+    for step in range(num_merges):
+        pairs = get_pairs(vocab)
+        if not pairs:
+            break
+        
+        # Contar tokens individuales
+        token_counts = Counter()
+        for word, freq in vocab.items():
+            for tok in word.split():
+                token_counts[tok] += freq
+        
+        # Seleccionar par con mayor score de WordPiece
+        best_pair = max(pairs, key=lambda p: wordpiece_score(p, token_counts))
+        best_score = wordpiece_score(best_pair, token_counts)
+        merged_token = ''.join(best_pair)
+        
+        print(f"Paso {step+1}: merge {best_pair} → '{merged_token}'  (score={best_score:.4f})")
+        merge_history.append((best_pair, merged_token))
+        vocab = merge_pair(vocab, best_pair)
+    
+    final_vocab = set()
+    for word in vocab:
+        final_vocab.update(word.split())
+    
+    print(f"\nVocabulario final ({len(final_vocab)} tokens):")
+    print(sorted(final_vocab))
+    return vocab, merge_history
+
+# Corpus de prueba con términos de código Triton
+corpus_triton = "pointer offset mask load store pointer offset load mask pointer"
+vocab_final, history = wordpiece_train(corpus_triton, num_merges=6)
 ```
+
+```{admonition} 🔑 BPE vs WordPiece: la diferencia clave
+:class: important
+| | BPE | WordPiece |
+|---|---|---|
+| **Elige el par** | más frecuente | que maximiza `P(corpus)` |
+| **Resultado** | vocabulario compacto | mejor manejo de palabras raras |
+| **Modelos** | GPT-2, CodeX | BERT, DistilBERT |
+
+En la práctica, ambos producen vocabularios similares para textos grandes. La diferencia importa en vocabularios pequeños y palabras infrecuentes.
+```
+
 
 ```{code-cell} ipython3
 # Simulación visual de tokenización BPE
@@ -443,68 +547,45 @@ Impacto:
 
 ## Parte 5: Logits, Softmax y Cross-Entropy
 
-### De Logits a Probabilidades
+```{admonition} 📚 Revisado en Lectura 3
+:class: seealso
+Estos conceptos se desarrollaron en detalle **con numpy desde cero** en la
+**Lectura 3: Generación Autoregresiva** (Partes 2, 3 y 5). Aquí los repasamos
+utilizando la API nativa de **PyTorch** para conectar con la práctica real.
+```
 
 ```{code-cell} ipython3
 import torch
+import torch.nn as nn
 import torch.nn.functional as F
 
-# Logits: output crudo del modelo (sin normalizar)
+# --- Logits → Softmax → Probabilidades ---
 logits = torch.tensor([2.0, 1.0, 0.1])
+probs  = F.softmax(logits, dim=-1)
+print(f"Logits:         {logits.numpy()}")
+print(f"Probabilidades: {probs.detach().numpy().round(3)}")
+# tensor([0.659, 0.242, 0.099]) — suman a 1.0
+print(f"Suma: {probs.sum().item():.4f}")
 
-# Softmax: convierte a probabilidades
-probs = F.softmax(logits, dim=-1)
-print(probs)
-# tensor([0.659, 0.242, 0.099])
-# Suma = 1.0
-print(f"Suma: {probs.sum()}")
+# --- Temperature scaling ---
+def softmax_temp(logits, T=1.0):
+    return F.softmax(logits / T, dim=-1)
 
-# Interpretación:
-# Token 0: 65.9% probabilidad
-# Token 1: 24.2% probabilidad
-# Token 2:  9.9% probabilidad
-```
+print("\nEfecto de la temperatura (ver Lectura 3 para detalles):")
+for T in [0.5, 1.0, 2.0]:
+    print(f"  T={T}: {softmax_temp(logits, T).detach().numpy().round(3)}")
 
-### Temperature
-
-```{code-cell} ipython3
-def softmax_with_temp(logits, temperature=1.0):
-    return F.softmax(logits / temperature, dim=-1)
-
-logits = torch.tensor([2.0, 1.0, 0.1])
-
-# T=1.0 (normal)
-print(f"T=1.0: {softmax_with_temp(logits, 1.0)}")  # [0.659, 0.242, 0.099]
-
-# T=0.5 (más confiado)
-print(f"T=0.5: {softmax_with_temp(logits, 0.5)}")  # [0.836, 0.142, 0.022]
-
-# T=2.0 (más uniforme)
-print(f"T=2.0: {softmax_with_temp(logits, 2.0)}")  # [0.506, 0.307, 0.187]
-```
-
-### Cross-Entropy Loss
-
-```{code-cell} ipython3
-# Función de pérdida para entrenamiento
+# --- Cross-Entropy Loss (usada durante entrenamiento) ---
 loss_fn = nn.CrossEntropyLoss()
-
-# Logits del modelo (batch=1, vocab_size=3)
-logits = torch.tensor([[2.0, 1.0, 0.1]])
-
-# Target: el token correcto es el índice 0
-target = torch.tensor([0])
-
-loss = loss_fn(logits, target)
-print(f"Loss: {loss.item():.3f}")
-# loss ≈ 0.417
-
-# Interpretación:
-# - Loss bajo = modelo confiado en respuesta correcta
-# - Loss alto = modelo equivocado o inseguro
+logits_batch = torch.tensor([[2.0, 1.0, 0.1]])  # batch=1, vocab_size=3
+target = torch.tensor([0])                        # token correcto = índice 0
+loss = loss_fn(logits_batch, target)
+print(f"\nCross-Entropy Loss (target=token 0): {loss.item():.3f}")
+# Más bajo = modelo más confiado en la respuesta correcta
 ```
 
 ---
+
 
 ## Ejercicios Prácticos
 

@@ -53,7 +53,7 @@ Imagina que escribes un programa en Python o C++. Tu computadora no entiende dir
 
 En nuestro contexto del curso, estamos diseñando un compilador especializado para gramáticas libres de contexto que generarán kernels CUDA en GPU. El compilador tomará especificaciones en lenguaje natural o semi-formal, validará su estructura, y generará código eficiente para ejecutarse en hardware paralelo.
 
-### Analogy: La Cocina
+### Analogía: La Cocina
 
 Piensa en un compilador como una cocina profesional:
 - **Receta** = código fuente
@@ -351,6 +351,41 @@ Exploraremos los lenguajes regulares y autómatas finitos deterministas (DFAs), 
 4. ¿Por qué la fase de parsing es crítica para XGrammar en generación con LLMs?
 ```
 
+```{admonition} 🧠 Preguntas de Opción Múltiple
+:class: tip
+**P1.** Un tokenizador (lexer) que reconoce identificadores válidos (`[a-zA-Z_][a-zA-Z0-9_]*`) corresponde a qué tipo en la Jerarquía de Chomsky:
+
+- a) Tipo 0 — Lenguaje Recursivamente Enumerable
+- b) Tipo 1 — Lenguaje Sensible al Contexto
+- c) Tipo 2 — Lenguaje Libre de Contexto
+- d) **Tipo 3 — Lenguaje Regular** ✓
+
+*Razón: Las expresiones regulares son exactamente los lenguajes de Tipo 3, procesables con DFAs*
+
+---
+
+**P2.** XGrammar usa CFGs (Tipo 2) en lugar de gramáticas de Tipo 1 principalmente porque:
+
+- a) Las CFGs son más poderosas y pueden expresar cualquier restricción de código
+- b) **Las CFGs son parseables en O(n) o O(n³) lo que permite inferencia eficiente token por token** ✓
+- c) Las gramáticas de Tipo 1 no existen en la práctica
+- d) Triton solo soporta lenguajes regulares
+
+*Razón: El parsing eficiente es esencial — cada token generado debe validarse en milisegundos*
+
+---
+
+**P3.** Si tu LLM genera el token `;` (punto y coma) y la gramática XGrammar lo rechaza, ¿en qué fase ocurre esta validación?
+
+- a) Lexer (análisis léxico)
+- b) **Parser (análisis sintáctico)** ✓
+- c) Evaluador (generación de código)
+- d) Optimizador de código
+
+*Razón: El parser verifica si el token es sintácticamente correcto en el contexto actual de la secuencia generada*
+```
+
+
 ## Ejemplos en Código: Simulando las Fases del Compilador
 
 Veamos cómo implementar un pequeño compilador que procesa expresiones aritméticas simples:
@@ -514,6 +549,73 @@ ast = parser.parse()
 
 print("\nÁrbol de Sintaxis Abstracta (AST):")
 print(ast)
+```
+
+```{code-cell} ipython3
+# Visualización del AST con matplotlib
+# Permite ver la estructura jerárquica del árbol de derivación
+import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
+
+def plot_ast(node, ax, x=0.5, y=1.0, dx=0.25, depth=0):
+    """Dibuja recursivamente el AST como grafo."""
+    color = '#E74C3C' if isinstance(node, BinaryOp) else '#3498DB'
+    label = node.operator if isinstance(node, BinaryOp) else str(int(node.value))
+
+    # Nodo actual
+    circle = plt.Circle((x, y), 0.06, color=color, zorder=3)
+    ax.add_patch(circle)
+    ax.text(x, y, label, ha='center', va='center',
+            fontsize=12, fontweight='bold', color='white', zorder=4)
+
+    # Recursión en hijos
+    if isinstance(node, BinaryOp):
+        x_left, x_right = x - dx, x + dx
+        y_child = y - 0.25
+        # Aristas
+        ax.plot([x, x_left], [y - 0.06, y_child + 0.06],
+                'k-', linewidth=1.5, zorder=2)
+        ax.plot([x, x_right], [y - 0.06, y_child + 0.06],
+                'k-', linewidth=1.5, zorder=2)
+        plot_ast(node.left,  ax, x_left,  y_child, dx * 0.5, depth + 1)
+        plot_ast(node.right, ax, x_right, y_child, dx * 0.5, depth + 1)
+
+# Construir y visualizar AST para la expresión '5 + 3 * 2'
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+
+# --- AST 1: expresión con precedencia ---
+tokens1 = Lexer("5 + 3 * 2").tokenize()
+ast1 = Parser(tokens1).parse()
+
+ax = axes[0]
+ax.set_xlim(0, 1); ax.set_ylim(0.4, 1.15)
+ax.axis('off')
+ax.set_title('AST de "5 + 3 * 2"\n(La multiplicación tiene mayor precedencia)', fontsize=12)
+plot_ast(ast1, ax, x=0.5, y=1.05, dx=0.3)
+
+# Leyenda
+op_patch = mpatches.Patch(color='#E74C3C', label='Operador (nodo interno)')
+num_patch = mpatches.Patch(color='#3498DB', label='Número (hoja)')
+ax.legend(handles=[op_patch, num_patch], loc='lower center', fontsize=9)
+
+# --- AST 2: con paréntesis que cambian la precedencia ---
+tokens2 = Lexer("(5 + 3) * 2").tokenize()
+ast2 = Parser(tokens2).parse()
+
+ax2 = axes[1]
+ax2.set_xlim(0, 1); ax2.set_ylim(0.4, 1.15)
+ax2.axis('off')
+ax2.set_title('AST de "(5 + 3) * 2"\n(Los paréntesis modifican el árbol)', fontsize=12)
+plot_ast(ast2, ax2, x=0.5, y=1.05, dx=0.3)
+ax2.legend(handles=[op_patch, num_patch], loc='lower center', fontsize=9)
+
+plt.tight_layout()
+plt.show()
+
+print("Observa cómo la ESTRUCTURA del árbol cambia:")
+print("  '5 + 3 * 2'  → raíz es '+', la multiplicación es hoja derecha")
+print("  '(5 + 3) * 2' → raíz es '*', la suma es hoja izquierda")
+print("\nEs por eso que el parser necesita respetar la precedencia de operadores.")
 ```
 
 ```{code-cell} ipython3
@@ -774,11 +876,36 @@ print("  ✓ Permite análisis semántico adicional post-parsing")
 
 4. **Diseño de Gramática**: Propón una gramática CFG simple para números en punto flotante. ¿Qué patrones acepta?
 
+```{admonition} 🎯 Aplicación al Proyecto
+:class: important
+**Ejercicio de Conexión XGrammar:**
+
+Considera la siguiente declaración de función Triton:
+```python
+@triton.jit
+def kernel_add(A_ptr, B_ptr, C_ptr, N, BLOCK_SIZE: tl.constexpr):
+    ...
+```
+
+a) Escribe la **regla léxica** para el identificador `BLOCK_SIZE` como expresión regular.  
+b) ¿En qué fase del compilador se valida que `tl.constexpr` es un tipo válido?  
+c) ¿Por qué XGrammar usa una CFG (Tipo 2) y no una gramática de Tipo 1 para restringir la generación de código?  
+
+*Pista: Consulta la sección "Aplicación a XGrammar" de esta lección.*
+```
+
 ## Preguntas de Reflexión
 
 - ¿Cuál es la diferencia entre "poder expresivo" y "facilidad de implementación"? ¿Por qué XGrammar elige CFG en lugar de Tipo 1?
 - Si pudiéramos usar gramáticas Tipo 1, ¿qué problemas en verificación de GPU kernels podrían resolverse?
 - ¿Cómo crees que una IA completa (Tipo 0) podría generar kernels CUDA mejores que un compilador basado en CFG?
+
+```{admonition} 📋 Rúbrica de Evaluación (Ejercicios y Reflexiones)
+:class: note
+- **Excelente (100%)**: Resuelve correctamente las clasificaciones de Chomsky. Sus respuestas de reflexión muestran pensamiento crítico, integrando las limitaciones técnicas de XGrammar con teoría de compiladores.
+- **Bueno (80%)**: Las respuestas técnicas son en su mayoría correctas. La reflexión es adecuada pero no profundiza en el porqué de las decisiones de diseño (ej. elegimos CFG por eficiencia de parsing).
+- **Requiere Mejora (<60%)**: Errores en clasificación de lenguajes. Respuestas de reflexión muy breves o que no demuestran comprensión de los tradeoffs en diseño de lenguajes.
+```
 
 ---
 

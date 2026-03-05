@@ -53,6 +53,14 @@ En la lectura anterior, mencionamos redes neuronales y retropropagación como co
 
 Esta lectura es el corazón técnico de tu comprensión de aprendizaje profundo. Aunque no escribiremos código compilado, entenderemos los conceptos lo suficiente para trabajar con LLMs.
 
+```{admonition} 📚 Prerequisito
+:class: note
+Antes de esta lección debes haber leido:
+- **Lectura 1: IA Clásica vs Generativa** — Conceptos históricos e introducción a redes neuronales.
+
+Álgebra lineal básica (multiplicación de matrices) será útil. Ver sección **Parte 2: Álgebra Lineal** de esta misma lección si necesitas un repaso.
+```
+
 ---
 
 ## Parte 1: El Perceptrón y Más Allá
@@ -359,7 +367,7 @@ for i, val in enumerate(a1):
 circle = plt.Circle((0.9, 0.5), 0.05, color='lightcoral', ec='black', linewidth=2)
 ax.add_patch(circle)
 ax.text(0.9, 0.5, f'{a2[0]:.3f}', ha='center', va='center', fontsize=10, weight='bold')
-ax.text(0.9, 0.65, 'Salida\\n(Sigmoid)', ha='center', fontsize=9)
+ax.text(0.9, 0.65, 'Salida\n(Sigmoid)', ha='center', fontsize=9)
 
 # Conexiones entrada -> capa oculta
 for i in range(2):
@@ -387,7 +395,129 @@ El forward pass que acabamos de ver es el mismo proceso que ocurre en cada capa 
 
 ---
 
-## Parte 4: Retropropagación (Backpropagation)
+## Parte 4: Funciones de Pérdida y Optimizadores
+
+### Funciones de Pérdida (Loss Functions)
+
+La pérdida cuantifica cuánto se equivocó el modelo:
+
+```{admonition} 🔧 Optimizadores: más allá del Gradient Descent
+:class: seealso
+Esta sección muestra **gradient descent vanilla** (SGD). En la práctica, casi todos los modelos usan **Adam** (Adaptive Moment Estimation), que adapta el learning rate por parámetro:
+
+- **SGD**: `W -= lr * grad`  — simple, requiere ajuste fino de lr
+- **Momentum**: acumula gradientes pasados para suavizar la trayectoria
+- **Adam**: combina Momentum + RMSprop — el optimizador por defecto en la práctica
+- **AdaW**: variante de Adam con weight decay, usado para fine-tuning de LLMs
+
+En `PyTorch`: `optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)`  
+📚 Ver **Lectura 7 de AI** para el uso de Adam en fine-tuning de modelos de lenguaje.
+```
+
+```{code-cell} ipython3
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Definir funciones de pérdida
+def binary_crossentropy(y_true, y_pred):
+    epsilon = 1e-15  # Para evitar log(0)
+    y_pred = np.clip(y_pred, epsilon, 1 - epsilon)
+    return -np.mean(y_true * np.log(y_pred) + (1 - y_true) * np.log(1 - y_pred))
+
+def mse(y_true, y_pred):
+    return np.mean((y_true - y_pred) ** 2)
+
+def mae(y_true, y_pred):
+    return np.mean(np.abs(y_true - y_pred))
+
+# Visualización de funciones de pérdida
+fig, axes = plt.subplots(1, 3, figsize=(16, 4))
+
+# Binary Cross-Entropy
+y_true = 1  # Verdadera etiqueta
+y_pred_range = np.linspace(0.01, 0.99, 100)
+bce_loss = -np.log(y_pred_range)
+
+axes[0].plot(y_pred_range, bce_loss, 'b-', linewidth=2)
+axes[0].set_xlabel('Predicción (ŷ)', fontsize=11)
+axes[0].set_ylabel('Loss', fontsize=11)
+axes[0].set_title('Binary Cross-Entropy\n(y_true = 1)', fontsize=12)
+axes[0].grid(True, alpha=0.3)
+axes[0].axvline(x=1.0, color='green', linestyle='--', alpha=0.5, label='Predicción perfecta')
+axes[0].legend()
+axes[0].text(0.5, 2, 'Penaliza fuertemente\npredicciones incorrectas',
+             bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.5), fontsize=9)
+
+# MSE vs MAE para regresión
+y_true_val = 5
+y_pred_range2 = np.linspace(0, 10, 100)
+mse_vals = (y_true_val - y_pred_range2) ** 2
+mae_vals = np.abs(y_true_val - y_pred_range2)
+
+axes[1].plot(y_pred_range2, mse_vals, 'r-', linewidth=2, label='MSE')
+axes[1].plot(y_pred_range2, mae_vals, 'g-', linewidth=2, label='MAE')
+axes[1].axvline(x=y_true_val, color='blue', linestyle='--', alpha=0.5, label='Valor real')
+axes[1].set_xlabel('Predicción (ŷ)', fontsize=11)
+axes[1].set_ylabel('Loss', fontsize=11)
+axes[1].set_title('MSE vs MAE\n(y_true = 5)', fontsize=12)
+axes[1].grid(True, alpha=0.3)
+axes[1].legend()
+
+# Comparación de sensibilidad a outliers
+errors = np.array([0.5, 1.0, 2.0, 5.0])
+mse_errors = errors ** 2
+mae_errors = errors
+
+x_pos = np.arange(len(errors))
+width = 0.35
+
+axes[2].bar(x_pos - width/2, mse_errors, width, label='MSE', color='red', alpha=0.7)
+axes[2].bar(x_pos + width/2, mae_errors, width, label='MAE', color='green', alpha=0.7)
+axes[2].set_xlabel('Error Absoluto', fontsize=11)
+axes[2].set_ylabel('Valor de Loss', fontsize=11)
+axes[2].set_title('MSE vs MAE: Sensibilidad a Outliers', fontsize=12)
+axes[2].set_xticks(x_pos)
+axes[2].set_xticklabels(errors)
+axes[2].legend()
+axes[2].grid(True, alpha=0.3, axis='y')
+axes[2].text(2, 15, 'MSE penaliza más\nlos errores grandes',
+             bbox=dict(boxstyle='round', facecolor='lightcoral', alpha=0.5), fontsize=9)
+
+plt.tight_layout()
+plt.show()
+
+print("Resumen:")
+print("- Binary Cross-Entropy: Para clasificación binaria, crece exponencialmente con errores")
+print("- MSE: Penaliza errores grandes cuadráticamente, sensible a outliers")
+print("- MAE: Penaliza errores linealmente, más robusto a outliers")
+```
+
+El objetivo del entrenamiento es minimizar esta pérdida.
+
+### Optimizadores
+
+No todos los gradientes son iguales. Los optimizadores usan estrategias más sofisticadas que descenso de gradiente simple:
+
+```
+Descenso de Gradiente: W = W - lr * ∇Loss
+
+Adam (adaptive): Usa momento y adapta tasas de aprendizaje por parámetro
+W = W - lr * (m / (√v + ε))
+
+donde m es el promedio móvil del gradiente
+y v es el promedio móvil del gradiente al cuadrado
+```
+
+Adam generalmente funciona mejor que descenso de gradiente simple.
+
+---
+
+```{admonition} 🔗 Conexión con Retropropagación
+:class: tip
+Ahora que sabes **qué** optimizar (la pérdida) y **con qué** optimizarlo (Adam / SGD), en la siguiente sección aprenderás **cómo** se calculan los gradientes necesarios: la **retropropagación** es exactamente ese mecanismo.
+```
+
+## Parte 5: Retropropagación (Backpropagation)
 
 La retropropagación es el algoritmo que permite entrenar redes profundas. Es el motor detrás de todo modelo de IA moderno.
 
@@ -681,7 +811,7 @@ for i, (x_val, y_val, pred) in enumerate(zip(X, y, final_preds)):
 
 ---
 
-## Parte 5: Evolución Arquitectónica hacia Transformers
+## Parte 6: Evolución Arquitectónica hacia Transformers
 
 ### RNNs: Procesamiento Secuencial
 
@@ -736,108 +866,7 @@ Veremos los detalles matemáticos en la próxima lectura.
 
 ---
 
-## Parte 6: Entrenamiento en Práctica
-
-### Funciones de Pérdida (Loss Functions)
-
-La pérdida cuantifica cuánto se equivocó el modelo:
-
-```{code-cell} ipython3
-import numpy as np
-import matplotlib.pyplot as plt
-
-# Definir funciones de pérdida
-def binary_crossentropy(y_true, y_pred):
-    epsilon = 1e-15  # Para evitar log(0)
-    y_pred = np.clip(y_pred, epsilon, 1 - epsilon)
-    return -np.mean(y_true * np.log(y_pred) + (1 - y_true) * np.log(1 - y_pred))
-
-def mse(y_true, y_pred):
-    return np.mean((y_true - y_pred) ** 2)
-
-def mae(y_true, y_pred):
-    return np.mean(np.abs(y_true - y_pred))
-
-# Visualización de funciones de pérdida
-fig, axes = plt.subplots(1, 3, figsize=(16, 4))
-
-# Binary Cross-Entropy
-y_true = 1  # Verdadera etiqueta
-y_pred_range = np.linspace(0.01, 0.99, 100)
-bce_loss = -np.log(y_pred_range)
-
-axes[0].plot(y_pred_range, bce_loss, 'b-', linewidth=2)
-axes[0].set_xlabel('Predicción (ŷ)', fontsize=11)
-axes[0].set_ylabel('Loss', fontsize=11)
-axes[0].set_title('Binary Cross-Entropy\n(y_true = 1)', fontsize=12)
-axes[0].grid(True, alpha=0.3)
-axes[0].axvline(x=1.0, color='green', linestyle='--', alpha=0.5, label='Predicción perfecta')
-axes[0].legend()
-axes[0].text(0.5, 2, 'Penaliza fuertemente\npredicciones incorrectas',
-             bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.5), fontsize=9)
-
-# MSE vs MAE para regresión
-y_true_val = 5
-y_pred_range2 = np.linspace(0, 10, 100)
-mse_vals = (y_true_val - y_pred_range2) ** 2
-mae_vals = np.abs(y_true_val - y_pred_range2)
-
-axes[1].plot(y_pred_range2, mse_vals, 'r-', linewidth=2, label='MSE')
-axes[1].plot(y_pred_range2, mae_vals, 'g-', linewidth=2, label='MAE')
-axes[1].axvline(x=y_true_val, color='blue', linestyle='--', alpha=0.5, label='Valor real')
-axes[1].set_xlabel('Predicción (ŷ)', fontsize=11)
-axes[1].set_ylabel('Loss', fontsize=11)
-axes[1].set_title('MSE vs MAE\n(y_true = 5)', fontsize=12)
-axes[1].grid(True, alpha=0.3)
-axes[1].legend()
-
-# Comparación de sensibilidad a outliers
-errors = np.array([0.5, 1.0, 2.0, 5.0])
-mse_errors = errors ** 2
-mae_errors = errors
-
-x_pos = np.arange(len(errors))
-width = 0.35
-
-axes[2].bar(x_pos - width/2, mse_errors, width, label='MSE', color='red', alpha=0.7)
-axes[2].bar(x_pos + width/2, mae_errors, width, label='MAE', color='green', alpha=0.7)
-axes[2].set_xlabel('Error Absoluto', fontsize=11)
-axes[2].set_ylabel('Valor de Loss', fontsize=11)
-axes[2].set_title('MSE vs MAE: Sensibilidad a Outliers', fontsize=12)
-axes[2].set_xticks(x_pos)
-axes[2].set_xticklabels(errors)
-axes[2].legend()
-axes[2].grid(True, alpha=0.3, axis='y')
-axes[2].text(2, 15, 'MSE penaliza más\nlos errores grandes',
-             bbox=dict(boxstyle='round', facecolor='lightcoral', alpha=0.5), fontsize=9)
-
-plt.tight_layout()
-plt.show()
-
-print("Resumen:")
-print("- Binary Cross-Entropy: Para clasificación binaria, crece exponencialmente con errores")
-print("- MSE: Penaliza errores grandes cuadráticamente, sensible a outliers")
-print("- MAE: Penaliza errores linealmente, más robusto a outliers")
-```
-
-El objetivo del entrenamiento es minimizar esta pérdida.
-
-### Optimizadores
-
-No todos los gradientes son iguales. Los optimizadores usan estrategias más sofisticadas que descenso de gradiente simple:
-
-```
-Descenso de Gradiente: W = W - lr * ∇Loss
-
-Adam (adaptive): Usa momento y adapta tasas de aprendizaje por parámetro
-W = W - lr * (m / (√v + ε))
-
-donde m es el promedio móvil del gradiente
-y v es el promedio móvil del gradiente al cuadrado
-```
-
-Adam generalmente funciona mejor que descenso de gradiente simple.
-
+## Parte 7: Overfitting y Regularización
 ### Overfitting y Regularización
 
 ```
@@ -968,7 +997,15 @@ Técnicas para prevenir overfitting:
 
 3. **Gradientes vanecientes:** Imagina una red muy profunda (100 capas). ¿Por qué es más difícil entrenar que una de 5 capas?
 
+```{admonition} 📋 Rúbrica de Evaluación (Reflexiones)
+:class: note
+- **Excelente (100%)**: Respuesta articulada que demuestra comprensión profunda, usando vocabulario técnico correcto y dando ejemplos concretos. Conecta conceptos con implicaciones prácticas.
+- **Bueno (80%)**: Entiende el concepto central pero la explicación carece de profundidad o el vocabulario es impreciso.
+- **Requiere Mejora (<60%)**: Respuesta superficial o conceptualmente errónea. No justifica sus conclusiones.
+```
+
 ### Ejercicios Prácticos:
+
 
 1. **Multiplicación de matrices:** Verifica manualmente que en el ejemplo del forward pass calculé correctamente z1 y z2. (Pista: [0.1, 0.2] @ [0.5, -0.3] = 0.1*0.5 + 0.2*(-0.3) = 0.05 - 0.06 = -0.01)
 
@@ -979,6 +1016,40 @@ Técnicas para prevenir overfitting:
 
 3. **Reflexión escrita (300 palabras):** "La retropropagación es conceptualmente simple (calcula derivadas), pero es la razón por la que podemos entrenar redes profundas. Explica por qué la capacidad de calcular gradientes eficientemente es tan importante para el aprendizaje profundo."
 
+4. **Modificación de Arquitectura:** Ajusta la red neuronal de Parte 3 cambiando `[2, 8, 4, 1]` → `[2, 16, 8, 4, 1]` y analiza el impacto:
+
+```{code-cell} ipython3
+import numpy as np
+from sklearn.datasets import make_moons
+
+# Comparación: arquitectura original vs expandida
+def count_params(layer_sizes):
+    """Cuenta el número de parámetros entrenables de una red."""
+    total = 0
+    for i in range(len(layer_sizes) - 1):
+        total += layer_sizes[i] * layer_sizes[i+1]  # pesos
+        total += layer_sizes[i+1]                    # sesgos
+    return total
+
+original = [2, 8, 4, 1]
+expanded = [2, 16, 8, 4, 1]
+
+print("Comparación de arquitecturas:")
+print(f"  Original {original}:")
+print(f"    Parámetros totales: {count_params(original):,}")
+
+print(f"\n  Expandida {expanded}:")
+print(f"    Parámetros totales: {count_params(expanded):,}")
+print(f"\n  Incremento: {count_params(expanded)/count_params(original):.1f}x más parámetros")
+print("\n¿Qué esperas que cambie?")
+print("  • Mayor capacidad para patrones complejos")
+print("  • Mayor riesgo de overfitting con datos pequeños")
+print("  • Mayor tiempo de entrenamiento")
+print("  • Necesita más datos de entrenamiento para generalizarse bien")
+```
+
+   *Después de ejecutar:* Entrena ambas arquitecturas en el dataset `make_moons(n_samples=300)` y compara las curvas de pérdida. ¿Cuál converge más rápido? ¿Cuál tiene menor pérdida final?
+
 ---
 
 ```{admonition} ✅ Verifica tu comprensión
@@ -988,6 +1059,39 @@ Técnicas para prevenir overfitting:
 3. ¿Cuál es el tradeoff fundamental entre procesar secuencialmente (RNNs) vs en paralelo (Transformers)?
 4. Identifica overfitting: Si training loss = 0.01 y validation loss = 2.5, ¿qué está pasando?
 ```
+
+```{admonition} 🧠 Preguntas de Opción Múltiple
+:class: tip
+**P1.** Una red neuronal con 3 capas y activación **puramente lineal** (sin ReLU/sigmoid) es equivalente a:
+
+- a) Una red más potente que una de capa única
+- b) **Una sola transformación lineal (1 capa efectiva)** ✓
+- c) Una red profunda con comportamiento no-lineal
+- d) Un modelo de árbol de decisión
+
+*Razón: la composición de funciones lineales es siempre lineal: W₃(W₂(W₁x)) = Wx*
+
+---
+
+**P2.** El "gradiente vaneciente" en RNNs significa que:
+
+- a) La red genera predicciones incorrectas cerca del principio
+- b) Los pesos del output layer se vuelven negativos
+- c) **Los gradientes se vuelven ≈ 0 en capas tempranas, impidiendo el aprendizaje** ✓
+- d) La función de pérdida diverge a infinito
+
+*Razón: al multiplicar muchos valores < 1 en la regla de la cadena, el gradiente exponencialmente decrece*
+
+---
+
+**P3.** En el experimento de tu proyecto, entrenaste un clasificador de kernels válidos y observas: `train_acc = 99%, val_acc = 52%`. ¿Cuál es el diagnóstico más probable?
+
+- a) El modelo es demasiado simple (underfitting)
+- b) El learning rate es muy alto
+- c) **El modelo memorizó el conjunto de entrenamiento (overfitting)** ✓
+- d) El dataset de validación está mal etiquetado
+```
+
 
 ## Resumen
 

@@ -391,14 +391,238 @@ En generación de código con LLMs, los DFAs restringen qué tokens puede genera
 - Ejemplo: Generando un número de teléfono `(XXX)`, el DFA solo permite dígitos en posiciones específicas.
 ```
 
-```{admonition} 🎮 Simulador Interactivo de DFA
+```{admonition} 🎮 Simulador DFA Interactivo (Plotly — Sin Internet)
 :class: tip
+El siguiente simulador visualiza DFAs directamente en el notebook con Plotly.
+```
 
-Diseña y prueba tu propio DFA:
+```{code-cell} ipython3
+# Simulador DFA interactivo con Plotly
+# Permite visualizar cualquier DFA y trazar el procesamiento de una cadena
 
-<iframe src="https://ivanzuzak.info/noam/webapps/fsm_simulator/" width="100%" height="600px" style="border:1px solid #ddd; border-radius:8px;"></iframe>
+import plotly.graph_objects as go
+import math
 
-*Crea estados, transiciones y prueba cadenas de entrada.*
+def plot_dfa(states, transitions, initial, accepting,
+             input_string=None, title="Simulador DFA"):
+    """
+    Visualiza un DFA como grafo de estados usando Plotly.
+
+    Args:
+        states:       Lista de nombres de estados, ej. ['q0','q1','q2']
+        transitions:  Dict {(estado, símbolo): siguiente_estado}
+        initial:      Estado inicial (str)
+        accepting:    Conjunto/lista de estados de aceptación
+        input_string: String a trazar (opcional). Si se pasa, colorea el camino.
+        title:        Título del gráfico
+    """
+    n = len(states)
+    # Posicionar estados en círculo
+    angle = 2 * math.pi / n
+    pos = {s: (math.cos(i * angle), math.sin(i * angle)) for i, s in enumerate(states)}
+
+    # --- Determinar camino si se da input_string ---
+    path_states = [initial]
+    path_valid = True
+    if input_string is not None:
+        current = initial
+        for c in input_string:
+            nxt = transitions.get((current, c))
+            if nxt is None:
+                path_valid = False
+                break
+            current = nxt
+            path_states.append(current)
+        accepted = path_valid and current in accepting
+
+    # --- Dibujar aristas ---
+    edge_traces = []
+    drawn_pairs = set()
+    for (src, sym), dst in transitions.items():
+        pair = (src, dst)
+        offset = 0.08 if pair in drawn_pairs else 0
+        drawn_pairs.add(pair)
+        x0, y0 = pos[src]
+        x1, y1 = pos[dst]
+
+        # Color destacado si esta transición está en el camino
+        on_path = False
+        if input_string:
+            for k in range(len(path_states) - 1):
+                if path_states[k] == src and path_states[k+1] == dst:
+                    on_path = True; break
+        color = '#E74C3C' if on_path else '#7f8c8d'
+        width = 3 if on_path else 1.5
+
+        # Arista (o auto-loop)
+        if src == dst:
+            # Auto-loop como arco (aproximado)
+            mid_x = x0 + 0.15
+            mid_y = y0 + 0.15
+            edge_traces.append(go.Scatter(
+                x=[x0, mid_x, x0], y=[y0, mid_y, y0],
+                mode='lines', line=dict(color=color, width=width),
+                hoverinfo='none', showlegend=False
+            ))
+        else:
+            mx = (x0 + x1) / 2 + offset * -(y1 - y0)
+            my = (y0 + y1) / 2 + offset * (x1 - x0)
+            edge_traces.append(go.Scatter(
+                x=[x0, mx, x1], y=[y0, my, y1],
+                mode='lines+text',
+                line=dict(color=color, width=width, dash='solid'),
+                text=['', sym, ''],
+                textposition='middle center',
+                textfont=dict(size=13, color='#2c3e50'),
+                hoverinfo='none', showlegend=False
+            ))
+
+    # --- Dibujar nodos ---
+    node_x = [pos[s][0] for s in states]
+    node_y = [pos[s][1] for s in states]
+
+    def node_color(s):
+        if input_string:
+            if s == path_states[-1]:
+                return '#27AE60' if accepted else '#E74C3C'
+            if s in path_states:
+                return '#F39C12'
+        if s in accepting:
+            return '#2ECC71'
+        if s == initial:
+            return '#3498DB'
+        return '#BDC3C7'
+
+    node_colors = [node_color(s) for s in states]
+    symbols = ['circle-open' if s in accepting else 'circle' for s in states]
+
+    node_trace = go.Scatter(
+        x=node_x, y=node_y,
+        mode='markers+text',
+        marker=dict(size=40, color=node_colors,
+                    line=dict(width=3, color='#2c3e50'),
+                    symbol=symbols),
+        text=states,
+        textposition='middle center',
+        textfont=dict(size=13, color='white', family='monospace'),
+        hoverinfo='text',
+        hovertext=[f"{'INICIAL ' if s==initial else ''}{'ACEPTA' if s in accepting else ''}" for s in states],
+        showlegend=False
+    )
+
+    # --- Layout ---
+    fig = go.Figure(data=edge_traces + [node_trace])
+    subtitle = ""
+    if input_string is not None:
+        status = "✓ ACEPTADA" if accepted else "✗ RECHAZADA"
+        subtitle = f"<br><sup>Cadena: '{input_string}' → {status}   |   Camino: {' → '.join(path_states)}</sup>"
+    fig.update_layout(
+        title=f"<b>{title}</b>{subtitle}",
+        xaxis=dict(showgrid=False, zeroline=False, showticklabels=False, range=[-1.5, 1.5]),
+        yaxis=dict(showgrid=False, zeroline=False, showticklabels=False, range=[-1.5, 1.5]),
+        plot_bgcolor='white', height=400,
+        margin=dict(l=20, r=20, t=60, b=20)
+    )
+    fig.show()
+
+# ─────────────────────────────────────────────────────────────
+# EJEMPLO 1: DFA para Números Binarios
+# ─────────────────────────────────────────────────────────────
+print("DFA 1: Números Binarios  (acepta: '0','1','101','110' | rechaza: '','102')")
+plot_dfa(
+    states=['q0', 'q1'],
+    transitions={
+        ('q0', '0'): 'q1', ('q0', '1'): 'q1',
+        ('q1', '0'): 'q1', ('q1', '1'): 'q1',
+    },
+    initial='q0',
+    accepting={'q1'},
+    input_string='1011',
+    title='DFA — Números Binarios'
+)
+
+# ─────────────────────────────────────────────────────────────
+# EJEMPLO 2: DFA para Identificadores  [a-z_][a-z0-9_]*
+# ─────────────────────────────────────────────────────────────
+print("\nDFA 2: Identificadores  (acepta: '_var','hello' | rechaza: '2fast','hi!')")
+id_chars = [chr(c) for c in range(ord('a'), ord('z')+1)] + ['_']
+id_full  = id_chars + [str(d) for d in range(10)]
+
+transitions_id = {}
+for c in id_chars:
+    transitions_id[('q0', c)] = 'q1'
+for c in id_full:
+    transitions_id[('q1', c)] = 'q1'
+
+plot_dfa(
+    states=['q0', 'q1'],
+    transitions=transitions_id,
+    initial='q0',
+    accepting={'q1'},
+    input_string='_kernel',
+    title='DFA — Identificadores  [a-z_][a-z0-9_]*'
+)
+
+# ─────────────────────────────────────────────────────────────
+# EJEMPLO 3: DFA para reconocer la palabra "gpu"
+# ─────────────────────────────────────────────────────────────
+print('\nDFA 3: Palabra exacta "gpu"')
+plot_dfa(
+    states=['q0', 'q1', 'q2', 'q3'],
+    transitions={
+        ('q0', 'g'): 'q1',
+        ('q1', 'p'): 'q2',
+        ('q2', 'u'): 'q3',
+    },
+    initial='q0',
+    accepting={'q3'},
+    input_string='gpu',
+    title='DFA — Palabra exacta "gpu"'
+)
+```
+
+```{code-cell} ipython3
+# Traza paso a paso: ¿qué pasa en cada estado?
+def trace_dfa(transitions, initial, accepting, input_string):
+    """Muestra el trace completo de un DFA procesando una cadena."""
+    current = initial
+    print(f"Procesando: '{input_string}'")
+    print(f"Estado inicial: {current}")
+    print("-" * 50)
+
+    for i, symbol in enumerate(input_string):
+        next_state = transitions.get((current, symbol))
+        if next_state is None:
+            print(f"  Paso {i+1}: δ({current}, '{symbol}') → ∅  ✗ RECHAZA (sin transición)")
+            return False
+        status = " ← ACEPTA" if next_state in accepting else ""
+        print(f"  Paso {i+1}: δ({current}, '{symbol}') → {next_state}{status}")
+        current = next_state
+
+    accepted = current in accepting
+    print("-" * 50)
+    print(f"Estado final: {current} → {'✓ ACEPTADO' if accepted else '✗ RECHAZADO'}")
+    return accepted
+
+# Tabla comparativa de casos
+casos = ['1010', '0', '', '102', '11111']
+bin_trans = {
+    ('q0','0'):'q1', ('q0','1'):'q1',
+    ('q1','0'):'q1', ('q1','1'):'q1',
+}
+print("=== DFA de Números Binarios — Tabla de Casos ===")
+print(f"{'Cadena':<12} {'Resultado'}")
+print("-" * 25)
+import sys
+for c in casos:
+    # capturar print silenciosamente
+    from io import StringIO
+    old_stdout = sys.stdout
+    sys.stdout = StringIO()
+    result = trace_dfa(bin_trans, 'q0', {'q1'}, c)
+    sys.stdout = old_stdout
+    label = '✓ Acepta' if result else '✗ Rechaza'
+    print(f"  '{c}'{'':>{10-len(c)}}  {label}")
 ```
 
 ## Ejercicio Práctico: Traza de DFA

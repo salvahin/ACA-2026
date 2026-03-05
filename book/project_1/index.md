@@ -17,6 +17,12 @@ kernelspec:
 
 ---
 
+```{admonition} 🚀 Primer Paso Obligatorio
+:class: important
+Antes de comenzar cualquier actividad de este módulo, ejecuta el notebook de verificación de entorno:
+**[00_verificacion_entorno.ipynb](../notebooks/00_verificacion_entorno.ipynb)** — Verifica dependencias, GPU disponible y modo CPU Fallback.
+```
+
 ## Overview
 
 Este módulo cubre la generación automática de kernels Triton usando gramáticas JSON Schema y modelos de lenguaje. El enfoque está en constrained decoding, diseño de gramáticas, y sistemas agénticos.
@@ -139,8 +145,9 @@ lecturas/Project_1/
 ├── 05_JSON_Grammar.md              # JSON Schema
 ├── 06_Gramatica_Triton_L1L2.md     # Estructura kernels
 ├── 07_Gramatica_Triton_L3L4.md     # Expresiones
-├── 08_Serving_LLMs.md              # Serving
-├── 09_Token_Economics_Integracion.md # Economics
+├── 08a_serving_inference.md
+├── 08b_serving_optimization.md
+├── 09_token_economics_integracion.md # Economics
 ├── 10_Agentic_Systems.md           # Sistemas agénticos
 └── README.md                       # Este archivo
 ```

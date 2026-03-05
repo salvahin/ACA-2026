@@ -21,7 +21,9 @@ kernelspec:
 :tags: [remove-input, setup]
 
 # Setup Colab Environment
-!pip install -q numpy pandas matplotlib seaborn scikit-learn torch transformers accelerate triton xgrammar
+# Este módulo no requiere instalaciones de Python adicionales.
+# Asegúrate de haber ejecutado 00_verificacion_entorno.ipynb antes de iniciar el proyecto.
+print("Módulo Research — sin dependencias de código adicionales.")
 print('Dependencies installed!')
 ```
 
@@ -55,6 +57,25 @@ Al finalizar esta lectura, serás capaz de:
 2. Identificar los componentes esenciales de un proyecto de investigación académico
 3. Seleccionar y utilizar herramientas de gestión de referencias (Zotero, Mendeley)
 4. Organizar tu investigación desde el inicio con las prácticas recomendadas
+
+---
+
+```{admonition} 📅 Hoja de Ruta del Proyecto
+:class: important
+Usa este cronograma para saber **cuándo** completar cada acción investigativa:
+
+| Semana | Acción | Entregable esperado |
+|--------|--------|---------------------|
+| **1–2** | Leer este módulo (L01–L03) | Pregunta de investigación + 3 RQs definidas |
+| **3** | Revisión bibliográfica (L02) | 10+ papers organizados en Zotero/Mendeley |
+| **4** | Marco teórico (L04) | Sección de Marco Teórico borrador |
+| **5–6** | Metodología (L05) | Sección de Metodología + tabla de experimentos |
+| **7–9** | Experimentos (usar módulo Stats) | Datos recopilados + análisis estadístico |
+| **10** | Redacción (L06–L08) | Resultados + Discusión redactados |
+| **11** | Preparar defensa (L10) | Presentación de 15 minutos lista |
+
+*Las lecciones de **Estadística** (L01–L09 de Stats) deben usarse en paralelo con las semanas 7–9. Consulta `stats/uso-en-el-proyecto.md` para saber qué test usar en cada momento.*
+```
 
 ---
 

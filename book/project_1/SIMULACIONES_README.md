@@ -9,9 +9,9 @@
 ```{code-cell} ipython3
 :tags: [remove-input, setup]
 
-# Setup Colab Environment
-!pip install -q numpy pandas matplotlib seaborn scikit-learn torch transformers accelerate triton xgrammar
-print('Dependencies installed!')
+# Dependencias para las simulaciones interactivas (solo visualización)
+!pip install -q plotly numpy matplotlib
+print('Dependencias instaladas — simulaciones listas.')
 ```
 
 Este documento describe las simulaciones interactivas implementadas en el módulo Project_1.

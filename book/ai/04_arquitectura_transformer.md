@@ -46,9 +46,25 @@ Al finalizar esta lectura podrás:
 
 **[Transformer Explainer](https://poloclub.github.io/transformer-explainer/)** - Visualización interactiva de GPT-2: ingresa texto y observa cómo Self-Attention procesa la información token por token.
 ```
+:::{figure} ../images/transformer_explainer.png
+:name: transformer-explainer
+:alt: Captura de pantalla de la herramienta Transformer Explainer
+:align: center
+:width: 100%
+
+**Figura 1:** Interfaz de Transformer Explainer (Polo Club of Data Science). Muestra la arquitectura del modelo GPT-2 en 3D.
+:::
 
 ## Contexto
 Dominarás la arquitectura Transformer, fundamento de todos los LLMs modernos. Comprenderás el mecanismo de atención, multi-head attention, codificación posicional y la diferencia entre encoders (BERT) y decoders (GPT).
+
+```{admonition} 📚 Prerequisito
+:class: note
+Antes de esta lección debes haber leido:
+- **Lectura 1:** IA Clásica vs Generativa — Paradigmas y evolución de la IA
+- **Lectura 2:** Fundamentos de Deep Learning — Redes neuronales, forward/backward pass
+- **Lectura 3:** Generación Autoregresiva — Softmax, temperatura y estrategias de sampling
+```
 
 ## Introducción
 
@@ -316,6 +332,105 @@ for i, word in enumerate(words):
 
 print(f"\n4. Output = weighted sum de Values")
 print(f"   Output 'saltó': {output[2][:3].round(2)}... (dim={d_v})")
+```
+
+---
+
+### Atención Causal (GPT-style) vs Bidireccional (BERT-style)
+
+Hasta ahora hemos visto **atención bidireccional**: cada token puede atender a *todos* los demás tokens de la secuencia. Esto es perfecto para tareas de comprensión (BERT).
+
+Pero para **generación de texto** (GPT), hay un problema: si el modelo puede ver el token que debe predecir, el aprendizaje es trivial y no tiene utilidad real. La solución es la **máscara causal** (triangular inferior): cada token solo puede atender a tokens *anteriores*.
+
+```{code-cell} ipython3
+import numpy as np
+import matplotlib.pyplot as plt
+
+def softmax(x):
+    exp_x = np.exp(x - np.max(x, axis=-1, keepdims=True))
+    return exp_x / np.sum(exp_x, axis=-1, keepdims=True)
+
+def bidirectional_attention(Q, K, V):
+    """Atención estándar: cada token ve todos los demás (BERT-style)."""
+    d_k = Q.shape[-1]
+    scores = Q @ K.T / np.sqrt(d_k)
+    weights = softmax(scores)
+    return weights @ V, weights
+
+def causal_attention(Q, K, V):
+    """Atención causal: cada token solo ve tokens anteriores (GPT-style).
+    
+    La máscara triangular superior pone -inf en posiciones futuras,
+    haciendo que softmax les asigne probabilidad ≈ 0.
+    """
+    d_k = Q.shape[-1]
+    seq_len = Q.shape[0]
+    scores = Q @ K.T / np.sqrt(d_k)
+    
+    # Máscara causal: -1e9 en posiciones futuras (triángulo superior)
+    causal_mask = np.triu(np.ones((seq_len, seq_len)) * -1e9, k=1)
+    scores = scores + causal_mask
+    
+    weights = softmax(scores)
+    return weights @ V, weights
+
+# Ejemplo: frase "El gato saltó sobre la cerca"
+np.random.seed(42)
+words = ['El', 'gato', 'saltó', 'sobre', 'la', 'cerca']
+seq_len = len(words)
+d_k = 8
+
+Q = np.random.randn(seq_len, d_k)
+K = np.random.randn(seq_len, d_k)
+V = np.random.randn(seq_len, d_k)
+
+_, w_bidir  = bidirectional_attention(Q, K, V)
+_, w_causal = causal_attention(Q, K, V)
+
+# Visualización comparativa
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+
+for ax, weights, title in zip(
+    axes,
+    [w_bidir, w_causal],
+    ['Atención Bidireccional\n(BERT-style: ve todo el contexto)',
+     'Atención Causal\n(GPT-style: solo ve tokens anteriores)']
+):
+    im = ax.imshow(weights, cmap='Blues', vmin=0, vmax=1)
+    ax.set_xticks(range(seq_len))
+    ax.set_yticks(range(seq_len))
+    ax.set_xticklabels(words, rotation=45, ha='right')
+    ax.set_yticklabels(words)
+    ax.set_xlabel('Tokens atendidos (Keys)')
+    ax.set_ylabel('Token actual (Queries)')
+    ax.set_title(title, fontsize=12, weight='bold')
+    plt.colorbar(im, ax=ax, fraction=0.046)
+
+    # Añadir valores en las celdas
+    for i in range(seq_len):
+        for j in range(seq_len):
+            val = weights[i, j]
+            color = 'white' if val > 0.5 else 'black'
+            ax.text(j, i, f'{val:.2f}', ha='center', va='center',
+                    fontsize=7, color=color)
+
+plt.tight_layout()
+plt.suptitle('Comparación: ¿A qué tokens puede atender cada posición?',
+             y=1.02, fontsize=13, weight='bold')
+plt.show()
+
+print("Observa:")
+print("  Bidireccional: cada fila suma 1.0 distribuido en TODOS los tokens")
+print("  Causal:        cada fila suma 1.0 distribuido solo en tokens ANTERIORES")
+print(f"\n  'saltó' (pos 2) en causal solo ve: {words[:3]}")
+print(f"  'saltó' (pos 2) en bidir   ve todos: {words}")
+```
+
+```{admonition} 🔑 Implicación para BERT vs GPT
+:class: important
+- **BERT** usa atención **bidireccional** — puede ver todo el contexto para *comprender* texto.
+- **GPT** usa atención **causal** — solo ve el pasado, lo que lo obliga a *predecir* el siguiente token de forma genuina.
+- El `TransformerBlock` en Parte 6 acepta un parámetro `mask=causal_mask` para implementar exactamente esta diferencia.
 ```
 
 ---

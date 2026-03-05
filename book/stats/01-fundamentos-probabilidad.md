@@ -47,6 +47,14 @@ Al finalizar esta lectura podrás:
 
 **[Seeing Theory (Brown University)](https://seeing-theory.brown.edu/)** - Posiblemente el mejor libro de texto interactivo de estadística en internet. Usa animaciones y minijuegos para hacer conceptos como probabilidad, Teorema del Límite Central e Inferencia Bayesiana completamente intuitivos.
 ```
+:::{figure} ../images/seeing_theory.png
+:name: seeing-theory
+:alt: Captura de pantalla de la herramienta Seeing Theory
+:align: center
+:width: 100%
+
+**Figura 1:** Portada visual de *Seeing Theory* (Brown University).
+:::
 
 Bienvenida a este módulo de estadística. Aquí aprenderemos los conceptos fundamentales que necesitas para analizar los resultados de tu investigación sobre generación de kernels GPU con restricciones gramaticales. Imagina que necesitas comparar cuántas iteraciones toma el algoritmo baseline versus tu versión mejorada. La probabilidad es el lenguaje que usamos para hablar sobre esta incertidumbre.
 
@@ -66,6 +74,7 @@ Comencemos con lo más básico: **¿qué es un espacio muestral?** En tu proyect
 Representa todos los números posibles de kernels válidos en 100 intentos.
 
 ```{code-cell} ipython3
+import json
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -74,56 +83,78 @@ import seaborn as sns
 sns.set_style("whitegrid")
 plt.rcParams['figure.figsize'] = (10, 6)
 
-# Simulación de espacio muestral: 100 intentos de generación de kernels
-np.random.seed(42)
-num_intentos = 100
-probabilidad_valido = 0.75
+# ── DATOS REALES del proyecto ──────────────────────────────
+# Fuente: notebook_test_report.json  (ejecución nbclient en CPU local)
+with open("../../notebook_test_report.json") as f:
+    report = json.load(f)
 
-# Simulamos múltiples experimentos
-num_experimentos = 1000
-resultados = np.random.binomial(num_intentos, probabilidad_valido, num_experimentos)
+# Clasificar resultados
+categorias = {"Success": 0, "Env Limit": 0, "Error": 0}
+for valor in report.values():
+    if valor == "Success":
+        categorias["Success"] += 1
+    elif valor.startswith("Env Limit"):
+        categorias["Env Limit"] += 1   # xgrammar/triton no disponibles en CPU
+    else:
+        categorias["Error"] += 1
 
-# Visualización del espacio muestral
-plt.figure(figsize=(12, 5))
+total = sum(categorias.values())
+print(f"Experimento real: {total} notebooks ejecutados")
+print(f"Espacio muestral Ω = {{Success, Env Limit, Error}}")
+print()
+for cat, n in categorias.items():
+    print(f"  P({cat}) = {n}/{total} = {n/total:.3f}  ({n/total:.1%})")
 
-plt.subplot(1, 2, 1)
-plt.hist(resultados, bins=30, edgecolor='black', alpha=0.7, color='steelblue')
-plt.xlabel('Número de kernels válidos')
-plt.ylabel('Frecuencia')
-plt.title('Espacio Muestral: Distribución de Kernels Válidos\n(1000 experimentos, 100 intentos cada uno)')
-plt.axvline(np.mean(resultados), color='red', linestyle='--', label=f'Media = {np.mean(resultados):.1f}')
-plt.legend()
+# ──────────────────────────────────────────────────────────
+# Visualización: distribución real de resultados
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5))
 
-plt.subplot(1, 2, 2)
-# Eventos específicos
-evento_A = np.sum(resultados >= 80)  # Más del 80% válidos
-evento_B = np.sum(resultados <= 50)  # Menos del 50% válidos
-evento_C = np.sum((resultados > 50) & (resultados < 80))  # Entre 50% y 80%
+# Gráfico 1: frecuencias absolutas
+colores = ['#2ca02c', '#ff7f0e', '#d62728']
+barras = ax1.bar(categorias.keys(), categorias.values(),
+                 color=colores, alpha=0.8, edgecolor='black')
+ax1.set_ylabel('Número de notebooks', fontsize=12)
+ax1.set_title('Resultados Reales de Ejecución\n(48 notebooks del curso, CPU local)', fontsize=12)
+ax1.grid(axis='y', alpha=0.3)
 
-eventos = ['A: ≥80%', 'B: ≤50%', 'C: 50-80%']
-frecuencias = [evento_A, evento_B, evento_C]
-colores = ['green', 'red', 'orange']
+for barra, n in zip(barras, categorias.values()):
+    ax1.text(barra.get_x() + barra.get_width()/2, barra.get_height() + 0.3,
+             f'{n} ({n/total:.0%})', ha='center', va='bottom', fontsize=11, fontweight='bold')
 
-plt.bar(eventos, frecuencias, color=colores, alpha=0.7, edgecolor='black')
-plt.ylabel('Frecuencia')
-plt.title('Frecuencia de Eventos en el Espacio Muestral')
-plt.grid(axis='y', alpha=0.3)
-
-for i, v in enumerate(frecuencias):
-    plt.text(i, v + 10, str(v), ha='center', va='bottom', fontweight='bold')
+# Gráfico 2: probabilidades como espacio muestral
+ax2.pie(categorias.values(),
+        labels=[f"{k}\n{v/total:.1%}" for k, v in categorias.items()],
+        colors=colores, autopct='', startangle=90,
+        wedgeprops={'edgecolor': 'black', 'linewidth': 1.2})
+ax2.set_title('Probabilidad de Cada Categoría\n(P(·) empírica del experimento real)', fontsize=12)
 
 plt.tight_layout()
 plt.show()
 
-print(f"Probabilidad empírica de cada evento:")
-print(f"P(A: ≥80% válidos) = {evento_A/num_experimentos:.3f}")
-print(f"P(B: ≤50% válidos) = {evento_B/num_experimentos:.3f}")
-print(f"P(C: 50-80% válidos) = {evento_C/num_experimentos:.3f}")
+# ── Eventos derivados ──────────────────────────────────────
+P_success = categorias['Success'] / total
+P_env = categorias['Env Limit'] / total
+P_error = categorias['Error'] / total
+
+print(f"\nEventos de interés para tu investigación:")
+print(f"P(notebook ejecuta exitosamente)         = {P_success:.3f}")
+print(f"P(falla por entorno, no código)          = {P_env:.3f}")
+print(f"P(falla por bug de código)               = {P_error:.3f}")
+print(f"\nVerificación axioma de normalización:    {P_success + P_env + P_error:.3f} = 1 ✓")
+
+print(f"""
+💡 Interpretación:
+  • El 75% de los notebooks corren bien; los problemas son de ENTORNO (xgrammar/triton)
+    no del código del curso → P(bug | falla) = {P_error / (P_env + P_error):.1%}
+  • Para tu proyecto: mide qué % de kernels generados compilan.
+    Ese número es tu P(kernel válido).
+""")
 ```
 
 Un **evento** es un subconjunto del espacio muestral. Por ejemplo:
-- Evento A: "Más del 80% de los kernels son válidos" → A = {80, 81, ..., 100}
-- Evento B: "Menos del 50% de los kernels son válidos" → B = {0, 1, ..., 50}
+- Evento A: "El notebook ejecuta sin errores de código" → A = {Success}
+- Evento B: "El notebook falla por limitación de entorno" → B = {Env Limit}
+
 
 ### Operaciones entre Eventos
 
@@ -612,6 +643,41 @@ Si multiplicas todos los resultados por 2, el valor esperado también se multipl
 4. **Bayes**: ¿Por qué un detector con 95% de exactitud puede tener solo 33% de probabilidad de ser correcto cuando detecta algo?
 ```
 
+```{admonition} 🧠 Preguntas de Opción Múltiple
+:class: tip
+**P1.** P(A|B) = 0.9 y P(B|A) = 0.4. ¿Cuál afirmación es verdadera?
+
+- a) **P(A|B) ≠ P(B|A) en general; son probabilidades diferentes** ✓
+- b) P(A) = P(B) porque sus probabilidades condicionales están relacionadas
+- c) P(A|B) × P(B|A) = P(A ∩ B)
+- d) No se pueden calcular sin conocer P(A) y P(B)
+
+*Razón: La probabilidad condicional P(A|B) = P(A∩B)/P(B); invertir el orden cambia el denominador*
+
+---
+
+**P2.** En los datos reales del curso: 36 notebooks ejecutaron exitosamente de 48. Si se elige un notebook al azar, P(falla) es:
+
+- a) 36/48 = 0.75
+- b) **12/48 = 0.25** ✓
+- c) 8/48 = 0.167
+- d) 4/48 = 0.083
+
+*Razón: P(falla) = 1 - P(éxito) = 1 - 0.75 = 0.25 (axioma de complemento)*
+
+---
+
+**P3.** Si X = número de kernels válidos en 10 intentos con P(válido) = 0.8, el Valor Esperado E[X] es:
+
+- a) 0.8
+- b) 8.0 pero con mucha variación
+- c) **E[X] = n × p = 10 × 0.8 = 8** ✓
+- d) E[X] = 0.8^10 ≈ 0.107
+
+*Razón: Para distribución binomial B(n, p), E[X] = n·p. Esto no significa que siempre obtendrás exactamente 8.*
+```
+
+
 ### Ejercicio 1: Espacio Muestral y Eventos
 En tu experimento de generación de kernels, ejecutas el baseline 20 veces y cuentas cuántos son válidos.
 - Define el espacio muestral Ω
@@ -637,6 +703,14 @@ Si X = número de kernels válidos en 10 intentos y p(X=k) = C(10,k) × 0.8^k ×
 1. En tu proyecto, ¿cuál es el espacio muestral natural? ¿Cuáles son los eventos de interés?
 2. ¿Hay relaciones causales o solo probabilidades condicionales? ¿Cómo esto afecta tus conclusiones?
 3. Si observas que P(compiló | restricciones) > P(compiló | baseline), ¿qué puedes concluir? ¿Qué información adicional necesitarías?
+
+```{admonition} 📋 Rúbrica de Evaluación (Ejercicios y Reflexiones)
+:class: note
+- **Excelente (100%)**: Cálculos de probabilidad precisos. La reflexión responde claramente usando términos estadísticos correctos (eventos, independencia, causalidad) y contextualiza perfectamente con el problema de los kernels GPU.
+- **Bueno (80%)**: Cálculos correctos pero la reflexión es superficial o confunde correlación con causalidad en sus explicaciones.
+- **Requiere Mejora (<60%)**: Errores en los cálculos de Bayes o Valor Esperado. Reflexión que no aplica los conceptos al dominio del proyecto.
+```
+
 
 ---
 

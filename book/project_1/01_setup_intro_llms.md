@@ -541,7 +541,69 @@ Este ejercicio demuestra el concepto básico de validación que XGrammar hace a 
 
 ---
 
-## Referencias
+## 🔌 CPU Fallback: Sin GPU No Hay Problema
+
+Muchos notebooks de este módulo están optimizados para GPU, pero **todos los conceptos son ejecutables en CPU**. La siguiente tabla muestra qué cambia:
+
+```{admonition} ¿No tienes GPU?
+:class: warning
+Si `torch.cuda.is_available()` regresa `False`, usa la columna **CPU Fallback** de la tabla. El código funcionará más lento pero producirá los **mismos resultados**.
+
+Opciones de GPU gratuita: [Google Colab](https://colab.research.google.com) (T4), [Kaggle](https://www.kaggle.com) (T4 × 30 h/semana), [Lightning.ai](https://lightning.ai) (A10G).
+```
+
+| Operación | GPU (recomendado) | CPU Fallback |
+|-----------|-------------------|--------------|
+| Cargar LLM (7B params) | ~15 seg | ~3 min (cuantización 4-bit recomendada) |
+| Generación de 100 tokens | <1 seg | ~30 seg |
+| Compilar gramática XGrammar | ~2 seg | ~2 seg (igual, es CPU-bound) |
+| Ejecutar kernel Triton | Sí | ❌ Usar `torch.matmul` como referencia |
+
+```{code-cell} ipython3
+import torch
+
+# Detección automática de hardware
+device = "cuda" if torch.cuda.is_available() else "cpu"
+print(f"Dispositivo disponible: {device.upper()}")
+
+if device == "cuda":
+    gpu_name = torch.cuda.get_device_name(0)
+    gpu_mem_gb = torch.cuda.get_device_properties(0).total_memory / 1e9
+    print(f"  GPU: {gpu_name}")
+    print(f"  VRAM: {gpu_mem_gb:.1f} GB")
+    print(f"  Apto para: modelos de hasta ~{int(gpu_mem_gb * 0.7)//7}B params (FP16)")
+else:
+    import psutil
+    ram_gb = psutil.virtual_memory().total / 1e9
+    print(f"  RAM disponible: {ram_gb:.1f} GB")
+    print(f"  💡 Opciones para CPU:")
+    print(f"     • Modelos pequeños: Phi-3-mini (3.8B) o Qwen2.5-1.5B")
+    print(f"     • Activa cuantización: load_in_4bit=True")
+    print(f"     • Prueba primero XGrammar standalone sin LLM")
+
+# Convención: pasa siempre `device` a tus tensores
+tensor_test = torch.zeros(4).to(device)
+print(f"\nTensor de prueba en {tensor_test.device}: OK")
+```
+
+---
+
+## 🎮 Simulaciones Interactivas del Módulo
+
+Este módulo incluye 4 simulaciones interactivas basadas en Plotly. Todas funcionan en Colab y GitHub Pages sin GPU.
+
+```{admonition} 📊 Ver todas las simulaciones
+:class: seealso
+**[SIMULACIONES_README](SIMULACIONES_README.md)** — Descripción detallada de cada visualización:
+1. **Prompt Engineering** (L03) — Anatomía visual de un prompt efectivo con 5 componentes coloreados
+2. **XGrammar Token Masking** (L04) — Dropdown que muestra qué tokens permite cada estado de la FSM
+3. **JSON Schema Tree** (L05) — Árbol jerárquico de la estructura de un kernel Triton
+4. **Token Economics** (L09) — Calculadora comparativa de costos de 5 modelos LLM en producción
+
+Requisitos: solo `plotly` y `numpy` — sin GPU necesaria.
+```
+
+---
 
 - Python. [Virtual Environments](https://docs.python.org/3/library/venv.html). Python Docs.
 - Git. [Git Basics - Tagging](https://git-scm.com/book/en/v2/Git-Basics-Tagging). Git Documentation.

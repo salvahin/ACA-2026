@@ -211,7 +211,50 @@ print(f"Media simulada: {np.mean(simulaciones):.2f} (teórico: {mean_binomial:.2
 print(f"SD simulada: {np.std(simulaciones, ddof=1):.2f} (teórico: {std_binomial:.2f})")
 ```
 
-## Distribución de Poisson
+```{admonition} 📊 ¿Cómo interpretar la CDF en la práctica?
+:class: important
+
+La **Función de Distribución Acumulativa (CDF)** responde preguntas del tipo *"¿Cuánto?"* y *"¿Qué tan probable?"*. En tu proyecto:
+
+| Pregunta práctica | Cómo usarla |
+|---|---|
+| ¿Qué % de corridas genera ≤38 kernels válidos? | Lee F(38) en la CDF |
+| ¿Cuántos kernels necesito para estar en el 90º percentil? | Encuentra x tal que F(x)=0.9 |
+| ¿Es 35 kernels válidos un resultado inusual? | Si F(35) < 0.05, sí — está en el 5% inferior |
+| ¿Cuál es el rango del 80% central? | Encuentra Q10 y Q90 con `binom.ppf(0.1, n, p)` y `binom.ppf(0.9, n, p)` |
+
+**Ejemplo de lectura**: Si la CDF vale 0.25 en x=40, eso significa que el 25% de las veces obtendrás 40 o *menos* kernels válidos en 50 intentos con p=0.82. Dicho de otro modo, el 75% de las veces obtendrás más de 40.
+
+```{code-cell} ipython3
+from scipy.stats import binom
+import numpy as np
+
+n, p = 50, 0.82
+
+# Responder preguntas concretas con la CDF
+print("Consultas prácticas sobre la CDF Binomial(50, 0.82):")
+print("-" * 55)
+
+# ¿Qué tan probable es obtener ≤38 kernels?
+prob_le38 = binom.cdf(38, n, p)
+print(f"P(X ≤ 38) = {prob_le38:.3f}   → {prob_le38*100:.1f}% de las corridas")
+
+# ¿Cuántos kernels para estar en el 90º percentil?
+q90 = binom.ppf(0.90, n, p)
+print(f"Percentil 90 = {q90:.0f}       → 90% de corridas producen ≤{q90:.0f} kernels")
+
+# Rango del 80% central (P10 a P90)
+q10 = binom.ppf(0.10, n, p)
+print(f"Rango 80% central: [{q10:.0f}, {q90:.0f}]  → 80% de veces caerás aquí")
+
+# ¿Es 35 un resultado inusual?
+prob_le35 = binom.cdf(35, n, p)
+print(f"\nP(X ≤ 35) = {prob_le35:.4f}   → {'❗ Inusual (< 5%)' if prob_le35 < 0.05 else 'Normal'}")
+print(f"→ Si obtienes 35 kernels válidos en 50 intentos con p=0.82,")
+print(f"  esto ocurriría solo el {prob_le35*100:.1f}% de las veces por azar.")
+print(f"  Podría indicar un bug o que la tasa real es menor que 0.82.")
+```
+
 
 Cuando n es grande y p es pequeño, pero np es moderado, usamos la **distribución de Poisson**. Modela conteos de eventos raros en intervalos fijos.
 

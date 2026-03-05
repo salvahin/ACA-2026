@@ -21,7 +21,9 @@ kernelspec:
 :tags: [remove-input, setup]
 
 # Setup Colab Environment
-!pip install -q numpy pandas matplotlib seaborn scikit-learn torch transformers accelerate triton xgrammar
+# Este módulo no requiere instalaciones de Python adicionales.
+# Asegúrate de haber ejecutado 00_verificacion_entorno.ipynb antes de iniciar el proyecto.
+print("Módulo Research — sin dependencias de código adicionales.")
 print('Dependencies installed!')
 ```
 

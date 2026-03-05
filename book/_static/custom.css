@@ -1,0 +1,113 @@
+/* 
+ * ACA-2026: CSS Personalizado de Jupyter Book
+ * Basado en el reporte de auditoría visual
+ */
+
+/* 1. Tipografía y Espaciado */
+body {
+    line-height: 1.65;
+}
+
+h2, h3 {
+    margin-top: 2.2rem !important;
+}
+
+/* 2. Etiquetado de Bloques de Código */
+div.highlight {
+    position: relative;
+}
+div.highlight-python::before {
+    content: "PYTHON";
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #888;
+    z-index: 10;
+}
+div.highlight-cpp::before {
+    content: "C++";
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #888;
+    z-index: 10;
+}
+div.highlight-cuda::before {
+    content: "CUDA";
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #888;
+    z-index: 10;
+}
+
+/* 3. Admonitions en Modo Oscuro (Vibrancia) */
+html[data-theme="dark"] .admonition.note,
+html[data-theme="dark"] div.admonition.note {
+    border-left-color: #3498db !important;
+    background-color: rgba(52, 152, 219, 0.1) !important;
+}
+html[data-theme="dark"] .admonition.tip,
+html[data-theme="dark"] div.admonition.tip {
+    border-left-color: #2ecc71 !important;
+    background-color: rgba(46, 204, 113, 0.1) !important;
+}
+html[data-theme="dark"] .admonition.important,
+html[data-theme="dark"] div.admonition.important {
+    border-left-color: #f39c12 !important;
+    background-color: rgba(243, 156, 18, 0.1) !important;
+}
+
+/* 4. Scroll Spy (ToC Derecho) */
+nav.bd-toc-nav ul.nav li a.active {
+    font-weight: 700 !important;
+    color: var(--pst-color-primary) !important;
+}
+
+/* 5. Separador del Sidebar (Índice Izquierdo) */
+p.caption {
+    margin-top: 1.5em;
+    border-top: 1px solid var(--pst-color-border);
+    padding-top: 0.8em;
+}
+
+/* 6. Accesibilidad Móvil y Tablas */
+.table-wrapper {
+    overflow-x: auto;
+    white-space: nowrap;
+}
+@media (max-width: 768px) {
+    /* Minimizar impacto visual de botones de colab/repo en mobile */
+    .bd-header-article .bd-article-container .bd-header-article-buttons {
+        transform: scale(0.9);
+        transform-origin: left;
+    }
+}
+
+/* 7. Toques Premium (Fade In) */
+body {
+    animation: fadeIn 0.4s ease-in-out;
+}
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* 8. Transición en Imágenes para Simular "Zoom/Lightbox" readiness */
+img.align-center {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    border-radius: 4px;
+}
+img.align-center:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+html[data-theme="dark"] img.align-center:hover {
+    box-shadow: 0 4px 15px rgba(255,255,255,0.05);
+}

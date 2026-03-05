@@ -23,6 +23,8 @@ exclude_patterns:
 sphinx:
   config:
     language: es
+    html_static_path: ["_static"]
+    html_css_files: ["custom.css"]
     html_theme_options:
       navigation_depth: 3
       show_nav_level: 2

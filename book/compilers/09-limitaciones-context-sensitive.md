@@ -614,3 +614,11 @@ Concluiremos el módulo comparando parser generators industriales (ANTLR, Tree-S
 - ¿Cómo el use de "tipos" en la especificación afecta qué se necesita para validación?
 - En GPU kernels específicamente, ¿qué restricciones semánticas son críticas que no CFG puede expresar?
 - ¿Es posible extender CFG a Tipo 1 para kernels GPU? ¿Cuál sería el costo?
+
+---
+
+## Referencias
+
+- Bar-Hillel, Y., Perles, M., & Shamir, E. (1961). [On Formal Properties of Simple Phrase Structure Grammars](https://doi.org/10.1524/stuf.1961.14.14.143). Zeitschrift für Phonetik.
+- Chomsky, N. (1956). Three Models for the Description of Language. IRE Transactions on Information Theory.
+- Sipser, M. (2012). Introduction to the Theory of Computation (3rd ed.). Cengage Learning.

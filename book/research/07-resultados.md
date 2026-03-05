@@ -433,3 +433,10 @@ Una vez que has presentado tus resultados cuidadosamente, estás listo para la *
 ---
 
 *Esta lectura es parte del curso "Grammar-Constrained GPU Kernel Generation" - ACA*
+
+---
+
+## Referencias
+
+- Tufte, E. (2001). The Visual Display of Quantitative Information (2nd ed.). Graphics Press.
+- Wilkinson, L. (1999). [Statistical Methods in Psychology Journals](https://doi.org/10.1037/0003-066X.54.8.594). American Psychologist.

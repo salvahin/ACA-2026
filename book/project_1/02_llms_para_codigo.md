@@ -602,3 +602,11 @@ print(code)
 4. ¿Cuál es la diferencia entre validar sintaxis (constrained decoding) y validar lógica (test cases)?
 ```
 
+---
+
+## Referencias
+
+- Rozière, B. et al. (2023). [Code Llama: Open Foundation Models for Code](https://arxiv.org/abs/2308.12950). arXiv.
+- Li, R. et al. (2023). [StarCoder: May the Source Be With You!](https://arxiv.org/abs/2305.06161). arXiv.
+- Guo, D. et al. (2024). [DeepSeek-Coder: When the Large Language Model Meets Programming](https://arxiv.org/abs/2401.14196). arXiv.
+

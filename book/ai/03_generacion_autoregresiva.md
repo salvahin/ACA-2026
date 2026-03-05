@@ -899,3 +899,12 @@ Salida: "París"
 - **Cross-Entropy Loss:** -log(P_correcta), minimizar durante entrenamiento
 - **BPE:** Divide palabras en sub-palabras (balance entre caracteres y palabras)
 
+---
+
+## Referencias
+
+- Sennrich, R., Haddow, B., & Birch, A. (2016). [Neural Machine Translation of Rare Words with Subword Units](https://arxiv.org/abs/1508.07909). arXiv:1508.07909.
+- Holtzman, A. et al. (2020). [The Curious Case of Neural Text Degeneration](https://arxiv.org/abs/1904.09751). ICLR 2020.
+- Fan, A., Lewis, M., & Dauphin, Y. (2018). [Hierarchical Neural Story Generation](https://arxiv.org/abs/1805.04833). ACL.
+- Radford, A. et al. (2019). [Language Models are Unsupervised Multitask Learners](https://cdn.openai.com/better-language-models/language_models_are_unsupervised_multitask_learners.pdf). OpenAI.
+

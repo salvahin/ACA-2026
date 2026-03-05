@@ -903,3 +903,12 @@ print("3. Siempre incluye medidas de incertidumbre (error bars, IC)")
 print("4. Pie charts son malos para comparar valores - usa barras")
 print("5. Box plots > bar plots cuando la distribución importa")
 ```
+
+---
+
+## Referencias
+
+- Tufte, E. (2001). The Visual Display of Quantitative Information (2nd ed.). Graphics Press.
+- Weights & Biases. [Documentation](https://docs.wandb.ai/). W&B.
+- MLflow. [Documentation](https://mlflow.org/docs/latest/). MLflow.
+- Wickham, H. (2010). [A Layered Grammar of Graphics](https://doi.org/10.1198/jcgs.2009.07098). Journal of Computational and Graphical Statistics.

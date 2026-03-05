@@ -703,3 +703,11 @@ En la última semana, consolidaremos todo en **Documentación Final**: cómo doc
 ---
 
 *Esta lectura es parte del curso "Grammar-Constrained GPU Kernel Generation" - ACA*
+
+---
+
+## Referencias
+
+- Williams, S., Waterman, A., & Patterson, D. (2009). [Roofline: An Insightful Visual Performance Model](https://doi.org/10.1145/1498765.1498785). Communications of the ACM.
+- Tufte, E. (2001). The Visual Display of Quantitative Information (2nd ed.). Graphics Press.
+- Plotly. [Plotly Python Open Source Graphing Library](https://plotly.com/python/). Plotly.

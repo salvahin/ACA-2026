@@ -989,3 +989,11 @@ Datos de iteraciones para restricciones: 38, 39, 37, 40, 38, 39, 36
 ---
 
 **Próxima semana**: Aprenderemos cómo usar estas distribuciones para hacer pruebas de hipótesis sobre si nuestro método es realmente mejor que el baseline.
+
+---
+
+## Referencias
+
+- Rice, J. (2006). Mathematical Statistics and Data Analysis (3rd ed.). Cengage Learning.
+- Casella, G. & Berger, R. (2002). Statistical Inference (2nd ed.). Cengage Learning.
+- Wasserman, L. (2004). [All of Statistics](https://link.springer.com/book/10.1007/978-0-387-21736-9). Springer.

@@ -733,3 +733,10 @@ print("Objetivo: restricciones mínimas necesarias para validez sintáctica")
 - En la práctica, para kernels Triton necesitas el schema complejo porque la sintaxis es estricta
 
 **Tarea adicional**: Modifica `complex_schema` para agregar una restricción más (ej: un campo `description` opcional). Observa cómo cambia el conteo de restricciones.
+
+---
+
+## Referencias
+
+- XGrammar. [Efficient, Flexible and Portable Structured Generation](https://github.com/mlc-ai/xgrammar). GitHub.
+- Willard, B. & Louf, R. (2023). [Efficient Guided Generation for Large Language Models](https://arxiv.org/abs/2307.09702). arXiv.

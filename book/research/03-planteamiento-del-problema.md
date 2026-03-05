@@ -326,3 +326,10 @@ Una vez que tienes un planteamiento aprobado, necesitarás construir un **marco 
 ---
 
 *Esta lectura es parte del curso "Grammar-Constrained GPU Kernel Generation" - ACA*
+
+---
+
+## Referencias
+
+- Booth, W., Colomb, G., & Williams, J. (2016). The Craft of Research (4th ed.). University of Chicago Press.
+- Creswell, J. (2014). Research Design: Qualitative, Quantitative, and Mixed Methods Approaches (4th ed.). SAGE.

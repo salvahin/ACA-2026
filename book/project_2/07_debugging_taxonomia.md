@@ -852,3 +852,11 @@ print("\n💡 Lección: Los bugs de GPU raramente vienen solos. Usa checklist si
 ---
 
 *Esta lectura es parte del curso "Grammar-Constrained GPU Kernel Generation" - ACA*
+
+---
+
+## Referencias
+
+- NVIDIA. [CUDA-GDB](https://docs.nvidia.com/cuda/cuda-gdb/). NVIDIA Developer.
+- NVIDIA. [Nsight Systems](https://developer.nvidia.com/nsight-systems). NVIDIA Developer.
+- NVIDIA. [CUDA Best Practices Guide: Error Handling](https://docs.nvidia.com/cuda/cuda-c-best-practices-guide/#error-handling). NVIDIA Developer.

@@ -456,3 +456,10 @@ Una vez que has verificado la integridad interna de tu proyecto de investigació
 ---
 
 *Esta lectura es parte del curso "Grammar-Constrained GPU Kernel Generation" - ACA*
+
+---
+
+## Referencias
+
+- Booth, W., Colomb, G., & Williams, J. (2016). The Craft of Research (4th ed.). University of Chicago Press.
+- Day, R. & Gastel, B. (2016). How to Write and Publish a Scientific Paper (8th ed.). Cambridge University Press.

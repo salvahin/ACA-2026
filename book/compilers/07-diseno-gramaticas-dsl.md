@@ -1114,3 +1114,11 @@ Exploraremos técnicas avanzadas de compilación de gramáticas, incluyendo norm
 - ¿Cómo se diseñaría una gramática para lenguaje natural (inglés) vs lenguaje de programación?
 - En el contexto de GPU kernels, ¿hay características inherentemente ambiguas que no se pueden resolver solo con gramática?
 - ¿Cómo el diseño de la gramática afecta la capacidad de dar mensajes de error útiles?
+
+---
+
+## Referencias
+
+- Fowler, M. (2010). [Domain-Specific Languages](https://martinfowler.com/books/dsl.html). Addison-Wesley.
+- Parr, T. (2013). [The Definitive ANTLR 4 Reference](https://pragprog.com/titles/tpantlr2/the-definitive-antlr-4-reference/). Pragmatic Bookshelf.
+- Aho, A., Lam, M., Sethi, R., & Ullman, J. (2006). Compilers: Principles, Techniques, and Tools (2nd ed.). Pearson.

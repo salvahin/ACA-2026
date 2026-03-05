@@ -900,3 +900,11 @@ En la siguiente semana, exploraremos **XGrammar y Constrained Decoding** - cómo
 ---
 
 *Esta lectura es parte del curso "Grammar-Constrained GPU Kernel Generation" - ACA*
+
+---
+
+## Referencias
+
+- Wei, J. et al. (2022). [Chain-of-Thought Prompting Elicits Reasoning in Large Language Models](https://arxiv.org/abs/2201.11903). NeurIPS 2022.
+- Brown, T. et al. (2020). [Language Models are Few-Shot Learners](https://arxiv.org/abs/2005.14165). NeurIPS 2020.
+- Zhou, D. et al. (2023). [Least-to-Most Prompting Enables Complex Reasoning](https://arxiv.org/abs/2205.10625). ICLR 2023.

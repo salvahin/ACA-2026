@@ -830,3 +830,11 @@ Estudiaremos las Gramáticas Libres de Contexto (CFGs), el siguiente nivel en la
 - ¿Cuál es el peor caso de tamaño cuando convertimos un NFA a DFA (número de estados)?
 - ¿Por qué es importante la ε-clausura en la conversión?
 - En XGrammar, cuando compilamos una gramática, ¿dónde aparecen procesos similares a NFA→DFA?
+
+---
+
+## Referencias
+
+- Hopcroft, J. (1971). [An n log n Algorithm for Minimizing States in a Finite Automaton](https://doi.org/10.1016/B978-0-12-417750-5.50022-1). Theory of Machines and Computations.
+- Thompson, K. (1968). [Programming Techniques: Regular Expression Search Algorithm](https://doi.org/10.1145/363347.363387). Communications of the ACM.
+- Sipser, M. (2012). Introduction to the Theory of Computation (3rd ed.). Cengage Learning.

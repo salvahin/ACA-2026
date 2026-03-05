@@ -675,3 +675,11 @@ Si tuvieras 4 horas para KernelBench:
 ---
 
 *Esta lectura es parte del curso "Grammar-Constrained GPU Kernel Generation" - ACA*
+
+---
+
+## Referencias
+
+- Chen, M. et al. (2021). [Evaluating Large Language Models Trained on Code](https://arxiv.org/abs/2107.03374). arXiv (HumanEval).
+- Austin, J. et al. (2021). [Program Synthesis with Large Language Models](https://arxiv.org/abs/2108.07732). arXiv (MBPP).
+- Shypula, A. et al. (2024). [Learning Performance-Improving Code Edits](https://arxiv.org/abs/2302.07867). ICLR.

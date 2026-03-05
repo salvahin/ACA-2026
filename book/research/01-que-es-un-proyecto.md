@@ -220,3 +220,10 @@ En la siguiente semana, aprenderás a **leer papers académicos estratégicament
 ---
 
 *Esta lectura es parte del curso "Grammar-Constrained GPU Kernel Generation" - ACA*
+
+---
+
+## Referencias
+
+- Creswell, J. (2014). Research Design: Qualitative, Quantitative, and Mixed Methods Approaches (4th ed.). SAGE.
+- Booth, W., Colomb, G., & Williams, J. (2016). The Craft of Research (4th ed.). University of Chicago Press.

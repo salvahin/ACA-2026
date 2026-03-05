@@ -686,3 +686,11 @@ def relu_kernel_fixed(x_ptr, y_ptr, n, BLOCK_SIZE: tl.constexpr):
 ---
 
 *Esta lectura es parte del curso "Grammar-Constrained GPU Kernel Generation" - ACA*
+
+---
+
+## Referencias
+
+- Triton. [Triton Language and Compiler](https://github.com/triton-lang/triton). GitHub.
+- Tillet, P., Kung, H.T., & Cox, D. (2019). [Triton: An Intermediate Language and Compiler for Tiled Neural Network Computations](https://www.eecs.harvard.edu/~htk/publication/2019-mapl-tillet-kung-cox.pdf). MAPL.
+- Triton. [Tutorials](https://triton-lang.org/main/getting-started/tutorials/). Triton Docs.

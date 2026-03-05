@@ -1048,3 +1048,11 @@ Exploraremos las limitaciones de las CFGs y lenguajes context-sensitive, entendi
 - ¿Cuál es el trade-off entre "máscara de bits" y "tabla Hash" para validación de tokens?
 - ¿Cómo el inlining afecta la "depurabilidad" del parser generado?
 - Para un kernel GPU con millones de tokens, ¿cuáles optimizaciones son más críticas?
+
+---
+
+## Referencias
+
+- Aho, A., Lam, M., Sethi, R., & Ullman, J. (2006). Compilers: Principles, Techniques, and Tools (2nd ed.). Pearson.
+- Greibach, S. (1965). [A New Normal-Form Theorem for Context-Free Phrase Structure Grammars](https://doi.org/10.1145/321250.321254). Journal of the ACM.
+- XGrammar. [Efficient, Flexible and Portable Structured Generation](https://github.com/mlc-ai/xgrammar). GitHub.

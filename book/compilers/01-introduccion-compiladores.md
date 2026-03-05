@@ -753,3 +753,11 @@ print("  ✓ Permite análisis semántico adicional post-parsing")
 - ¿Cuál es la diferencia entre "poder expresivo" y "facilidad de implementación"? ¿Por qué XGrammar elige CFG en lugar de Tipo 1?
 - Si pudiéramos usar gramáticas Tipo 1, ¿qué problemas en verificación de GPU kernels podrían resolverse?
 - ¿Cómo crees que una IA completa (Tipo 0) podría generar kernels CUDA mejores que un compilador basado en CFG?
+
+---
+
+## Referencias
+
+- Aho, A., Lam, M., Sethi, R., & Ullman, J. (2006). [Compilers: Principles, Techniques, and Tools](https://suif.stanford.edu/dragonbook/) (2nd ed.). Pearson. ("Dragon Book")
+- Chomsky, N. (1956). [Three Models for the Description of Language](https://www.jstor.org/stable/1705753). IRE Transactions on Information Theory.
+- Hopcroft, J. & Ullman, J. (1979). Introduction to Automata Theory, Languages, and Computation. Addison-Wesley.

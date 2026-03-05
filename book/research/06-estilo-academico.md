@@ -413,3 +413,11 @@ Con estilo académico dominado, estás listo para la sección más técnica: **R
 ---
 
 *Esta lectura es parte del curso "Grammar-Constrained GPU Kernel Generation" - ACA*
+
+---
+
+## Referencias
+
+- American Psychological Association. [APA Style](https://apastyle.apa.org/). APA.
+- Swales, J. & Feak, C. (2012). Academic Writing for Graduate Students (3rd ed.). University of Michigan Press.
+- Strunk, W. & White, E.B. (2000). The Elements of Style (4th ed.). Longman.

@@ -1235,3 +1235,13 @@ Has aprendido que compiladores no son "magia negra". Son:
 En el contexto de XGrammar para GPU kernels: tienes ahora las bases para entender cómo funciona, diseñar gramáticas, y saber cuándo las limitaciones de CFG requieren análisis adicional.
 
 La compilación es donde **teoría conoce práctica**. Espero que este módulo te haya mostrado ambos lados.
+
+---
+
+## Referencias
+
+- ANTLR. [ANother Tool for Language Recognition](https://www.antlr.org/). ANTLR.
+- Parr, T. (2013). The Definitive ANTLR 4 Reference. Pragmatic Bookshelf.
+- Tree-sitter. [An Incremental Parsing System](https://tree-sitter.github.io/tree-sitter/). Tree-sitter.
+- GNU Bison. [General-purpose Parser Generator](https://www.gnu.org/software/bison/). GNU.
+- XGrammar. [Efficient, Flexible and Portable Structured Generation](https://github.com/mlc-ai/xgrammar). GitHub.

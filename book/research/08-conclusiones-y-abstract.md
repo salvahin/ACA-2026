@@ -345,3 +345,10 @@ Con Abstract y Conclusiones escritas, estás casi al final. La próxima lectura 
 ---
 
 *Esta lectura es parte del curso "Grammar-Constrained GPU Kernel Generation" - ACA*
+
+---
+
+## Referencias
+
+- Swales, J. & Feak, C. (2009). Abstracts and the Writing of Abstracts. University of Michigan Press.
+- Day, R. & Gastel, B. (2016). How to Write and Publish a Scientific Paper (8th ed.). Cambridge University Press.

@@ -1023,3 +1023,10 @@ En tu implementación de KernelAgent:
 - Tu generador produce código Triton
 - XGrammar garantiza que no haya errores de sintaxis
 - El resultado se compila y ejecuta en GPU
+
+---
+
+## Referencias
+
+- Triton. [Triton Language and Compiler](https://github.com/triton-lang/triton). GitHub.
+- Tillet, P., Kung, H.T., & Cox, D. (2019). [Triton: An Intermediate Language and Compiler for Tiled Neural Network Computations](https://www.eecs.harvard.edu/~htk/publication/2019-mapl-tillet-kung-cox.pdf). MAPL.

@@ -988,3 +988,13 @@ Técnicas para prevenir overfitting:
 - **Transformers:** Procesan en paralelo usando atención (próxima lectura)
 - **Overfitting:** Regularización y early stopping lo previenen
 
+---
+
+## Referencias
+
+- Rumelhart, D., Hinton, G., & Williams, R. (1986). [Learning Representations by Back-propagating Errors](https://www.nature.com/articles/323533a0). Nature, 323, 533-536.
+- Goodfellow, I., Bengio, Y., & Courville, A. (2016). [Deep Learning](https://www.deeplearningbook.org/). MIT Press.
+- Nair, V. & Hinton, G. (2010). [Rectified Linear Units Improve Restricted Boltzmann Machines](https://www.cs.toronto.edu/~hinton/absps/reluICML.pdf). ICML.
+- Srivastava, N. et al. (2014). [Dropout: A Simple Way to Prevent Neural Networks from Overfitting](https://jmlr.org/papers/v15/srivastava14a.html). JMLR.
+- Kingma, D. & Ba, J. (2015). [Adam: A Method for Stochastic Optimization](https://arxiv.org/abs/1412.6980). arXiv:1412.6980.
+

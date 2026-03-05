@@ -546,3 +546,11 @@ plt.tight_layout()
 
 print("Figura generada.")
 ```
+
+---
+
+## Referencias
+
+- Cohen, J. (1988). Statistical Power Analysis for the Behavioral Sciences (2nd ed.). Routledge.
+- Hedges, L. (1981). [Distribution Theory for Glass's Estimator of Effect Size](https://doi.org/10.3102/10769986006002107). Journal of Educational Statistics.
+- Efron, B. & Tibshirani, R. (1993). [An Introduction to the Bootstrap](https://doi.org/10.1007/978-1-4899-4541-9). Chapman & Hall.

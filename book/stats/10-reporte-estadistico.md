@@ -872,3 +872,12 @@ Tu investigación ahora está construida sobre base estadística sólida. Lo má
 Pre-registra. Reporta todo. Sé honesto sobre limitaciones. Este es el camino a investigación confiable que otros pueden construir.
 
 ¡Éxito en tu tesis sobre restricciones gramaticales en generación de kernels GPU!
+
+---
+
+## Referencias
+
+- American Psychological Association. [APA Style](https://apastyle.apa.org/). APA.
+- IEEE. [IEEE Editorial Style Manual](https://journals.ieeeauthorcenter.ieee.org/your-role-in-article-production/ieee-editorial-style-manual/). IEEE.
+- Wilkinson, L. (1999). [Statistical Methods in Psychology Journals](https://doi.org/10.1037/0003-066X.54.8.594). American Psychologist.
+- Cumming, G. (2014). [The New Statistics: Why and How](https://doi.org/10.1177/0956797613504966). Psychological Science.

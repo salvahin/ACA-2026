@@ -1230,3 +1230,11 @@ Cliente HTTP
 4. ¿Cuándo elegirías INT4 sobre INT8? Considera memoria, velocidad y calidad
 ```
 
+---
+
+## Referencias
+
+- vLLM. [vLLM: Easy, Fast, and Cheap LLM Serving](https://docs.vllm.ai/). vLLM.
+- Kwon, W. et al. (2023). [Efficient Memory Management for Large Language Model Serving with PagedAttention](https://arxiv.org/abs/2309.06180). SOSP.
+- Hugging Face. [Text Generation Inference](https://huggingface.co/docs/text-generation-inference). HuggingFace.
+

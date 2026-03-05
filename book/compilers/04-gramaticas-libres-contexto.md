@@ -600,3 +600,11 @@ Observa cómo:
 - La estructura del árbol = orden de evaluación = precedencia
 """)
 ```
+
+---
+
+## Referencias
+
+- Aho, A., Lam, M., Sethi, R., & Ullman, J. (2006). Compilers: Principles, Techniques, and Tools (2nd ed.). Pearson.
+- Chomsky, N. (1959). [On Certain Formal Properties of Grammars](https://doi.org/10.1016/S0019-9958(59)90362-6). Information and Control.
+- Sipser, M. (2012). Introduction to the Theory of Computation (3rd ed.). Cengage Learning.

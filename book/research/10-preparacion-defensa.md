@@ -511,3 +511,10 @@ Para profundizar en áreas específicas después de completar esta serie:
 ---
 
 *Felicidades por completar esta serie. Ahora ve y construye un proyecto de investigación excelente.*
+
+---
+
+## Referencias
+
+- Reynolds, G. (2012). Presentation Zen: Simple Ideas on Presentation Design and Delivery (2nd ed.). New Riders.
+- Alley, M. (2013). The Craft of Scientific Presentations (2nd ed.). Springer.

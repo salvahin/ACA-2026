@@ -538,3 +538,11 @@ Este ejercicio demuestra el concepto básico de validación que XGrammar hace a 
 3. Usa máquinas de estados finitos (mucho más rápido)
 
 **Tarea adicional**: Ejecuta este código en tu entorno para verificar que tienes Python funcionando correctamente. Si falla, revisa tu instalación de Python y el entorno virtual.
+
+---
+
+## Referencias
+
+- Python. [Virtual Environments](https://docs.python.org/3/library/venv.html). Python Docs.
+- Git. [Git Basics - Tagging](https://git-scm.com/book/en/v2/Git-Basics-Tagging). Git Documentation.
+- Conda. [User Guide](https://docs.conda.io/projects/conda/en/latest/user-guide/). Conda Docs.

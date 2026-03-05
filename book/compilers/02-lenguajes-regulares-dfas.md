@@ -414,3 +414,11 @@ for s in test_cases:
     else:
         print(f"  ✗ RECHAZA: {result}")
 ```
+
+---
+
+## Referencias
+
+- Hopcroft, J. & Ullman, J. (1979). Introduction to Automata Theory, Languages, and Computation. Addison-Wesley.
+- Sipser, M. (2012). [Introduction to the Theory of Computation](https://math.mit.edu/~sipser/book.html) (3rd ed.). Cengage Learning.
+- Rabin, M. & Scott, D. (1959). [Finite Automata and Their Decision Problems](https://www.cse.chalmers.se/~coquand/AUTOMATA/rs.pdf). IBM Journal of Research and Development.

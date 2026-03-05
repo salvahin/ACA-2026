@@ -569,3 +569,11 @@ En la siguiente semana, exploraremos **Optimización de Memoria GPU**: coalesced
 ---
 
 *Esta lectura es parte del curso "Grammar-Constrained GPU Kernel Generation" - ACA*
+
+---
+
+## Referencias
+
+- PyTorch. [CUDA Semantics](https://pytorch.org/docs/stable/notes/cuda.html). PyTorch Docs.
+- NVIDIA. [CUDA C++ Programming Guide](https://docs.nvidia.com/cuda/cuda-c-programming-guide/). NVIDIA Developer.
+- Paszke, A. et al. (2019). [PyTorch: An Imperative Style, High-Performance Deep Learning Library](https://arxiv.org/abs/1912.01703). NeurIPS 2019.

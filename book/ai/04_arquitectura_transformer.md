@@ -1222,3 +1222,12 @@ Predicción:             Siguiente token más probable
 - **Conexiones residuales:** Permiten entrenar modelos profundos
 - **Encoder vs Decoder:** Encoder ve todo contexto; Decoder solo tokens anteriores (causal)
 
+---
+
+## Referencias
+
+- Vaswani, A. et al. (2017). [Attention Is All You Need](https://arxiv.org/abs/1706.03762). NeurIPS 2017.
+- Ba, J., Kiros, J., & Hinton, G. (2016). [Layer Normalization](https://arxiv.org/abs/1607.06450). arXiv:1607.06450.
+- He, K. et al. (2016). [Deep Residual Learning for Image Recognition](https://arxiv.org/abs/1512.03385). CVPR.
+- Bahdanau, D., Cho, K., & Bengio, Y. (2015). [Neural Machine Translation by Jointly Learning to Align and Translate](https://arxiv.org/abs/1409.0473). ICLR 2015.
+

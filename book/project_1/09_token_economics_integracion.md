@@ -1134,3 +1134,11 @@ print(f"{'50-200M':<20} {'5K-20K':<15} {'RTX 4090 (self-hosted)':<30}")
 print(f"{'>200M':<20} {'>20K':<15} {'A100 o Cloud GPU':<30}")
 ```
 
+---
+
+## Referencias
+
+- OpenAI. [Pricing](https://openai.com/pricing). OpenAI.
+- Anthropic. [Claude API Pricing](https://www.anthropic.com/pricing). Anthropic.
+- Together AI. [Pricing](https://www.together.ai/pricing). Together AI.
+

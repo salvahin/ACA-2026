@@ -712,3 +712,13 @@ for r in [4, 8, 16, 32]:
 
 **Para la siguiente lectura:** Prepárate para MLOps básico y visualización. Veremos cómo trackear experimentos, versionar configuraciones y crear visualizaciones efectivas para comunicar resultados.
 ```
+
+---
+
+## Referencias
+
+- Hu, E. et al. (2021). [LoRA: Low-Rank Adaptation of Large Language Models](https://arxiv.org/abs/2106.09685). ICLR 2022.
+- Dettmers, T. et al. (2023). [QLoRA: Efficient Finetuning of Quantized LLMs](https://arxiv.org/abs/2305.14314). NeurIPS 2023.
+- Chen, M. et al. (2021). [Evaluating Large Language Models Trained on Code](https://arxiv.org/abs/2107.03374). arXiv (Codex/HumanEval).
+- Papineni, K. et al. (2002). [BLEU: A Method for Automatic Evaluation of Machine Translation](https://aclanthology.org/P02-1040/). ACL.
+- Zheng, L. et al. (2023). [Judging LLM-as-a-Judge](https://arxiv.org/abs/2306.05685). arXiv.

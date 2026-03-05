@@ -820,3 +820,11 @@ d) Con df≈48, ¿es esto significante a α=0.05?
 ---
 
 **Próxima semana**: Aprenderemos a diseñar experimentos cuidadosamente para asegurar que tenemos suficiente poder para detectar efectos reales.
+
+---
+
+## Referencias
+
+- Fisher, R.A. (1925). [Statistical Methods for Research Workers](https://psychclassics.yorku.ca/Fisher/Methods/). Oliver & Boyd.
+- Neyman, J. & Pearson, E. (1933). [On the Problem of the Most Efficient Tests of Statistical Hypotheses](https://doi.org/10.1098/rsta.1933.0009). Philosophical Transactions A.
+- Student (Gosset, W.S.) (1908). [The Probable Error of a Mean](https://doi.org/10.1093/biomet/6.1.1). Biometrika.

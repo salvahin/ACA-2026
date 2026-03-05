@@ -575,3 +575,12 @@ La programación GPU es difícil porque el hardware es diferente. Pero una vez q
 ---
 
 *Esta lectura concluye el curso "Grammar-Constrained GPU Kernel Generation" - ACA*
+
+---
+
+## Referencias
+
+- NumPy. [NumPy Documentation](https://numpy.org/doc/). NumPy.
+- PyTorch. [PyTorch Documentation](https://pytorch.org/docs/). PyTorch.
+- XGrammar. [Efficient, Flexible and Portable Structured Generation](https://github.com/mlc-ai/xgrammar). GitHub.
+- Triton. [Triton Language and Compiler](https://github.com/triton-lang/triton). GitHub.

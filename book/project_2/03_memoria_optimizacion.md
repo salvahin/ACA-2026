@@ -670,3 +670,11 @@ print("\n💡 Regla: Threads consecutivos deben acceder direcciones consecutivas
 ---
 
 *Esta lectura es parte del curso "Grammar-Constrained GPU Kernel Generation" - ACA*
+
+---
+
+## Referencias
+
+- Williams, S., Waterman, A., & Patterson, D. (2009). [Roofline: An Insightful Visual Performance Model](https://doi.org/10.1145/1498765.1498785). Communications of the ACM.
+- NVIDIA. [CUDA Best Practices Guide](https://docs.nvidia.com/cuda/cuda-c-best-practices-guide/). NVIDIA Developer.
+- Harris, M. (2017). [Unified Memory for CUDA Beginners](https://developer.nvidia.com/blog/unified-memory-cuda-beginners/). NVIDIA Blog.

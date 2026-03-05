@@ -381,3 +381,11 @@ if cv_method < 5:
 else:
     print("  ⚠ Variabilidad alta - Considerar más seeds")
 ```
+
+---
+
+## Referencias
+
+- Open Science Collaboration (2015). [Estimating the Reproducibility of Psychological Science](https://doi.org/10.1126/science.aac4716). Science.
+- Nosek, B. et al. (2015). [Promoting an Open Research Culture](https://doi.org/10.1126/science.aab2374). Science.
+- Center for Open Science. [Open Science Framework](https://osf.io/). OSF.

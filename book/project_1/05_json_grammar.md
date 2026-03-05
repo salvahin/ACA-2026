@@ -879,3 +879,10 @@ print("4. XGrammar garantiza estructura válida, tu código valida semántica")
 1. Modifica el schema para soportar también `operation: "add"` (suma elemento-wise)
 2. Crea casos de prueba válidos e inválidos para `add`
 3. Implementa `validate_add_shapes()` similar a `validate_matmul_shapes()`
+
+---
+
+## Referencias
+
+- JSON Schema. [Understanding JSON Schema](https://json-schema.org/understanding-json-schema/). JSON Schema.
+- XGrammar. [Efficient, Flexible and Portable Structured Generation](https://github.com/mlc-ai/xgrammar). GitHub.

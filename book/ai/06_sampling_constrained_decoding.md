@@ -653,3 +653,12 @@ print(f"  ¿Es válido?: {sampled_token in allowed_tokens}")
 
 **Para la siguiente lectura:** Prepárate para fine-tuning y evaluación. Veremos cómo adaptar modelos pre-entrenados a tareas específicas con LoRA/QLoRA y cómo evaluar rigurosamente evitando benchmark contamination.
 ```
+
+---
+
+## Referencias
+
+- Holtzman, A. et al. (2020). [The Curious Case of Neural Text Degeneration](https://arxiv.org/abs/1904.09751). ICLR 2020.
+- XGrammar. [Efficient, Flexible and Portable Structured Generation](https://github.com/mlc-ai/xgrammar). GitHub.
+- Willard, B. & Louf, R. (2023). [Efficient Guided Generation for Large Language Models](https://arxiv.org/abs/2307.09702). arXiv.
+- Scholak, T. et al. (2021). [PICARD: Parsing Incrementally for Constrained Auto-Regressive Decoding](https://arxiv.org/abs/2109.05093). EMNLP.

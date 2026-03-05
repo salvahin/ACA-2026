@@ -317,3 +317,10 @@ Con tu marco teórico en lugar, estás listo para la sección más crítica de t
 ---
 
 *Esta lectura es parte del curso "Grammar-Constrained GPU Kernel Generation" - ACA*
+
+---
+
+## Referencias
+
+- Swales, J. & Feak, C. (2012). Academic Writing for Graduate Students (3rd ed.). University of Michigan Press.
+- Creswell, J. (2014). Research Design: Qualitative, Quantitative, and Mixed Methods Approaches (4th ed.). SAGE.

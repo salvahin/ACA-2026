@@ -462,3 +462,12 @@ if u_p < 0.05:
 else:
     print("\n✗ No hay evidencia suficiente de diferencia (p≥0.05)")
 ```
+
+---
+
+## Referencias
+
+- Mann, H. & Whitney, D. (1947). [On a Test of Whether One of Two Random Variables is Stochastically Larger](https://doi.org/10.1214/aoms/1177730491). Annals of Mathematical Statistics.
+- Wilcoxon, F. (1945). [Individual Comparisons by Ranking Methods](https://doi.org/10.2307/3001968). Biometrics Bulletin.
+- Kruskal, W. & Wallis, W. (1952). [Use of Ranks in One-Criterion Variance Analysis](https://doi.org/10.1080/01621459.1952.10483441). JASA.
+- Shapiro, S. & Wilk, M. (1965). [An Analysis of Variance Test for Normality](https://doi.org/10.1093/biomet/52.3-4.591). Biometrika.

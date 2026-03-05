@@ -635,3 +635,13 @@ El mecanismo de atención que mencionamos aquí será explicado en profundidad e
 - **Transformers** revolucionaron el NLP reemplazando recurrencia con atención global
 - **Elige la herramienta basada en:** cantidad de datos, complejidad del problema, recursos disponibles, necesidad de interpretabilidad
 
+---
+
+## Referencias
+
+- Russell, S. & Norvig, P. (2020). [Artificial Intelligence: A Modern Approach](https://aima.cs.berkeley.edu/) (4th ed.). Pearson.
+- Goodfellow, I., Bengio, Y., & Courville, A. (2016). [Deep Learning](https://www.deeplearningbook.org/). MIT Press.
+- Rosenblatt, F. (1958). [The Perceptron: A Probabilistic Model for Information Storage and Organization in the Brain](https://psycnet.apa.org/doi/10.1037/h0042519). Psychological Review.
+- Vaswani, A. et al. (2017). [Attention Is All You Need](https://arxiv.org/abs/1706.03762). arXiv:1706.03762.
+- Ng, A. & Jordan, M. (2001). [On Discriminative vs. Generative Classifiers](https://papers.nips.cc/paper/2001/hash/7b7a53e239400a13bd6be6c91c4f6c4e-Abstract.html). NeurIPS.
+

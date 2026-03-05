@@ -938,3 +938,11 @@ Corre ANOVA manualmente o en Python. ¿Significante? Si sí, corre Tukey.
 ---
 
 **Próxima semana**: Aprenderemos a registrar y visualizar experimentos con herramientas modernas de MLOps.
+
+---
+
+## Referencias
+
+- Bonferroni, C. (1936). Teoria Statistica delle Classi e Calcolo delle Probabilità. Pubblicazioni del R Istituto Superiore di Scienze Economiche e Commerciali di Firenze.
+- Holm, S. (1979). [A Simple Sequentially Rejective Multiple Test Procedure](https://www.jstor.org/stable/4615733). Scandinavian Journal of Statistics.
+- Benjamini, Y. & Hochberg, Y. (1995). [Controlling the False Discovery Rate](https://doi.org/10.1111/j.2517-6161.1995.tb02031.x). JRSS-B.

@@ -281,3 +281,11 @@ En la siguiente semana aprenderás a tomar lo que has aprendido de tu revisión 
 ---
 
 *Esta lectura es parte del curso "Grammar-Constrained GPU Kernel Generation" - ACA*
+
+---
+
+## Referencias
+
+- Google Scholar. [Google Scholar](https://scholar.google.com/). Google.
+- Semantic Scholar. [Semantic Scholar](https://www.semanticscholar.org/). AI2.
+- Zotero. [Reference Management Software](https://www.zotero.org/). Zotero.

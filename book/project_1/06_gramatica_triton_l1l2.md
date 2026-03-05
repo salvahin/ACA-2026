@@ -910,3 +910,10 @@ print("4. Resultado: kernels más sofisticados con autotuning automático")
 1. Agrega soporte para el decorador `@triton.heuristics`
 2. Crea un test case con los tres decoradores: autotune, heuristics, jit
 3. Genera el código Python resultante
+
+---
+
+## Referencias
+
+- Triton. [Triton Language and Compiler](https://github.com/triton-lang/triton). GitHub.
+- Tillet, P., Kung, H.T., & Cox, D. (2019). [Triton: An Intermediate Language and Compiler for Tiled Neural Network Computations](https://www.eecs.harvard.edu/~htk/publication/2019-mapl-tillet-kung-cox.pdf). MAPL.

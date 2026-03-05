@@ -578,3 +578,11 @@ print("-"*60)
 for bnf, ebnf, meaning in equivalences:
     print(f"{bnf:<20} {ebnf:<20} {meaning:<20}")
 ```
+
+---
+
+## Referencias
+
+- Backus, J. (1959). [The Syntax and Semantics of the Proposed International Algebraic Language](https://www.softwarepreservation.org/projects/ALGOL/paper/Backus-Syntax_and_Semantics_of_Proposed_IAL.pdf). IFIP Congress.
+- Earley, J. (1970). [An Efficient Context-Free Parsing Algorithm](https://doi.org/10.1145/362007.362035). Communications of the ACM.
+- Knuth, D. (1965). [On the Translation of Languages from Left to Right](https://doi.org/10.1016/S0019-9958(65)90426-2). Information and Control.

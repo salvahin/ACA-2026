@@ -823,3 +823,13 @@ if git_info["dirty"]:
 ---
 
 *Esta lectura es parte del curso "Grammar-Constrained GPU Kernel Generation" - ACA*
+
+---
+
+## Referencias
+
+- Weights & Biases. [Documentation](https://docs.wandb.ai/). W&B.
+- MLflow. [Documentation](https://mlflow.org/docs/latest/). MLflow.
+- Zaharia, M. et al. (2018). [Accelerating the Machine Learning Lifecycle with MLflow](https://www.databricks.com/research/mlflow-paper). IEEE Data Engineering Bulletin.
+- Tufte, E. (2001). The Visual Display of Quantitative Information (2nd ed.). Graphics Press.
+- Wilkinson, L. (2005). The Grammar of Graphics (2nd ed.). Springer.

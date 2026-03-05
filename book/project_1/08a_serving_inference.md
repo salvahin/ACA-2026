@@ -11,6 +11,20 @@ kernelspec:
 
 # Lectura 7: Serving y Optimización
 
+```{code-cell} ipython3
+import torch
+import sys
+
+# Validación temprana de entorno para cuadernos estrictamente acoplados a NVidia (Triton/vLLM)
+if not torch.cuda.is_available():
+    print("❌ ADVERTENCIA: Este notebook requiere una GPU NVidia y arquitectura CUDA para funcionar.")
+    print("Por favor, sube este notebook a Google Colab y selecciona Entorno de ejecución -> Cambiar tipo de entorno -> T4 GPU o superior.")
+    sys.exit("Entorno incompatible: Sistema sin CUDA detectado.")
+else:
+    print("✅ Entorno GPU detectado compatible con los requerimientos.")
+```
+
+
 ```{admonition} Ejecutar en Google Colab
 :class: tip
 

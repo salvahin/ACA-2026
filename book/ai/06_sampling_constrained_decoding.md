@@ -11,6 +11,15 @@ kernelspec:
 
 # Lectura 6: Sampling y Constrained Decoding
 
+```{code-cell} ipython3
+# Setup condicional para Google Colab
+import sys
+if 'google.colab' in sys.modules:
+    !pip install -q transformers bitsandbytes triton vllm auto-gptq datasets evaluate
+    # Nota: la lista anterior puede contener librerías extra, las cuales Colab ignorará o instalará rápido.
+```
+
+
 
 ```{admonition} Ejecutar en Google Colab
 :class: tip
@@ -469,63 +478,143 @@ Evita restricciones CUANDO:
 
 ---
 
-## Parte 8: Ejemplo Práctico Completo
+## Parte 8: Ejemplo Práctico en la Nube con Modal
 
-### Escenario
+### El Límite de Google Colab
 
-```
-Tarea: Extraer información de reseña de película
-Entrada: "¡Película increíble! Me encantó. 9/10. Recomendado."
-Salida requerida:
+Hasta ahora hemos podido correr ejemplos sencillos en Google Colab o CPUs locales. Sin embargo, cuando intentamos estructurar modelos *open-source* potentes (como Llama 3 o Qwen 2.5) junto con frameworks avanzados de generación estructurada tecnológica como XGrammar o vLLM, la limitante de 15 GB de VRAM de la GPU T4 gratuita en Colab suele provocar errores de falta de memoria (Out-Of-Memory U OOM).
+
+Para sortear esto en el mundo real, los ingenieros de MLOps utilizan plataformas *serverless* de GPU como **[Modal](https://modal.com/)**. Modal nos permite escribir código en Python puro localmente (o en Colab) y enviarlo a ejecutar instantáneamente en contenedores aislados en la nube equipados con GPUs A10G, A100 o H100.
+
+### Escenario de Extracción de Datos
+
+Queremos extraer información de una reseña de película mediante un LLM, pero garantizando algorítmicamente que el modelo devuelva un JSON perfectamente estructurado para nuestra base de datos:
+
+```json
 {
-    "sentimiento": "positivo",
-    "calificación": 9,
-    "recomendado": true
+    "sentimiento": "positivo",   // Texto esperado
+    "calificacion": 9,           // Número entero
+    "recomendado": true          // Booleano puro
 }
 ```
 
-### Sin Constrained Decoding
+### Implementación Real con Modal y XGrammar
+
+En lugar de seudocódigo local inseguro, aquí tienes un script de grado de producción completo. Despliega temporalmente el modelo **Qwen2.5-1.5B-Instruct** en una GPU T4 en la nube de Modal, define una gramática estricta con Pydantic y un compilador de `XGrammar`, e intercepta los logits del modelo para prohibir tokens inválidos estructuralmente:
 
 ```python
-response = model.generate(
-    "Extrae información. Responde en JSON: {...}",
-    max_new_tokens=100,
-    temperature=1.0
+# Guarda este código localmente en el archivo `modal_xgrammar.py`
+import modal
+import pydantic
+
+# 1. Definimos la infraestructura: Imagen de Docker con el stack de ML
+image = (
+    modal.Image.debian_slim(python_version="3.11")
+    .pip_install(
+        "torch==2.3.0",
+        "transformers==4.43.3",
+        "xgrammar==0.1.7",
+        "accelerate==0.33.0",
+        "pydantic==2.8.2"
+    )
 )
 
-# Salida posible:
-# {
-#   "sentimiento": "muy positivo",
-#   "calificacion": 9,
-#   recomendado: true,
-#   "director": "Unknown"
-# }
-# ← Mal formado (calificacion vs calificación, falta comilla en recomendado)
+app = modal.App("xgrammar-demo", image=image)
+
+# 2. Definimos la estructura deseada usando Pydantic (Validación robusta de datos)
+class ResenaInfo(pydantic.BaseModel):
+    sentimiento: str
+    calificacion: int
+    recomendado: bool
+
+# 3. Creamos un servicio backend impulsado por GPU
+@app.cls(gpu="T4")
+class ModelInference:
+    @modal.enter()
+    def setup(self):
+        """Inicialización ('Cold Start'). Se ejecuta UNA VEZ al arrancar el contenedor"""
+        import torch
+        from transformers import AutoModelForCausalLM, AutoTokenizer
+        from xgrammar import GrammarCompiler
+        
+        model_id = "Qwen/Qwen2.5-1.5B-Instruct"
+        print(f"Cargando los pesos de {model_id} en la GPU...")
+        
+        self.tokenizer = AutoTokenizer.from_pretrained(model_id)
+        self.model = AutoModelForCausalLM.from_pretrained(
+            model_id,
+            torch_dtype=torch.float16,
+            device_map="auto"
+        )
+        
+        # Iniciar XGrammar enviando las reglas del esquema Pydantic para compilar
+        compiler = GrammarCompiler(self.tokenizer)
+        print("Compilando el Autómata Finito Determinista (DFA) matemático...")
+        self.compiled_grammar = compiler.compile_json_schema(
+            ResenaInfo.model_json_schema()
+        )
+
+    @modal.method()
+    def generate_json(self, review_text: str):
+        """Inferencia a demanda (Serverless endpoint)"""
+        from xgrammar import XGrammarLogitsProcessor
+
+        messages = [
+            {"role": "system", "content": "Extrae la información de la reseña. Devuelve SOLO el JSON resultante."},
+            {"role": "user", "content": review_text}
+        ]
+        
+        text = self.tokenizer.apply_chat_template(
+            messages, tokenize=False, add_generation_prompt=True
+        )
+        inputs = self.tokenizer(text, return_tensors="pt").to(self.model.device)
+        
+        # Configurar interceptor de Tokens de XGrammar
+        logits_processor = [XGrammarLogitsProcessor(self.compiled_grammar)]
+        
+        # Generar usando Constrained Decoding real
+        outputs = self.model.generate(
+            **inputs,
+            max_new_tokens=100,
+            temperature=0.7,   # Exploración controlada...
+            do_sample=True,    # ...permitida porque XGrammar penaliza los caminos desviados
+            logits_processor=logits_processor
+        )
+        
+        # Decodificar y entregar texto filtrado
+        input_length = inputs.input_ids.shape[1]
+        generated_tokens = outputs[0][input_length:]
+        result = self.tokenizer.decode(generated_tokens, skip_special_tokens=True)
+        
+        return result
+
+# 4. Consola de pruebas: Cómo consumimos el endpoint remotamente desde una máquina local
+@app.local_entrypoint()
+def main():
+    review = "¡Película increíble! Me encantó. 9/10. Recomendado rotundamente."
+    print("Enviando petición hacia los clústeres de la nube de Modal...\n")
+    
+    # RPC Remoto a nuestra GPU (Cuesta aproximadamente $0.0001 por inferencia)
+    json_result = ModelInference().generate_json.remote(review)
+    
+    print("Salida Generada y Recibida (Garantizado JSON válido):")
+    print(json_result)
 ```
 
-### Con Constrained Decoding
+### ¿Cómo probar este script escalable tú mismo en tu Jupyter Local o VSCode?
 
-```python
-from xgrammar import Grammar, CompiledGrammar
+1. Crea una cuenta gratuita en [Modal](https://modal.com/) (dan ~$30 USD de créditos al mes).
+2. En tu terminal instala la librería de python y autorízate:
+   ```bash
+   pip install modal
+   python3 -m modal setup
+   ```
+3. Ejecuta directamente el script remoto usando el CLI sin necesidad de gestionar la infraestructura subyacente:
+   ```bash
+   modal run modal_xgrammar.py
+   ```
 
-json_grammar = """
-object ::= "{" (string ":" value ("," string ":" value)*)? "}"
-string ::= "\"" ([\\x20-\\x21\\x23-\\x5B\\x5D-\\x7E] | "\\\\\"")* "\""
-value ::= object | string | number | "true" | "false"
-number ::= [0-9]+
-"""
-
-compiled = CompiledGrammar(json_grammar, tokenizer)
-
-response = model.generate(
-    "Extrae información. Responde en JSON: {...}",
-    max_new_tokens=100,
-    logits_processor=compiled.logits_processor
-)
-
-# Salida: GARANTIZADO JSON VÁLIDO
-# Siempre respetará estructura JSON
-```
+Con este enfoque unificado, **combinamos la libertad generativa probabilística de los LLMs de vanguardia con la estricta seguridad matemática de la programación tradicional**, todo encapsulado en una arquitectura verdaderamente sin servidor.
 
 ---
 

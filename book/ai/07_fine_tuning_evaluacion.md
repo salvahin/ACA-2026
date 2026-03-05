@@ -11,6 +11,15 @@ kernelspec:
 
 # Lectura 7: Fine-Tuning y Evaluación
 
+```{code-cell} ipython3
+# Setup condicional para Google Colab
+import sys
+if 'google.colab' in sys.modules:
+    !pip install -q transformers bitsandbytes triton vllm auto-gptq datasets evaluate
+    # Nota: la lista anterior puede contener librerías extra, las cuales Colab ignorará o instalará rápido.
+```
+
+
 
 ```{admonition} Ejecutar en Google Colab
 :class: tip

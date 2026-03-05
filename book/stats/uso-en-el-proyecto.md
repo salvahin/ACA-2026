@@ -1,5 +1,14 @@
 # Guía de Integración: Estadística ↔ Proyecto ACA-2026
 
+```{code-cell} ipython3
+# Setup condicional para Google Colab
+import sys
+if 'google.colab' in sys.modules:
+    !pip install -q transformers bitsandbytes triton vllm auto-gptq datasets evaluate
+    # Nota: la lista anterior puede contener librerías extra, las cuales Colab ignorará o instalará rápido.
+```
+
+
 > **Propósito:** Esta guía te ayuda a saber *cuándo* y *cómo* usar cada herramienta estadística del curso en las diferentes etapas de tu proyecto de investigación sobre generación de kernels GPU.
 
 ---

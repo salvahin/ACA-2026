@@ -11,6 +11,32 @@ kernelspec:
 
 # Baseline y Experimentos: Medición Sistemática de Performance
 
+```{code-cell} ipython3
+import torch
+import warnings
+
+# Selección dinámica de dispositivo
+if torch.cuda.is_available():
+    device = torch.device("cuda")
+elif hasattr(torch.backends, 'mps') and torch.backends.mps.is_available():
+    device = torch.device("mps")
+else:
+    device = torch.device("cpu")
+    warnings.warn("No se detectó un acelerador (GPU/MPS). La ejecución será lenta.")
+
+print(f"Usando dispositivo: {device}")
+```
+
+
+```{code-cell} ipython3
+# Setup condicional para Google Colab
+import sys
+if 'google.colab' in sys.modules:
+    !pip install -q transformers bitsandbytes triton vllm auto-gptq datasets evaluate
+    # Nota: la lista anterior puede contener librerías extra, las cuales Colab ignorará o instalará rápido.
+```
+
+
 
 ```{admonition} Ejecutar en Google Colab
 :class: tip

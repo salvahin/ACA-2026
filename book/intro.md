@@ -105,71 +105,41 @@ Al finalizar este reto, serás capaz de:
 
 ## Tu Travesía: 10 Semanas
 
+Durante 10 semanas, cursarás **6 módulos en paralelo**, cada uno con 2 horas de clase semanales.
+
 ```{code-cell} ipython3
 :tags: [remove-input]
 
 import plotly.graph_objects as go
 
-# Timeline del curso
+modulos = ['AI', 'Compiladores', 'Estadística', 'Research', 'Project 1', 'Project 2']
+lecturas = [8, 10, 10, 10, 10, 10]
+colores = ['#6366f1', '#8b5cf6', '#a855f7', '#d946ef', '#ec4899', '#f43f5e']
+
 fig = go.Figure()
 
-phases = [
-    {"name": "Fundamentos", "start": 1, "end": 3, "color": "#818cf8",
-     "topics": "IA + Compiladores + Stats"},
-    {"name": "Integración", "start": 4, "end": 6, "color": "#34d399",
-     "topics": "Constrained Decoding + GPU"},
-    {"name": "Aplicación", "start": 7, "end": 10, "color": "#f472b6",
-     "topics": "Sistema + Proyecto"}
-]
-
-for i, phase in enumerate(phases):
-    fig.add_trace(go.Bar(
-        x=[phase["end"] - phase["start"] + 1],
-        y=[phase["name"]],
-        orientation='h',
-        name=phase["name"],
-        marker_color=phase["color"],
-        text=f"Semanas {phase['start']}-{phase['end']}: {phase['topics']}",
-        textposition='inside',
-        insidetextanchor='middle',
-        base=phase["start"]-1
-    ))
+fig.add_trace(go.Bar(
+    x=modulos,
+    y=lecturas,
+    marker_color=colores,
+    text=[f'{l} lecturas' for l in lecturas],
+    textposition='outside'
+))
 
 fig.update_layout(
-    title="Roadmap del Reto ACA",
-    xaxis_title="Semanas",
-    barmode='stack',
+    title="Contenido por Módulo",
+    yaxis_title="Número de lecturas",
     showlegend=False,
-    height=250,
-    xaxis=dict(tickmode='linear', tick0=1, dtick=1, range=[0, 11])
+    height=300,
+    yaxis=dict(range=[0, 12])
 )
 
 fig.show()
 ```
 
-### Fase 1: Fundamentos (Semanas 1-3)
+**Carga semanal:** 12 horas presenciales (6 módulos × 2 horas)
 
-Construyes las bases teóricas en tres áreas clave:
-
-- **IA Generativa**: Transformers, LLMs, tokenización, sampling
-- **Compiladores**: Gramáticas formales, parsing, FSMs
-- **Estadística**: Diseño experimental, pruebas de hipótesis
-
-### Fase 2: Integración (Semanas 4-6)
-
-Conectas teoría con práctica:
-
-- **Constrained Decoding**: XGrammar, JSON Schema, EBNF
-- **GPU Programming**: CUDA basics, Triton, optimización de memoria
-- **Diseño de Gramáticas**: Capturando restricciones de kernels
-
-### Fase 3: Aplicación (Semanas 7-10)
-
-Construyes y evalúas tu sistema:
-
-- **Implementación**: Pipeline completo de generación
-- **Experimentación**: Benchmarks rigurosos vs baselines
-- **Proyecto**: Documentación y defensa de tu trabajo
+Consulta el [calendario detallado](calendario) para ver los temas semana a semana.
 
 ---
 

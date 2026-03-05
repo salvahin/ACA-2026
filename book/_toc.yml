@@ -1,6 +1,10 @@
 format: jb-book
 root: intro
 parts:
+  - caption: Información General
+    chapters:
+      - file: calendario
+
   - caption: Inteligencia Artificial
     chapters:
       - file: ai/index

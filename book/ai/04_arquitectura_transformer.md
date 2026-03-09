@@ -1427,6 +1427,15 @@ así softmax los convierte en 0.
 
 ### Stacking de Capas
 
+:::{figure} images/AI_04_06_RNN_Attention_vs_Transformer_Parallelization.jpeg
+:name: fig-parallelization
+:alt: Paralelización en RNN vs Transformer
+:align: center
+:width: 90%
+
+**Figura 7:** Paralelización - RNNs procesan secuencialmente (O(n)), Transformers procesan en paralelo (O(1) con atención).
+:::
+
 Los modelos modernos apilan múltiples bloques:
 
 ```

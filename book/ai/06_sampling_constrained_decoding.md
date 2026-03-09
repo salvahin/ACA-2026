@@ -598,6 +598,15 @@ El modelo DEBE seguir esto
 Menos flexibilidad, pero garantizado haiku
 ```
 
+:::{figure} images/AI_06_03_Quality_vs_Constraint_Strictness.jpeg
+:name: fig-quality-strictness
+:alt: Calidad vs nivel de restricción
+:align: center
+:width: 90%
+
+**Figura 4:** Calidad vs Restricción - restricciones más estrictas garantizan formato pero pueden afectar creatividad.
+:::
+
 ### Recomendaciones
 
 ```

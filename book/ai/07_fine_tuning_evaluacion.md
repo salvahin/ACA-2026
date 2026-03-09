@@ -625,6 +625,15 @@ Test 3: Simil coseno
 
 ## Parte 8: Recomendaciones Prácticas
 
+:::{figure} images/AI_07_05_Correctness_Rate_Heatmap.jpeg
+:name: fig-correctness-heatmap
+:alt: Heatmap de tasa de correctitud
+:align: center
+:width: 90%
+
+**Figura 5:** Heatmap de Correctitud - visualiza rendimiento del modelo por categoría/dificultad de tarea.
+:::
+
 ### Flujo de Fine-Tuning y Evaluación
 
 ```

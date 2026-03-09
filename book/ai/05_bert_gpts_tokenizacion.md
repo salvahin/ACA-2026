@@ -651,6 +651,15 @@ tokens = sp.encode_as_pieces("Hello world")
 
 ### Comparación de Tokenizadores
 
+:::{figure} images/AI_05_04_Tokenizers_Comparison_BPE_WordPiece.jpeg
+:name: fig-tokenizers-comparison
+:alt: Comparación de tokenizadores BPE y WordPiece
+:align: center
+:width: 90%
+
+**Figura 5:** Comparación de Tokenizadores - BPE usa frecuencia, WordPiece maximiza likelihood, SentencePiece es agnóstico al idioma.
+:::
+
 | Aspecto | BPE (GPT) | WordPiece (BERT) | SentencePiece |
 |---------|-----------|------------------|---------------|
 | Merge | Más frecuente | Maximiza likelihood | Unigram/BPE |

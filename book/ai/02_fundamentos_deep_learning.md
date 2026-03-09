@@ -425,6 +425,15 @@ Cada capa realiza: y = σ(W @ x + b)
 
 ### Forward Pass (Propagación Hacia Adelante)
 
+:::{figure} images/AI_02_02_Red_Neuronal_Capas_Activaciones.jpeg
+:name: fig-nn-layers
+:alt: Capas y activaciones de red neuronal
+:align: center
+:width: 90%
+
+**Figura 5:** Capas y Activaciones - cada capa aplica transformación lineal seguida de activación no-lineal.
+:::
+
 Imagina una red simple:
 
 ```
@@ -544,6 +553,15 @@ El forward pass que acabamos de ver es el mismo proceso que ocurre en cada capa 
 ---
 
 ## Parte 4: Funciones de Pérdida y Optimizadores
+
+:::{figure} images/AI_02_04_Red_Neuronal_Estructura_Completa.jpeg
+:name: fig-nn-complete
+:alt: Estructura completa de red neuronal
+:align: center
+:width: 90%
+
+**Figura 6:** Estructura Completa - entrada, capas ocultas con pesos/bias, activaciones, y salida con función de pérdida.
+:::
 
 ### Funciones de Pérdida (Loss Functions)
 

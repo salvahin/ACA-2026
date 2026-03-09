@@ -58,13 +58,13 @@ Esta lectura cubre fine-tuning (full, LoRA, QLoRA), evaluación rigurosa y métr
 ## Parte 1: Full Fine-Tuning
 
 
-:::{figure} diagrams/lora_architecture.png
+:::{figure} ../images/AI_07_01_LoRA_Descomposicion.jpeg
 :name: fig-lora-architecture
 :alt: Arquitectura LoRA mostrando las matrices de bajo rango A y B
 :align: center
 :width: 90%
 
-**Figura 1:** Arquitectura LoRA mostrando las matrices de bajo rango A y B.
+**Figura 1:** LoRA - descomposición de bajo rango que permite fine-tuning eficiente congelando pesos originales.
 :::
 
 ### La Idea

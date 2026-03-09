@@ -90,6 +90,15 @@ Sin funciones de activación, aunque stapiles múltiples capas, el resultado ser
 
 ### Funciones de Activación Comunes
 
+:::{figure} ../images/AI_02_05_Activation_Functions_Sigmoid_ReLU.jpeg
+:name: fig-activation-functions
+:alt: Funciones de activación Sigmoid, Tanh y ReLU
+:align: center
+:width: 90%
+
+**Figura 1:** Funciones de Activación - Sigmoid satura en extremos, Tanh es simétrica, ReLU es computacionalmente eficiente y evita el problema del gradiente desvaneciente.
+:::
+
 ```{code-cell} ipython3
 import numpy as np
 
@@ -397,6 +406,15 @@ print("  .T o .transpose() → transpuesta")
 ## Parte 3: Redes Neuronales Multicapa
 
 ### Arquitectura
+
+:::{figure} ../images/AI_02_01_Red_Neuronal_Multicapa_Arquitectura.jpeg
+:name: fig-mlp-architecture
+:alt: Arquitectura de red neuronal multicapa
+:align: center
+:width: 90%
+
+**Figura 2:** Arquitectura de Red Neuronal Multicapa - entrada, capas ocultas con activaciones, y capa de salida.
+:::
 
 ```
 Entrada ─→ Capa 1 ─→ Capa 2 ─→ ... ─→ Capa N ─→ Salida
@@ -740,13 +758,13 @@ Error propagates: [Capa N] → [Capa N-1] → ... → [Capa 1]
                   ↑ Calcula gradientes en cada paso
 ```
 
-:::{figure} diagrams/backpropagation_flow.png
+:::{figure} ../images/AI_02_03_Retropropagacion_Flujo_Backward.jpeg
 :name: fig-backprop
 :alt: Flujo de forward pass y backpropagation en redes neuronales
 :align: center
 :width: 90%
 
-**Figura 4:** Flujo de Backpropagation - forward pass (líneas grises) y backward pass (flechas rojas).
+**Figura 3:** Flujo de Backpropagation - forward pass calcula activaciones, backward pass propaga gradientes para actualizar pesos.
 :::
 
 ### Pseudocódigo

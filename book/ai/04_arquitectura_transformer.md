@@ -1079,13 +1079,13 @@ Entrada: x (secuencia de embeddings)
 Salida: x' (secuencia transformada)
 ```
 
-:::{figure} diagrams/transformer_block.png
+:::{figure} ../images/AI_04_01_Transformer_Block_Architecture.jpeg
 :name: fig-transformer-block
 :alt: Arquitectura completa de un bloque Transformer
 :align: center
 :width: 90%
 
-**Figura 5:** Bloque Transformer Completo - atención, normalización y red feed-forward.
+**Figura 5:** Bloque Transformer Completo - Multi-Head Attention, Add & Norm, y Feed-Forward Network.
 :::
 
 ```{code-cell} ipython3
@@ -1377,13 +1377,13 @@ Los modelos actuales (BERT, GPT) usan solo una parte:
 - **GPT**: Solo decoder (generación)
 ```
 
-:::{figure} diagrams/encoder_vs_decoder.png
+:::{figure} ../images/AI_04_03_BERT_Encoder_vs_GPT_Decoder.jpeg
 :name: fig-encoder-decoder
 :alt: Comparación de arquitectura encoder vs decoder
 :align: center
 :width: 90%
 
-**Figura 6:** Encoder vs Decoder - diferencias en visibilidad de contexto y aplicaciones.
+**Figura 6:** BERT (Encoder) vs GPT (Decoder) - BERT ve contexto bidireccional, GPT genera autoregressivamente.
 :::
 
 **Causal Masking:**

@@ -545,13 +545,13 @@ Ahora que entendemos cómo representar texto, veamos cómo los modelos **generan
 
 Los modelos generativos (como GPT) producen texto **token por token**:
 
-:::{figure} diagrams/autoregressive_generation.png
-:name: fig-autoregressive-generation
-:alt: Proceso de generación autoregresiva token por token
+:::{figure} ../images/AI_03_02_Softmax_Funcion_Visualization.jpeg
+:name: fig-softmax-visualization
+:alt: Visualización de la función softmax en generación
 :align: center
 :width: 90%
 
-**Figura 1:** Proceso de generación autoregresiva token por token.
+**Figura 1:** Función Softmax - convierte logits en probabilidades normalizadas para seleccionar el siguiente token.
 :::
 
 ### Salida del Modelo

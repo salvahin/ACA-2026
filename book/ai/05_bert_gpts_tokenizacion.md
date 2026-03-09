@@ -539,13 +539,13 @@ vocabulary = {'l o w </w>': 5, 'l o w e r </w>': 2,
 # Repetir hasta alcanzar tamaño de vocabulario deseado
 ```
 
-:::{figure} diagrams/bpe_tokenization.png
+:::{figure} ../images/AI_05_03_BPE_Tokenization_Proceso.jpeg
 :name: fig-bpe
 :alt: Proceso de Byte Pair Encoding para tokenización
 :align: center
 :width: 90%
 
-**Figura 3:** Byte Pair Encoding (BPE) - cómo se fusionan caracteres para crear tokens subpalabra.
+**Figura 3:** Byte Pair Encoding (BPE) - proceso iterativo de fusión de pares de caracteres más frecuentes.
 :::
 
 ### Implementación con tiktoken (OpenAI)

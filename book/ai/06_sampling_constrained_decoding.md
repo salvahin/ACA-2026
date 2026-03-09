@@ -170,9 +170,14 @@ Esto es muy costoso a escala.
 ## Parte 3: Constrained Decoding - Enfoque Conceptual
 
 
-![**Figura 1:** Pipeline de Constrained Decoding con gramáticas.](diagrams/constrained_decoding.png)
+:::{figure} diagrams/constrained_decoding.png
+:name: fig-constrained-decoding
+:alt: Pipeline de Constrained Decoding con gramáticas
+:align: center
+:width: 90%
 
-***Figura 1:** Pipeline de Constrained Decoding con gramáticas.*
+**Figura 1:** Pipeline de Constrained Decoding con gramáticas.
+:::
 
 ### La Idea
 
@@ -405,6 +410,119 @@ fig.add_trace(go.Bar(x=tokens, y=top_p_probs, marker_color=colors_p), row=1, col
 
 fig.update_layout(height=350, showlegend=False, title_text="Estrategias de Sampling")
 fig.show()
+```
+
+### Beam Search: Exploración Sistemática
+
+**Beam Search** es una estrategia determinística que mantiene múltiples "hipótesis" (secuencias candidatas) en paralelo, explorando el espacio de manera más exhaustiva que greedy decoding.
+
+```
+Greedy: Siempre elige el token más probable
+        → Puede quedar atrapado en secuencias subóptimas
+
+Beam Search (beam_width=3):
+        → Mantiene las 3 mejores secuencias en cada paso
+        → Explora múltiples caminos simultáneamente
+        → Al final, elige la secuencia con mayor probabilidad total
+```
+
+**Algoritmo paso a paso:**
+
+```
+Entrada: "El gato"
+Beam width: 2
+
+Paso 1 (generar palabra 3):
+  Candidatos: "saltó" (P=0.4), "corrió" (P=0.3), "durmió" (P=0.2)
+  Beams activos:
+    Beam 1: "El gato saltó" (score=0.4)
+    Beam 2: "El gato corrió" (score=0.3)
+
+Paso 2 (generar palabra 4):
+  Para Beam 1 ("El gato saltó"):
+    "alto" (P=0.5), "lejos" (P=0.3)
+  Para Beam 2 ("El gato corrió"):
+    "rápido" (P=0.6), "lejos" (P=0.2)
+
+  Scores totales:
+    "El gato saltó alto": 0.4 × 0.5 = 0.20
+    "El gato saltó lejos": 0.4 × 0.3 = 0.12
+    "El gato corrió rápido": 0.3 × 0.6 = 0.18
+    "El gato corrió lejos": 0.3 × 0.2 = 0.06
+
+  Beams activos (top 2):
+    Beam 1: "El gato saltó alto" (score=0.20)
+    Beam 2: "El gato corrió rápido" (score=0.18)
+
+Resultado final: "El gato saltó alto"
+```
+
+```{code-cell} ipython3
+import numpy as np
+
+def beam_search_demo(initial_probs, beam_width=2, max_steps=3):
+    """
+    Demostración simplificada de beam search.
+    """
+    vocab = ['saltó', 'corrió', 'durmió', 'alto', 'lejos', 'rápido', '.']
+
+    # Inicializar beams
+    beams = [{'tokens': [], 'score': 1.0}]
+
+    print(f"Beam Search (width={beam_width})")
+    print("=" * 50)
+
+    for step in range(max_steps):
+        all_candidates = []
+
+        for beam in beams:
+            # Simular probabilidades del siguiente token
+            np.random.seed(len(beam['tokens']) + 42)
+            probs = np.random.dirichlet(np.ones(len(vocab)))
+
+            for i, (token, prob) in enumerate(zip(vocab, probs)):
+                new_beam = {
+                    'tokens': beam['tokens'] + [token],
+                    'score': beam['score'] * prob
+                }
+                all_candidates.append(new_beam)
+
+        # Ordenar por score y quedarse con los mejores
+        all_candidates.sort(key=lambda x: x['score'], reverse=True)
+        beams = all_candidates[:beam_width]
+
+        print(f"\nPaso {step + 1}:")
+        for i, beam in enumerate(beams):
+            print(f"  Beam {i+1}: {' '.join(beam['tokens'])} (score={beam['score']:.4f})")
+
+    return beams[0]
+
+# Ejecutar demo
+best = beam_search_demo(None, beam_width=3, max_steps=3)
+print(f"\n✓ Mejor secuencia: {' '.join(best['tokens'])}")
+```
+
+**Comparación de estrategias:**
+
+| Estrategia | Determinista | Explora múltiples | Uso típico |
+|------------|--------------|-------------------|------------|
+| Greedy | ✓ | ✗ | Respuestas factuales |
+| Top-K | ✗ | ✗ | Texto creativo |
+| Top-P | ✗ | ✗ | Balance creatividad/coherencia |
+| Beam Search | ✓ | ✓ | Traducción, resumen |
+
+```{admonition} 🔑 Cuándo usar Beam Search
+:class: tip
+
+**Usa Beam Search cuando:**
+- Necesitas la "mejor" respuesta objetiva (traducción, transcripción)
+- La creatividad no es deseable
+- Puedes pagar el costo computacional (beam_width × más lento)
+
+**Evita Beam Search cuando:**
+- Necesitas diversidad (chatbots, escritura creativa)
+- Recursos limitados (cada beam es una secuencia completa en memoria)
+- El problema no tiene una "respuesta correcta" clara
 ```
 
 ---

@@ -18,6 +18,8 @@ parts:
           - file: ai/06_sampling_constrained_decoding
           - file: ai/07_fine_tuning_evaluacion
           - file: ai/08_mlops_visualizacion
+          - file: ai/glossary
+          - file: ai/solutions
 
   - caption: Compiladores
     chapters:

@@ -9,7 +9,7 @@ kernelspec:
   name: python3
 ---
 
-# Lectura 8: MLOps Básico y Visualización
+# Lectura 8: MLOps
 
 ```{code-cell} ipython3
 # Setup condicional para Google Colab
@@ -30,11 +30,12 @@ if 'google.colab' in sys.modules:
 ```{admonition} Objetivos de Aprendizaje
 :class: tip
 Al finalizar esta lectura podrás:
-- Implementar tracking sistemático de experimentos usando Weights & Biases o MLflow
+- Explicar qué es MLOps, por qué es importante y su ciclo de vida
+- Implementar tracking sistemático de experimentos usando MLflow
 - Versionar configuraciones de experimentos con archivos YAML y Hydra
-- Crear visualizaciones efectivas y accesibles siguiendo principios de claridad y honestidad
+- Configurar MLflow con Databricks para tracking escalable
 - Aplicar checklists de MLOps para garantizar reproducibilidad (git commit, seeds, config)
-- Detectar overfitting visualmente mediante análisis de curvas de entrenamiento y validación
+- Comprender la relación entre MLOps y LLMOps para modelos de lenguaje
 ```
 
 ```{admonition} 🎬 Video Recomendado
@@ -48,7 +49,114 @@ Al finalizar esta lectura podrás:
 
 Has entrenado modelos, generado código, evaluado resultados. Pero, ¿cómo **rastrear** todo? ¿Cómo saber qué hiperparámetros usaste hace 3 semanas? ¿Cómo comparar 50 experimentos?
 
-MLOps (Machine Learning Operations) resuelve esto: logging sistemático, versionado de experimentos, y visualización efectiva. Esta lectura te da las herramientas para investigación reproducible.
+**MLOps (Machine Learning Operations)** resuelve esto: logging sistemático, versionado de experimentos, y gestión del ciclo de vida de modelos. Esta lectura te da las herramientas para investigación reproducible.
+
+### ¿Qué es MLOps?
+
+```{admonition} 📚 Definición
+:class: important
+**MLOps** es la práctica de aplicar principios de DevOps al desarrollo y despliegue de modelos de Machine Learning.
+
+Objetivo: Hacer que el desarrollo de ML sea **reproducible**, **escalable** y **mantenible**.
+```
+
+```
+MLOps = ML + DevOps
+
+DevOps tradicional:
+  Código → Build → Test → Deploy → Monitor
+
+MLOps:
+  Datos → Feature Engineering → Entrenamiento → Validación → Deploy → Monitor
+                                       ↑
+                          Tracking de experimentos
+                          Versionado de modelos
+                          Reproducibilidad
+```
+
+### Ciclo de Vida de MLOps
+
+```{code-cell} ipython3
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Visualización del ciclo de vida MLOps
+fig, ax = plt.subplots(figsize=(12, 8))
+ax.set_xlim(0, 10)
+ax.set_ylim(0, 10)
+ax.axis('off')
+
+# Definir las etapas del ciclo
+etapas = [
+    ('Datos', (2, 8), 'lightblue'),
+    ('Feature\nEngineering', (5, 9), 'lightgreen'),
+    ('Entrenamiento', (8, 8), 'lightyellow'),
+    ('Evaluación', (9, 5), 'lightsalmon'),
+    ('Registro', (8, 2), 'lightpink'),
+    ('Deploy', (5, 1), 'lightcyan'),
+    ('Monitoreo', (2, 2), 'lavender'),
+]
+
+# Dibujar nodos
+for nombre, (x, y), color in etapas:
+    circle = plt.Circle((x, y), 0.8, color=color, ec='black', linewidth=2)
+    ax.add_patch(circle)
+    ax.text(x, y, nombre, ha='center', va='center', fontsize=9, weight='bold')
+
+# Dibujar flechas
+flechas = [
+    ((2, 8), (5, 9)),
+    ((5, 9), (8, 8)),
+    ((8, 8), (9, 5)),
+    ((9, 5), (8, 2)),
+    ((8, 2), (5, 1)),
+    ((5, 1), (2, 2)),
+    ((2, 2), (2, 8)),  # Loop back
+]
+
+for (x1, y1), (x2, y2) in flechas:
+    dx, dy = x2 - x1, y2 - y1
+    length = np.sqrt(dx**2 + dy**2)
+    dx, dy = dx/length * 0.8, dy/length * 0.8
+    ax.annotate('', xy=(x2 - dx, y2 - dy), xytext=(x1 + dx, y1 + dy),
+                arrowprops=dict(arrowstyle='->', color='gray', lw=2))
+
+# Texto central
+ax.text(5, 5, 'MLOps\nCiclo de Vida', ha='center', va='center',
+        fontsize=14, weight='bold', color='darkblue')
+
+ax.set_title('Ciclo de Vida de MLOps', fontsize=14, weight='bold')
+plt.tight_layout()
+plt.show()
+
+print("Etapas del Ciclo de Vida:")
+print("-" * 50)
+print("1. DATOS: Recolección, validación, versionado")
+print("2. FEATURE ENGINEERING: Transformación, selección")
+print("3. ENTRENAMIENTO: Experimentos, hiperparámetros")
+print("4. EVALUACIÓN: Métricas, validación cruzada")
+print("5. REGISTRO: Model registry, versionado")
+print("6. DEPLOY: Serving, API, batch inference")
+print("7. MONITOREO: Drift detection, performance")
+```
+
+### MLOps vs LLMOps
+
+```{admonition} 🔗 LLMOps para Modelos de Lenguaje
+:class: seealso
+**LLMOps** extiende MLOps para las necesidades específicas de Large Language Models:
+
+| Aspecto | MLOps Tradicional | LLMOps |
+|---------|-------------------|--------|
+| **Datos** | Datasets tabulares | Corpus de texto, prompts |
+| **Entrenamiento** | Desde cero | Fine-tuning, prompt engineering |
+| **Evaluación** | Accuracy, F1 | Perplexity, humanos, LLM-as-Judge |
+| **Deploy** | API REST | Streaming, context windows |
+| **Costo** | GPU hours | Tokens, $/1M tokens |
+| **Monitoreo** | Data drift | Prompt injection, alucinaciones |
+
+Las herramientas que aprenderás (MLflow) aplican a ambos paradigmas.
+```
 
 ---
 
@@ -109,122 +217,20 @@ Semana 5:
 
 ---
 
-## Parte 2: Weights & Biases (wandb)
+## Parte 2: MLflow - Tracking de Experimentos
 
-### Setup Básico
+**MLflow** es la herramienta estándar de la industria para tracking de experimentos de ML. Es open source y se integra perfectamente con Databricks.
 
-```{code-cell} ipython3
-:tags: [skip-execution]
+### ¿Por Qué MLflow?
 
-import wandb
-
-# Inicializar proyecto
-wandb.init(
-    project="kernel-generation",
-    name="experiment-001",
-    config={
-        "learning_rate": 0.001,
-        "batch_size": 32,
-        "model": "codellama-7b",
-        "temperature": 0.1,
-    }
-)
 ```
-
-### Logging de Métricas
-
-```python
-# Durante entrenamiento
-for epoch in range(100):
-    train_loss = train_one_epoch()
-    val_loss = validate()
-
-    wandb.log({
-        "epoch": epoch,
-        "train_loss": train_loss,
-        "val_loss": val_loss,
-        "learning_rate": scheduler.get_lr()[0]
-    })
-
-# Métricas finales
-wandb.log({
-    "final_accuracy": 0.85,
-    "total_time_hours": 2.5
-})
+Ventajas de MLflow:
+1. OPEN SOURCE: Sin costos de licencia
+2. SELF-HOSTED: Control total sobre tus datos
+3. DATABRICKS NATIVE: Integración perfecta con la plataforma
+4. FLEXIBLE: Funciona con cualquier framework (PyTorch, TF, sklearn)
+5. MODEL REGISTRY: Versionado y staging de modelos
 ```
-
-### Logging de Configuración Completa
-
-```python
-config = {
-    # Modelo
-    "model_name": "codellama-7b",
-    "quantization": "int8",
-
-    # Entrenamiento
-    "learning_rate": 1e-4,
-    "batch_size": 32,
-    "epochs": 10,
-    "optimizer": "adamw",
-    "weight_decay": 0.01,
-
-    # Datos
-    "dataset": "triton-corpus-v2",
-    "train_size": 5000,
-    "val_size": 500,
-
-    # Generación
-    "temperature": 0.1,
-    "max_tokens": 512,
-    "grammar_enabled": True,
-
-    # Reproducibilidad
-    "seed": 42,
-    "git_commit": get_git_hash(),
-}
-
-wandb.init(project="kernel-gen", config=config)
-```
-
-### Tablas y Artefactos
-
-```python
-# Tabla de resultados
-results_table = wandb.Table(
-    columns=["kernel_id", "correctness", "speedup", "tokens"],
-    data=[
-        ["softmax_v1", True, 1.3, 245],
-        ["matmul_v1", True, 1.1, 512],
-        ["relu_v1", False, 0.0, 128],
-    ]
-)
-wandb.log({"results": results_table})
-
-# Guardar artefactos
-artifact = wandb.Artifact("model-checkpoint", type="model")
-artifact.add_file("model.pt")
-wandb.log_artifact(artifact)
-```
-
-### Comparación de Experimentos
-
-```python
-# En la UI de wandb:
-# 1. Selecciona múltiples runs
-# 2. Compara métricas lado a lado
-# 3. Identifica qué configuración funciona mejor
-
-# Programáticamente:
-api = wandb.Api()
-runs = api.runs("username/kernel-generation")
-
-for run in runs:
-    print(f"{run.name}: accuracy={run.summary['accuracy']}")
-```
-
----
-
-## Parte 3: MLflow (Alternativa)
 
 ### Setup Básico
 
@@ -233,33 +239,267 @@ for run in runs:
 
 import mlflow
 
-# Configurar tracking server
-mlflow.set_tracking_uri("http://localhost:5000")
+# Opción 1: Tracking local (archivos)
+mlflow.set_tracking_uri("./mlruns")
+
+# Opción 2: Tracking server
+# mlflow.set_tracking_uri("http://localhost:5000")
+
+# Opción 3: Databricks (veremos después)
+# mlflow.set_tracking_uri("databricks")
+
+# Crear/seleccionar experimento
 mlflow.set_experiment("kernel-generation")
 
-# Iniciar run
+# Iniciar un run
 with mlflow.start_run(run_name="experiment-001"):
     # Log parámetros
     mlflow.log_param("learning_rate", 0.001)
     mlflow.log_param("model", "codellama-7b")
+    mlflow.log_param("batch_size", 32)
 
-    # Log métricas
+    # Log métricas (con step para series temporales)
     for epoch in range(10):
-        mlflow.log_metric("loss", loss, step=epoch)
+        train_loss = 1.0 / (epoch + 1)  # Simulación
+        mlflow.log_metric("train_loss", train_loss, step=epoch)
 
-    # Log modelo
-    mlflow.pytorch.log_model(model, "model")
+    # Log artefactos (archivos)
+    # mlflow.log_artifact("model.pt")
+
+    # Log modelo completo (con firma)
+    # mlflow.pytorch.log_model(model, "model")
+
+print("Experimento registrado en MLflow!")
 ```
 
-### Comparación wandb vs MLflow
+### Estructura de un Experimento MLflow
 
-| Aspecto | wandb | MLflow |
-|---------|-------|--------|
-| Hosting | Cloud (gratis hasta cierto punto) | Self-hosted o cloud |
-| UI | Muy pulida | Funcional |
-| Colaboración | Excelente | Básica |
-| Integración | Muchos frameworks | Flexible |
-| Costo | Gratis para académicos | Open source |
+```
+mlruns/
+├── 0/                          # Experimento "Default"
+├── 1/                          # Experimento "kernel-generation"
+│   ├── meta.yaml               # Metadatos del experimento
+│   ├── abc123/                 # Run ID
+│   │   ├── meta.yaml           # Metadatos del run
+│   │   ├── params/             # Parámetros guardados
+│   │   │   ├── learning_rate
+│   │   │   ├── model
+│   │   │   └── batch_size
+│   │   ├── metrics/            # Métricas por step
+│   │   │   └── train_loss
+│   │   ├── artifacts/          # Archivos (modelos, plots, etc.)
+│   │   │   └── model/
+│   │   └── tags/               # Tags del run
+│   └── def456/                 # Otro run
+└── ...
+```
+
+### Logging Completo de un Experimento
+
+```{code-cell} ipython3
+:tags: [skip-execution]
+
+import mlflow
+import mlflow.pytorch
+import torch
+
+def train_with_mlflow(config):
+    """Ejemplo completo de entrenamiento con MLflow tracking"""
+
+    mlflow.set_experiment(config["experiment_name"])
+
+    with mlflow.start_run(run_name=config["run_name"]):
+        # 1. Log todos los parámetros
+        mlflow.log_params({
+            "model_name": config["model"],
+            "learning_rate": config["lr"],
+            "batch_size": config["batch_size"],
+            "epochs": config["epochs"],
+            "optimizer": config["optimizer"],
+            "seed": config["seed"],
+        })
+
+        # 2. Log tags para organización
+        mlflow.set_tags({
+            "team": "nlp-research",
+            "project": "kernel-generation",
+            "git_commit": get_git_hash(),
+        })
+
+        # 3. Entrenar (simulado)
+        for epoch in range(config["epochs"]):
+            train_loss = 1.0 / (epoch + 1)
+            val_loss = 1.2 / (epoch + 1)
+
+            # Log métricas por época
+            mlflow.log_metrics({
+                "train_loss": train_loss,
+                "val_loss": val_loss,
+                "learning_rate": config["lr"] * (0.95 ** epoch),
+            }, step=epoch)
+
+        # 4. Log métricas finales
+        mlflow.log_metrics({
+            "final_train_loss": train_loss,
+            "final_val_loss": val_loss,
+        })
+
+        # 5. Log modelo
+        # mlflow.pytorch.log_model(model, "model")
+
+        # 6. Log artefactos adicionales
+        # mlflow.log_artifact("training_curve.png")
+
+        print(f"Run completado: {mlflow.active_run().info.run_id}")
+
+# Configuración de ejemplo
+config = {
+    "experiment_name": "kernel-generation",
+    "run_name": "baseline-v1",
+    "model": "codellama-7b",
+    "lr": 1e-4,
+    "batch_size": 32,
+    "epochs": 10,
+    "optimizer": "adamw",
+    "seed": 42,
+}
+
+# train_with_mlflow(config)
+```
+
+### Comparar Experimentos
+
+```{code-cell} ipython3
+:tags: [skip-execution]
+
+import mlflow
+import pandas as pd
+
+# Obtener todos los runs de un experimento
+experiment = mlflow.get_experiment_by_name("kernel-generation")
+runs = mlflow.search_runs(experiment_ids=[experiment.experiment_id])
+
+# Convertir a DataFrame para análisis
+print("Comparación de Experimentos:")
+print(runs[["run_id", "params.learning_rate", "params.model",
+            "metrics.final_val_loss", "status"]].head(10))
+
+# Encontrar el mejor run
+best_run = runs.loc[runs["metrics.final_val_loss"].idxmin()]
+print(f"\nMejor run: {best_run['run_id']}")
+print(f"Val Loss: {best_run['metrics.final_val_loss']:.4f}")
+```
+
+---
+
+## Parte 3: MLflow con Databricks
+
+**Databricks** es una plataforma unificada de data + AI que incluye MLflow de forma nativa.
+
+### Setup de Databricks
+
+```{code-cell} ipython3
+:tags: [skip-execution]
+
+# En un notebook de Databricks, MLflow está pre-configurado
+import mlflow
+
+# El tracking URI ya apunta a Databricks
+print(f"Tracking URI: {mlflow.get_tracking_uri()}")
+
+# Los experimentos se guardan en el Workspace
+mlflow.set_experiment("/Users/tu-email@empresa.com/kernel-generation")
+
+# El resto del código es idéntico
+with mlflow.start_run():
+    mlflow.log_param("model", "codellama-7b")
+    mlflow.log_metric("accuracy", 0.95)
+```
+
+### Model Registry en Databricks
+
+```{code-cell} ipython3
+:tags: [skip-execution]
+
+import mlflow
+
+# Registrar un modelo en el Model Registry
+model_uri = f"runs:/{run_id}/model"
+model_name = "kernel-generator"
+
+# Registrar nueva versión
+mlflow.register_model(model_uri, model_name)
+
+# Transicionar a staging/production
+from mlflow.tracking import MlflowClient
+
+client = MlflowClient()
+
+# Mover a Staging
+client.transition_model_version_stage(
+    name=model_name,
+    version=1,
+    stage="Staging"
+)
+
+# Después de validación, mover a Production
+client.transition_model_version_stage(
+    name=model_name,
+    version=1,
+    stage="Production"
+)
+```
+
+### Ejercicio Práctico: MLflow con Databricks
+
+```{admonition} 🛠️ Ejercicio: Tracking en Databricks
+:class: tip
+**Objetivo:** Configurar un pipeline completo de MLflow en Databricks.
+
+**Pasos:**
+1. Crear un workspace en Databricks Community Edition (gratis)
+2. Crear un notebook y configurar un experimento
+3. Entrenar un modelo simple (sklearn o pytorch)
+4. Log parámetros, métricas y el modelo
+5. Registrar el modelo en el Model Registry
+6. Comparar diferentes runs en la UI
+
+**Código base:**
+```python
+# En Databricks notebook
+import mlflow
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.datasets import make_classification
+from sklearn.model_selection import train_test_split
+
+# Crear datos de ejemplo
+X, y = make_classification(n_samples=1000, n_features=20, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=42)
+
+# Configurar experimento
+mlflow.set_experiment("/Users/tu-email/mi-experimento")
+
+# Entrenar con diferentes configuraciones
+for n_estimators in [10, 50, 100]:
+    with mlflow.start_run(run_name=f"rf-{n_estimators}"):
+        # Log parámetros
+        mlflow.log_param("n_estimators", n_estimators)
+        mlflow.log_param("algorithm", "RandomForest")
+
+        # Entrenar
+        model = RandomForestClassifier(n_estimators=n_estimators)
+        model.fit(X_train, y_train)
+
+        # Evaluar
+        accuracy = model.score(X_test, y_test)
+        mlflow.log_metric("accuracy", accuracy)
+
+        # Log modelo
+        mlflow.sklearn.log_model(model, "model")
+
+        print(f"n_estimators={n_estimators}, accuracy={accuracy:.4f}")
+```
+```
 
 ---
 

@@ -216,7 +216,66 @@ fig.show()
 
 ## Parte 2: Álgebra Lineal para Deep Learning
 
-Los LLMs procesar **tensores**. Entender tensores es entender cómo piensan estas redes.
+```{admonition} 📌 Introducción a esta Parte
+:class: note
+Esta parte cubre el **álgebra lineal esencial** para deep learning. Entenderás por qué las redes neuronales se procesan como operaciones matriciales y cómo esto permite aprovechar el poder de las GPUs.
+```
+
+Los LLMs procesan **tensores**. Entender tensores es entender cómo piensan estas redes.
+
+### ¿Por Qué Operaciones Matriciales?
+
+Las redes neuronales se representan como multiplicaciones de matrices por una razón fundamental: **paralelización**.
+
+```
+Sin matrices (iterativo):
+  for cada neurona in capa:
+      for cada input in entrada:
+          suma += peso * input
+  → Muy lento, millones de operaciones secuenciales
+
+Con matrices (vectorizado):
+  salida = W @ entrada  # Una sola operación
+  → GPU ejecuta miles de multiplicaciones simultáneamente
+```
+
+### Historia: GPUs y la Revolución del Deep Learning
+
+**2012: AlexNet - El Punto de Inflexión**
+
+```
+Antes de AlexNet:
+  - Redes neuronales entrenaban en CPU
+  - Tomaba semanas entrenar modelos pequeños
+  - El campo estaba estancado
+
+AlexNet (Krizhevsky, 2012):
+  - Primera red profunda entrenada en GPU (NVIDIA GTX 580)
+  - Ganó ImageNet por un margen enorme
+  - Demostró que GPUs son ideales para deep learning
+
+¿Por qué GPUs?
+  - CPU: ~10 cores, optimizado para tareas secuenciales
+  - GPU: ~10,000 cores, optimizado para operaciones paralelas
+  - Las multiplicaciones matriciales son inherentemente paralelas
+```
+
+```{admonition} 💡 Gráficas por Computadora → Deep Learning
+:class: tip
+Las GPUs fueron diseñadas originalmente para **renderizar gráficos 3D**.
+
+Los gráficos 3D se generan como **rotaciones y transformaciones de triángulos**:
+```
+Triángulo_nuevo = Matriz_rotación @ Triángulo_original
+```
+
+Esta operación (multiplicar matrices por vectores) es exactamente lo que necesitan las redes neuronales:
+```
+Activación_siguiente = Pesos @ Activación_anterior
+```
+
+Por eso las GPUs, diseñadas para gráficos, resultaron perfectas para deep learning.
+```
 
 ### Escalares, Vectores, Matrices, Tensores
 
@@ -274,6 +333,64 @@ Si A = [[1, 2, 3],      entonces A^T = [[1, 4],
 ```
 
 Intercambia filas y columnas. La usarás constantemente en redes neuronales.
+
+### Producto de Hadamard (Element-wise)
+
+A diferencia de la multiplicación matricial, el **producto de Hadamard** multiplica elemento por elemento:
+
+```
+A = [[1, 2],    B = [[5, 6],    A ⊙ B = [[1×5, 2×6],   = [[5, 12],
+     [3, 4]]         [7, 8]]            [3×7, 4×8]]       [21, 32]]
+```
+
+**Uso en deep learning:**
+- Aplicar máscaras (dropout: multiplicar por 0s y 1s)
+- Gates en LSTMs y GRUs
+- En PyTorch/NumPy: `A * B` (no `A @ B`)
+
+### Escalamiento de Matrices
+
+```
+Multiplicación por escalar:
+  c × A = [[c×a₁₁, c×a₁₂],
+           [c×a₂₁, c×a₂₂]]
+
+Ejemplo (learning rate):
+  W_nuevo = W_viejo - 0.01 × gradiente
+                      ↑
+            escalar (learning rate)
+```
+
+```{code-cell} ipython3
+import numpy as np
+
+# Demostración de operaciones matriciales
+A = np.array([[1, 2], [3, 4]])
+B = np.array([[5, 6], [7, 8]])
+
+print("Operaciones Matriciales Fundamentales")
+print("=" * 50)
+print(f"\nA =\n{A}")
+print(f"\nB =\n{B}")
+
+# Multiplicación matricial
+print(f"\n1. Multiplicación Matricial (A @ B):\n{A @ B}")
+
+# Producto de Hadamard
+print(f"\n2. Producto de Hadamard (A * B):\n{A * B}")
+
+# Transpuesta
+print(f"\n3. Transpuesta (A.T):\n{A.T}")
+
+# Escalamiento
+print(f"\n4. Escalamiento (0.5 * A):\n{0.5 * A}")
+
+print("\n" + "=" * 50)
+print("En PyTorch:")
+print("  @ o torch.mm() → multiplicación matricial")
+print("  *              → producto de Hadamard")
+print("  .T o .transpose() → transpuesta")
+```
 
 ---
 
@@ -537,7 +654,47 @@ Ahora que sabes **qué** optimizar (la pérdida) y **con qué** optimizarlo (Ada
 
 ## Parte 5: Retropropagación (Backpropagation)
 
+```{admonition} 📌 Introducción a esta Parte
+:class: note
+La retropropagación es donde la red **aprende**. Usando la **regla de la cadena** del cálculo, propagamos el error hacia atrás para saber cuánto contribuyó cada peso al error total.
+```
+
 La retropropagación es el algoritmo que permite entrenar redes profundas. Es el motor detrás de todo modelo de IA moderno.
+
+### La Regla de la Cadena: Fundamento Matemático
+
+La **regla de la cadena** es el teorema matemático que hace posible el deep learning:
+
+```
+Si y = f(g(x)), entonces:
+
+dy/dx = (dy/dg) × (dg/dx)
+
+En palabras: la derivada de una composición es el producto de las derivadas.
+```
+
+**¿Por qué es crucial?**
+
+Una red neuronal es una **composición de funciones**:
+```
+salida = f₃(f₂(f₁(entrada)))
+
+Para saber cómo cambiar los pesos de f₁ para reducir el error,
+necesitamos calcular: d(error)/d(pesos_f₁)
+
+Por la regla de la cadena:
+d(error)/d(pesos_f₁) = d(error)/d(f₃) × d(f₃)/d(f₂) × d(f₂)/d(f₁) × d(f₁)/d(pesos)
+```
+
+```{admonition} ⚠️ Funciones Continuas y Diferenciables
+:class: warning
+Para que backpropagation funcione, todas las funciones en la red deben ser:
+1. **Continuas**: sin saltos abruptos
+2. **Diferenciables**: debe existir el gradiente en cada punto
+
+Por eso usamos funciones de activación como ReLU (casi diferenciable en todo punto excepto 0) o sigmoid (completamente suave).
+Funciones discontinuas (como escalón) impiden el cálculo del gradiente y por tanto el aprendizaje.
+```
 
 ### La Idea Conceptual
 
@@ -832,7 +989,7 @@ plt.show()
 
 ---
 
-## Parte 6: Evolución Arquitectónica hacia Transformers
+## Parte 6: Evolución de Arquitectura del Transformer
 
 ### RNNs: Procesamiento Secuencial
 
@@ -866,9 +1023,14 @@ Mejoran el desvanecimiento de gradientes pero siguen siendo secuenciales.
 ```
 En lugar de procesar palabra por palabra:
 
-![**Figura 1:** Diagrama del mecanismo de atención mostrando Query, Key y Value.](diagrams/attention_mechanism.png)
+:::{figure} diagrams/attention_mechanism.png
+:name: fig-attention-mechanism
+:alt: Diagrama del mecanismo de atención mostrando Query, Key y Value
+:align: center
+:width: 90%
 
-***Figura 1:** Diagrama del mecanismo de atención mostrando Query, Key y Value.*
+**Figura 1:** Diagrama del mecanismo de atención mostrando Query, Key y Value.
+:::
 
 
 Palabra 1: "Transformers"
@@ -1113,6 +1275,18 @@ print("  • Necesita más datos de entrenamiento para generalizarse bien")
 - d) El dataset de validación está mal etiquetado
 ```
 
+## Errores Comunes
+
+```{admonition} ⚠️ Errores frecuentes
+:class: warning
+
+1. **Learning rate inadecuado**: Muy alto → divergencia (loss explota). Muy bajo → convergencia lenta o estancamiento en mínimos locales. Empieza con 1e-3 y ajusta.
+2. **Olvidar normalizar inputs**: Datos sin normalizar (mean≈0, std≈1) causan gradientes inestables. Usa `StandardScaler` o batch normalization.
+3. **Activación lineal en capas ocultas**: Sin no-linealidad (ReLU, tanh), la red colapsa a una transformación lineal simple sin importar la profundidad.
+4. **Confundir dimensiones de tensores**: Error común: `(batch, features)` vs `(features, batch)`. Verifica shapes con `print(tensor.shape)`.
+5. **No usar GPU cuando está disponible**: Olvidar `.to(device)` o `.cuda()` hace que el entrenamiento sea 10-100x más lento.
+6. **Ignorar el problema del vanishing gradient**: En redes muy profundas sin conexiones residuales, los gradientes se desvanecen. Usa skip connections o arquitecturas como ResNet.
+```
 
 ## Resumen
 

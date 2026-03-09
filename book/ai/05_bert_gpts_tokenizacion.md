@@ -9,7 +9,7 @@ kernelspec:
   name: python3
 ---
 
-# Lectura 5: BERT, GPTs y Tokenización
+# Lectura 5: GPTs y Modelos Generativos
 
 ```{code-cell} ipython3
 # Setup condicional para Google Colab
@@ -30,11 +30,11 @@ if 'google.colab' in sys.modules:
 ```{admonition} Objetivos de Aprendizaje
 :class: tip
 Al finalizar esta lectura podrás:
-- Distinguir entre BERT (comprensión bidireccional) y GPT (generación autoregresiva) según arquitectura y uso
-- Explicar cómo funciona Masked Language Modeling (MLM) en el pre-entrenamiento de BERT
 - Comprender la filosofía de escalamiento de GPT y las capacidades emergentes
-- Aplicar tokenización BPE/WordPiece/SentencePiece para convertir texto a tokens
-- Analizar el impacto del tokenizador en costo computacional y contexto disponible
+- Implementar un mini-GPT desde cero para entender la arquitectura completa
+- Explicar el proceso de generación autoregresiva y sus estrategias de muestreo
+- Identificar y entender el problema de las **alucinaciones** en modelos generativos
+- Comparar diferentes generaciones de GPT (1, 2, 3, 4) y sus capacidades
 ```
 
 ```{admonition} 🎬 Video Recomendado
@@ -60,81 +60,22 @@ Antes de esta lección debes haber leido:
 
 ## Introducción
 
-Hasta ahora entiendes la arquitectura Transformer. Pero, ¿cómo se materializó en modelos que cambiaron el mundo? BERT revolucionó NLP con comprensión bidireccional. GPT demostró que escalar funciona. Y todo comienza con **tokenización**: convertir texto en números que el modelo entiende.
+Esta lectura se enfoca en los modelos **GPT (Generative Pre-trained Transformer)**: la familia de modelos que demostró que escalar funciona y que revolucionó la generación de texto.
 
-Esta lectura conecta arquitectura con implementaciones reales y el proceso fundamental de tokenización.
+```{admonition} 📚 Referencia: BERT
+:class: seealso
+BERT (comprensión bidireccional) se cubrió en la **Lectura 3: Fundamentos de NLP**. Esta lectura se enfoca exclusivamente en modelos generativos (GPT).
+```
+
+En esta lectura:
+1. Entenderemos la filosofía de escalamiento de GPT
+2. **Construiremos un mini-GPT desde cero** para entender cada componente
+3. Exploraremos el fenómeno de las **alucinaciones**
+4. Conectaremos teoría con la práctica de generación de código
 
 ---
 
-## Parte 1: BERT - Comprensión Bidireccional
-
-### El Problema Pre-BERT
-
-Antes de 2018, los modelos de lenguaje eran **unidireccionales**:
-
-```
-Oración: "El banco está cerca del río"
-
-Modelo unidireccional (izquierda→derecha):
-  "banco" se predice solo con contexto de "El"
-  No sabe si es banco financiero o banco de río
-
-Modelo bidireccional (BERT):
-  "banco" se predice con contexto completo
-  Ve "río" → entiende que es banco de agua
-```
-
-### Arquitectura BERT
-
-```
-BERT = Transformer Encoder (bidireccional)
-
-Entrada:  [CLS] El banco está cerca del río [SEP]
-           ↓     ↓    ↓     ↓     ↓    ↓   ↓
-        Embeddings + Positional + Segment
-           ↓     ↓    ↓     ↓     ↓    ↓   ↓
-        ┌─────────────────────────────────────┐
-        │      12-24 Transformer Layers       │
-        │      (Multi-Head Self-Attention)    │
-        └─────────────────────────────────────┘
-           ↓     ↓    ↓     ↓     ↓    ↓   ↓
-        Representaciones contextualizadas
-```
-
-### Pre-entrenamiento de BERT
-
-**Tarea 1: Masked Language Modeling (MLM)**
-
-```
-Original:  "El gato [MASK] sobre la mesa"
-Objetivo:  Predecir "salta"
-
-→ Fuerza comprensión bidireccional
-→ 15% de tokens se enmascaran
-```
-
-**Tarea 2: Next Sentence Prediction (NSP)**
-
-```
-Oración A: "El perro ladró"
-Oración B: "Tenía hambre"  → IsNext (relacionadas)
-Oración B: "París es bonito" → NotNext (no relacionadas)
-```
-
-### Variantes de BERT
-
-```
-BERT-base:    110M parámetros, 12 layers, 768 hidden
-BERT-large:   340M parámetros, 24 layers, 1024 hidden
-
-RoBERTa:      Sin NSP, más datos, entrenamiento más largo
-ALBERT:       Parámetros compartidos, más eficiente
-DistilBERT:   66% más pequeño, 97% performance
-```
-
----
-
-## Parte 2: GPT - Generación Autoregresiva a Escala
+## Parte 1: GPT - Generación Autoregresiva a Escala
 
 ### Filosofía GPT
 
@@ -200,7 +141,340 @@ print(sort_list([3, 1, 4, 1, 5, 9, 2, 6]))
 
 ---
 
-## Parte 3: Tokenización
+## Parte 2: Construyendo un Mini-GPT desde Cero
+
+Para entender realmente cómo funciona GPT, vamos a construir uno minimalista.
+
+### Arquitectura Completa
+
+```{code-cell} ipython3
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+import math
+
+class MiniGPT(nn.Module):
+    """
+    Mini-GPT: Implementación educativa de un modelo tipo GPT.
+
+    Componentes clave:
+    1. Token Embeddings: convierte IDs a vectores
+    2. Positional Embeddings: agrega información de posición
+    3. Transformer Blocks: atención + feed-forward
+    4. Output Head: produce logits sobre vocabulario
+    """
+    def __init__(self, vocab_size, d_model=64, n_heads=4, n_layers=2, max_seq_len=128):
+        super().__init__()
+        self.d_model = d_model
+
+        # 1. Embeddings
+        self.token_embedding = nn.Embedding(vocab_size, d_model)
+        self.position_embedding = nn.Embedding(max_seq_len, d_model)
+
+        # 2. Transformer Blocks
+        self.blocks = nn.ModuleList([
+            TransformerBlock(d_model, n_heads) for _ in range(n_layers)
+        ])
+
+        # 3. Layer Norm final
+        self.ln_f = nn.LayerNorm(d_model)
+
+        # 4. Output head (proyección a vocabulario)
+        self.head = nn.Linear(d_model, vocab_size, bias=False)
+
+    def forward(self, idx):
+        """
+        idx: tensor de shape (batch, seq_len) con token IDs
+        returns: logits de shape (batch, seq_len, vocab_size)
+        """
+        B, T = idx.shape
+
+        # Token + Position embeddings
+        tok_emb = self.token_embedding(idx)  # (B, T, d_model)
+        pos = torch.arange(T, device=idx.device)
+        pos_emb = self.position_embedding(pos)  # (T, d_model)
+
+        x = tok_emb + pos_emb  # (B, T, d_model)
+
+        # Pasar por cada bloque Transformer
+        for block in self.blocks:
+            x = block(x)
+
+        # Layer norm final
+        x = self.ln_f(x)
+
+        # Proyectar a vocabulario
+        logits = self.head(x)  # (B, T, vocab_size)
+
+        return logits
+
+    def generate(self, idx, max_new_tokens, temperature=1.0):
+        """Genera tokens autoregressivamente"""
+        for _ in range(max_new_tokens):
+            # Forward pass
+            logits = self(idx)
+
+            # Solo nos interesa el último token
+            logits = logits[:, -1, :] / temperature
+
+            # Convertir a probabilidades y muestrear
+            probs = F.softmax(logits, dim=-1)
+            next_token = torch.multinomial(probs, num_samples=1)
+
+            # Concatenar al input
+            idx = torch.cat([idx, next_token], dim=1)
+
+        return idx
+
+
+class TransformerBlock(nn.Module):
+    """Un bloque Transformer: Attention + FFN con conexiones residuales"""
+    def __init__(self, d_model, n_heads):
+        super().__init__()
+        self.ln1 = nn.LayerNorm(d_model)
+        self.attn = CausalSelfAttention(d_model, n_heads)
+        self.ln2 = nn.LayerNorm(d_model)
+        self.ffn = nn.Sequential(
+            nn.Linear(d_model, 4 * d_model),
+            nn.GELU(),
+            nn.Linear(4 * d_model, d_model),
+        )
+
+    def forward(self, x):
+        x = x + self.attn(self.ln1(x))  # Residual + Attention
+        x = x + self.ffn(self.ln2(x))   # Residual + FFN
+        return x
+
+
+class CausalSelfAttention(nn.Module):
+    """Atención causal: cada posición solo ve posiciones anteriores"""
+    def __init__(self, d_model, n_heads):
+        super().__init__()
+        assert d_model % n_heads == 0
+
+        self.n_heads = n_heads
+        self.d_k = d_model // n_heads
+
+        # Q, K, V proyecciones combinadas
+        self.qkv = nn.Linear(d_model, 3 * d_model)
+        self.proj = nn.Linear(d_model, d_model)
+
+    def forward(self, x):
+        B, T, C = x.shape
+
+        # Calcular Q, K, V
+        qkv = self.qkv(x).chunk(3, dim=-1)
+        q, k, v = [t.view(B, T, self.n_heads, self.d_k).transpose(1, 2) for t in qkv]
+
+        # Atención escalada
+        att = (q @ k.transpose(-2, -1)) * (1.0 / math.sqrt(self.d_k))
+
+        # Máscara causal
+        mask = torch.triu(torch.ones(T, T, device=x.device), diagonal=1).bool()
+        att = att.masked_fill(mask, float('-inf'))
+
+        att = F.softmax(att, dim=-1)
+
+        # Aplicar a values
+        y = att @ v
+        y = y.transpose(1, 2).contiguous().view(B, T, C)
+
+        return self.proj(y)
+
+
+# Demostración
+print("Mini-GPT: Arquitectura Completa")
+print("=" * 50)
+
+vocab_size = 100  # Vocabulario pequeño
+model = MiniGPT(vocab_size, d_model=64, n_heads=4, n_layers=2)
+
+# Contar parámetros
+n_params = sum(p.numel() for p in model.parameters())
+print(f"Parámetros totales: {n_params:,}")
+
+# Forward pass de ejemplo
+x = torch.randint(0, vocab_size, (2, 10))  # batch=2, seq_len=10
+logits = model(x)
+print(f"\nInput shape:  {x.shape}")
+print(f"Output shape: {logits.shape}")
+
+# Generación
+print("\nGeneración autoregresiva:")
+start = torch.randint(0, vocab_size, (1, 3))  # Empezar con 3 tokens
+print(f"Tokens iniciales: {start.tolist()}")
+generated = model.generate(start, max_new_tokens=5, temperature=0.8)
+print(f"Tokens generados: {generated.tolist()}")
+```
+
+### Entrenamiento Simplificado
+
+```{code-cell} ipython3
+# Entrenamiento minimalista para demostración
+import torch.optim as optim
+
+# Crear un "dataset" simple: secuencias de patrones
+# Patrón: 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, ...
+def create_pattern_data(batch_size, seq_len):
+    pattern = torch.tensor([1, 2, 3, 4, 5])
+    data = pattern.repeat(seq_len // 5 + 1)[:seq_len]
+    return data.unsqueeze(0).repeat(batch_size, 1)
+
+# Modelo pequeño
+model = MiniGPT(vocab_size=10, d_model=32, n_heads=2, n_layers=1)
+optimizer = optim.Adam(model.parameters(), lr=0.01)
+
+print("Entrenamiento del Mini-GPT")
+print("=" * 50)
+
+# Entrenar por algunas iteraciones
+losses = []
+for step in range(100):
+    # Datos: entrada es [1,2,3,4], target es [2,3,4,5]
+    x = create_pattern_data(8, 10)
+
+    # Forward
+    logits = model(x)
+
+    # Loss: predecir el siguiente token
+    loss = F.cross_entropy(
+        logits[:, :-1, :].reshape(-1, 10),  # Predicciones
+        x[:, 1:].reshape(-1)                 # Targets
+    )
+
+    # Backward
+    optimizer.zero_grad()
+    loss.backward()
+    optimizer.step()
+
+    losses.append(loss.item())
+
+    if step % 20 == 0:
+        print(f"Step {step:3d}: Loss = {loss.item():.4f}")
+
+print(f"\nLoss final: {losses[-1]:.4f}")
+print("\n¿Aprendió el patrón? Probemos generando:")
+
+# Probar generación
+model.eval()
+with torch.no_grad():
+    start = torch.tensor([[1, 2, 3]])  # Empezar con 1, 2, 3
+    generated = model.generate(start, max_new_tokens=7, temperature=0.1)
+    print(f"Input:     [1, 2, 3]")
+    print(f"Generado:  {generated[0].tolist()}")
+    print(f"Esperado:  [1, 2, 3, 4, 5, 1, 2, 3, 4, 5]")
+```
+
+---
+
+## Parte 3: El Problema de las Alucinaciones
+
+```{admonition} ⚠️ Alucinaciones en Modelos Generativos
+:class: warning
+Los modelos generativos como GPT pueden generar texto que es **fluido pero factualmente incorrecto**. Esto se llama **alucinación**.
+```
+
+### ¿Qué son las Alucinaciones?
+
+```
+Prompt: "¿Quién escribió la novela 'El Quijote'?"
+
+Respuesta correcta: "Miguel de Cervantes"
+
+Alucinación posible: "El Quijote fue escrito por Gabriel García Márquez
+en 1847, durante su estancia en Madrid. La obra ganó el Premio Nobel de
+Literatura ese mismo año."
+
+El modelo:
+1. Produce texto gramaticalmente correcto
+2. Suena confiado
+3. Es completamente falso
+```
+
+### ¿Por Qué Ocurren?
+
+```{code-cell} ipython3
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Simulación: el modelo tiene probabilidades para diferentes respuestas
+# Problema: la respuesta correcta no siempre tiene la probabilidad más alta
+
+respuestas = ["Cervantes", "Shakespeare", "García Márquez", "Borges", "Otro"]
+probs_ideal = [0.85, 0.05, 0.04, 0.03, 0.03]      # Modelo bien entrenado
+probs_hallucinacion = [0.25, 0.22, 0.28, 0.15, 0.10]  # Modelo que alucina
+
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+
+# Modelo ideal
+colors = ['green' if r == "Cervantes" else 'lightgray' for r in respuestas]
+axes[0].bar(respuestas, probs_ideal, color=colors, edgecolor='black')
+axes[0].set_ylabel('Probabilidad')
+axes[0].set_title('Modelo Bien Entrenado\n(Respuesta correcta es la más probable)',
+                  fontsize=11, weight='bold', color='green')
+axes[0].set_ylim(0, 1)
+
+# Modelo con alucinación
+colors = ['red' if r == "García Márquez" else 'lightgray' for r in respuestas]
+colors[0] = 'green'  # Cervantes sigue siendo la correcta
+axes[1].bar(respuestas, probs_hallucinacion, color=colors, edgecolor='black')
+axes[1].set_ylabel('Probabilidad')
+axes[1].set_title('Modelo que Alucina\n(Respuesta incorrecta tiene mayor probabilidad)',
+                  fontsize=11, weight='bold', color='red')
+axes[1].set_ylim(0, 1)
+
+plt.tight_layout()
+plt.show()
+
+print("Causas de las Alucinaciones:")
+print("-" * 50)
+print("1. DATOS DE ENTRENAMIENTO: información incorrecta o sesgada")
+print("2. DISTRIBUCIÓN: respuesta correcta poco frecuente en datos")
+print("3. CONFIANZA MAL CALIBRADA: el modelo no 'sabe que no sabe'")
+print("4. TEMPERATURA ALTA: más aleatoridad puede amplificar errores")
+print("5. PATRONES ESTADÍSTICOS: el modelo aprende correlaciones, no hechos")
+```
+
+### Tipos de Alucinaciones
+
+```
+1. ALUCINACIÓN FACTUAL
+   "Python fue creado en 1975 por Dennis Ritchie"
+   → Fechas, nombres, hechos incorrectos
+
+2. ALUCINACIÓN DE CÓDIGO
+   "Para instalar PyTorch: pip install pytorch-gpu-cuda-12"
+   → Paquetes o comandos inexistentes
+
+3. ALUCINACIÓN DE REFERENCIA
+   "Según el paper de Smith et al. (2023) publicado en Nature..."
+   → Citas a papers que no existen
+
+4. ALUCINACIÓN POR EXTRAPOLACIÓN
+   "El último modelo de OpenAI, GPT-7, tiene 10 trillones de parámetros"
+   → Especulación presentada como hecho
+```
+
+### Mitigación
+
+```{admonition} 🛡️ Estrategias para Reducir Alucinaciones
+:class: tip
+1. **Retrieval-Augmented Generation (RAG)**: Buscar información antes de generar
+2. **Temperature baja**: Menos aleatoridad = menos errores creativos
+3. **Chain-of-Thought**: Pedir que el modelo razone paso a paso
+4. **Verificación humana**: Siempre revisar outputs críticos
+5. **Fine-tuning con datos verificados**: Mejorar la distribución de entrenamiento
+6. **Técnicas de calibración**: Entrenar al modelo para decir "no sé"
+```
+
+---
+
+## Parte 4: Tokenización
+
+```{admonition} 📚 Referencia
+:class: seealso
+Los fundamentos de tokenización (stemming, n-grams, one-hot encoding) se cubrieron en la **Lectura 3: Fundamentos de NLP**. Aquí nos enfocamos en tokenización para modelos modernos.
+```
 
 ### ¿Por Qué Tokenizar?
 
@@ -635,7 +909,62 @@ for s in snippets:
         print(f"  {t}: '{enc.decode([t])}'")
 ```
 
-### Ejercicio 2: Comparar Tokenizadores
+### Ejercicio 2: Análisis Profundo con tiktoken
+
+Compara tokenizadores de diferentes modelos y analiza eficiencia para código:
+
+```{code-cell} ipython3
+import tiktoken
+
+# Cargar diferentes encodings
+encodings = {
+    "gpt-4": tiktoken.encoding_for_model("gpt-4"),
+    "gpt-3.5": tiktoken.encoding_for_model("gpt-3.5-turbo"),
+    "gpt-2": tiktoken.get_encoding("gpt2"),
+}
+
+# Texto de prueba: código Triton real
+codigo_triton = '''
+@triton.jit
+def add_kernel(x_ptr, y_ptr, output_ptr, n_elements, BLOCK_SIZE: tl.constexpr):
+    pid = tl.program_id(axis=0)
+    block_start = pid * BLOCK_SIZE
+    offsets = block_start + tl.arange(0, BLOCK_SIZE)
+    mask = offsets < n_elements
+    x = tl.load(x_ptr + offsets, mask=mask)
+    y = tl.load(y_ptr + offsets, mask=mask)
+    output = x + y
+    tl.store(output_ptr + offsets, output, mask=mask)
+'''
+
+print("Comparación de Tokenizadores para Código Triton")
+print("=" * 60)
+print(f"Longitud del código: {len(codigo_triton)} caracteres\n")
+
+for nombre, enc in encodings.items():
+    tokens = enc.encode(codigo_triton)
+    print(f"{nombre}:")
+    print(f"  Tokens totales: {len(tokens)}")
+    print(f"  Ratio chars/token: {len(codigo_triton)/len(tokens):.2f}")
+
+    # Mostrar cómo tokeniza un patrón específico
+    patron = "tl.load(x_ptr + offsets, mask=mask)"
+    tokens_patron = enc.encode(patron)
+    print(f"  '{patron}' → {len(tokens_patron)} tokens")
+    print()
+
+# Calcular costo estimado (tokens de entrada + salida)
+tokens_gpt4 = len(encodings["gpt-4"].encode(codigo_triton))
+costo_por_1k_input = 0.01  # USD por 1K tokens (GPT-4 Turbo pricing aproximado)
+print(f"Costo estimado GPT-4 (solo input): ${tokens_gpt4 * costo_por_1k_input / 1000:.6f} USD")
+```
+
+**Observaciones clave:**
+- GPT-4 usa cl100k_base (más eficiente para código)
+- GPT-2 usa vocabulario más antiguo (menos eficiente)
+- Decoradores como `@triton.jit` pueden ser 1-3 tokens dependiendo del modelo
+
+### Ejercicio 3: Comparar Tokenizadores
 
 Compara cómo diferentes tokenizadores manejan código Triton. ¿Cuál es más eficiente?
 

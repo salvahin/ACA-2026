@@ -25,62 +25,114 @@ Este módulo proporciona los fundamentos teóricos de Inteligencia Artificial y 
 
 ---
 
+## Mapa Conceptual del Módulo
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                           MÓDULO DE IA                                       │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  ┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐   │
+│  │  SEMANA 1   │───▶│  SEMANA 2   │───▶│  SEMANA 3   │───▶│  SEMANA 4   │   │
+│  │  Historia   │    │  Deep       │    │  NLP &      │    │  Arquitect. │   │
+│  │  IA Clásica │    │  Learning   │    │  Generación │    │  Transformer│   │
+│  │  vs Gener.  │    │  Fundament. │    │  Autoregr.  │    │             │   │
+│  └─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘   │
+│        │                  │                  │                  │            │
+│        ▼                  ▼                  ▼                  ▼            │
+│   Paradigmas         Backprop           Softmax            Attention        │
+│   Supervisado        Tensores           BPE/Tokens         Multi-head       │
+│   No Supervisado     Optimizers         Sampling           Pos. Encoding    │
+│                                                                              │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  ┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐   │
+│  │  SEMANA 5   │───▶│  SEMANA 6   │───▶│  SEMANA 7   │───▶│  SEMANA 8   │   │
+│  │  BERT &     │    │  Sampling & │    │  Fine-Tune  │    │  MLOps &    │   │
+│  │  GPTs       │    │  Constrain. │    │  Evaluación │    │  Producción │   │
+│  │             │    │  Decoding   │    │             │    │             │   │
+│  └─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘   │
+│        │                  │                  │                  │            │
+│        ▼                  ▼                  ▼                  ▼            │
+│   Encoder/Decoder    XGrammar           LoRA/QLoRA         MLflow           │
+│   Tokenización       Beam Search        Pass@k             Reproducib.      │
+│   Alucinaciones      Gramáticas         Perplexity         Monitoreo        │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+PRERREQUISITOS:
+  Semana 1 → ninguno (punto de entrada)
+  Semana 2 → Semana 1
+  Semana 3 → Semanas 1-2
+  Semana 4 → Semanas 1-3
+  Semanas 5-8 → Semanas 1-4 (base completa)
+```
+
+---
+
 ## Estructura del Módulo
 
-### Semana 1: IA Clásica vs Generativa
-**Archivo:** `01_IA_Clasica_vs_Generativa.md`
+### Semana 1: Introducción al Aprendizaje Automático
+**Archivo:** `01_ia_clasica_vs_generativa.md`
 
-- ML clásico: supervisado, no supervisado, refuerzo
-- Regresión Lineal, Regresión logística
-- Comparación ML vs DL vs LLMs
-- Casos de uso para cada paradigma
+- Historia de la IA: Taller de Dartmouth (1956)
+- Paradigmas: supervisado, no supervisado, refuerzo
+- Clasificación vs Regresión
+- Regresión lineal y logística
+- Autoencoders y VAEs
+- Comparación modelos discriminativos vs generativos
 
 ---
 
 ### Semana 2: Fundamentos de Deep Learning
-**Archivo:** `02_Fundamentos_Deep_Learning.md`
+**Archivo:** `02_fundamentos_deep_learning.md`
 
 - Del perceptrón a Deep Learning
-- Backpropagation
-- Entrenamiento e hiperparámetros
-- Funciones de activación y optimizadores
+- Historia de GPUs y AlexNet
+- Operaciones matriciales y producto de Hadamard
+- Forward pass y backward pass (regla de la cadena)
+- Funciones de pérdida y optimizadores (SGD, Adam)
+- Overfitting y regularización
 
 ---
 
-### Semana 3: Generación Autoregresiva
-**Archivo:** `03_Generacion_Autoregresiva.md`
+### Semana 3: Fundamentos de Procesamiento de Lenguaje Natural
+**Archivo:** `03_generacion_autoregresiva.md`
 
-- Auto-encoders y redes recurrentes
-- Generación autoregresiva
-- IA Generativa vs Discriminativa
-- Introducción a Transformers
+- Preprocesamiento de texto: tokenización, stemming
+- N-gramas, one-hot encoding, vocabulario
+- Embeddings (Word2Vec) y similitud semántica
+- RNNs, LSTMs y el problema del gradient vanishing
+- BERT y embeddings contextuales
+- Introducción a generación autoregresiva
 
 ---
 
 ### Semana 4: Arquitectura Transformer
-**Archivo:** `04_Arquitectura_Transformer.md`
+**Archivo:** `04_arquitectura_transformer.md`
 
-- Multi-head attention
+- Multi-head attention (y por qué evita el colapso)
 - Positional encoding
-- Layer normalization
+- Layer normalization y conexiones residuales
+- Transformer como autoencoder
 - Encoder vs Decoder
-- "Attention Is All You Need"
+- "Attention Is All You Need" + The Illustrated Transformer
 
 ---
 
-### Semana 5: BERT, GPTs y Tokenización
-**Archivo:** `05_BERT_GPTs_Tokenizacion.md`
+### Semana 5: GPTs y Modelos Generativos
+**Archivo:** `05_bert_gpts_tokenizacion.md`
 
-- BERT: comprensión bidireccional
-- GPT: generación a escala
-- Logits → softmax → probabilidades
-- Cross-entropy loss
-- Tokenización: BPE, SentencePiece, tiktoken
+- Filosofía de escalamiento de GPT
+- Construir un mini-GPT desde cero
+- Generación autoregresiva y estrategias de muestreo
+- El problema de las alucinaciones
+- Tokenización avanzada: BPE, SentencePiece, tiktoken
 
 ---
 
 ### Semana 6: Sampling y Constrained Decoding
-**Archivo:** `06_Sampling_Constrained_Decoding.md`
+**Archivo:** `06_sampling_constrained_decoding.md`
 
 - Estrategias de muestreo (greedy, top-k, top-p)
 - Temperature y su efecto
@@ -90,7 +142,7 @@ Este módulo proporciona los fundamentos teóricos de Inteligencia Artificial y 
 ---
 
 ### Semana 7: Fine-Tuning y Evaluación
-**Archivo:** `07_Fine_Tuning_Evaluacion.md`
+**Archivo:** `07_fine_tuning_evaluacion.md`
 
 - Fine-tuning vs prompting
 - LoRA/QLoRA: cómo funcionan
@@ -100,14 +152,15 @@ Este módulo proporciona los fundamentos teóricos de Inteligencia Artificial y 
 
 ---
 
-### Semana 8: MLOps y Visualización
-**Archivo:** `08_MLOps_Visualizacion.md`
+### Semana 8: MLOps
+**Archivo:** `08_mlops_visualizacion.md`
 
-- Logging de hiperparámetros y métricas
-- Weights & Biases / MLflow
-- Versionado de experimentos
-- Visualización de resultados
-- Reportes automatizados
+- ¿Qué es MLOps? Ciclo de vida y importancia
+- MLOps vs LLMOps
+- MLflow: tracking de experimentos
+- MLflow con Databricks
+- Model Registry y versionado
+- Checklists de reproducibilidad
 
 ---
 
@@ -119,16 +172,25 @@ Este módulo proporciona los fundamentos teóricos de Inteligencia Artificial y 
 ## Estructura de Archivos
 
 ```
-lecturas/AI/
-├── 01_IA_Clasica_vs_Generativa.md     # ML clásico vs LLMs
-├── 02_Fundamentos_Deep_Learning.md    # Perceptrón, backprop
-├── 03_Generacion_Autoregresiva.md     # RNNs, autoregresivo
-├── 04_Arquitectura_Transformer.md     # Attention, encoder/decoder
-├── 05_BERT_GPTs_Tokenizacion.md       # BERT, GPT, BPE
-├── 06_Sampling_Constrained_Decoding.md # Sampling, XGrammar
-├── 07_Fine_Tuning_Evaluacion.md       # LoRA, evaluación
-├── 08_MLOps_Visualizacion.md          # Tracking, visualización
-└── README.md                          # Este archivo
+book/ai/
+├── 01_ia_clasica_vs_generativa.md     # Introducción al ML, historia, clasificación/regresión
+├── 02_fundamentos_deep_learning.md    # Perceptrón, backprop, GPUs, optimizadores
+├── 03_generacion_autoregresiva.md     # NLP básico, BERT, embeddings, RNNs
+├── 04_arquitectura_transformer.md     # Attention, multihead, autoencoder
+├── 05_bert_gpts_tokenizacion.md       # GPTs, mini-GPT, alucinaciones
+├── 06_sampling_constrained_decoding.md # Sampling, XGrammar
+├── 07_fine_tuning_evaluacion.md       # LoRA, evaluación
+├── 08_mlops_visualizacion.md          # MLOps, MLflow, Databricks
+├── glossary.md                        # Glosario de términos técnicos
+├── solutions.md                       # Solucionario de ejercicios
+└── index.md                           # Este archivo
+```
+
+```{admonition} 📚 Recursos Adicionales
+:class: seealso
+
+- **[Glosario Técnico](glossary.md):** Definiciones de términos clave (logits, embeddings, attention, etc.)
+- **[Solucionario](solutions.md):** Respuestas detalladas a los ejercicios de cada lectura
 ```
 
 ---
@@ -136,25 +198,37 @@ lecturas/AI/
 ## Progresión Pedagógica
 
 ```
-Semanas 1-2: Fundamentos
-├─ ML clásico
-└─ Deep Learning
+Semanas 1-2: Fundamentos de ML
+├─ Historia de la IA (Dartmouth 1956)
+├─ Clasificación vs Regresión
+├─ Regresión lineal y logística
+├─ Redes neuronales y backpropagation
+└─ GPUs y la revolución del Deep Learning
 
-Semanas 3-4: Transformers
-├─ Generación autoregresiva
-└─ Arquitectura detallada
+Semanas 3-4: De NLP a Transformers
+├─ Preprocesamiento de texto y n-gramas
+├─ Embeddings y Word2Vec
+├─ RNNs, LSTMs y gradient vanishing
+├─ BERT y embeddings contextuales
+├─ Arquitectura Transformer completa
+└─ Multi-head attention y por qué funciona
 
-Semanas 5-6: Modelos y Decoding
-├─ BERT/GPT/Tokenización
-└─ Sampling y constraints
+Semanas 5-6: Generación y Control
+├─ GPTs y escalamiento
+├─ Mini-GPT desde cero
+├─ Alucinaciones y mitigación
+├─ Estrategias de muestreo
+└─ Constrained decoding
 
-Semanas 7-8: Práctica
-├─ Fine-tuning
-└─ MLOps
+Semanas 7-8: Práctica y Producción
+├─ Fine-tuning con LoRA
+├─ Evaluación de modelos
+├─ MLOps y MLflow
+└─ Databricks y Model Registry
 
-Semanas 9-10: Proyecto
+Semanas 9-10: Proyecto Final
 ├─ Experimentos
-└─ Presentación final
+└─ Presentación
 ```
 
 ---

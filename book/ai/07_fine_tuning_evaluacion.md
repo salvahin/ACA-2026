@@ -58,9 +58,14 @@ Esta lectura cubre fine-tuning (full, LoRA, QLoRA), evaluación rigurosa y métr
 ## Parte 1: Full Fine-Tuning
 
 
-![**Figura 1:** Arquitectura LoRA mostrando las matrices de bajo rango A y B.](diagrams/lora_architecture.png)
+:::{figure} diagrams/lora_architecture.png
+:name: fig-lora-architecture
+:alt: Arquitectura LoRA mostrando las matrices de bajo rango A y B
+:align: center
+:width: 90%
 
-***Figura 1:** Arquitectura LoRA mostrando las matrices de bajo rango A y B.*
+**Figura 1:** Arquitectura LoRA mostrando las matrices de bajo rango A y B.
+:::
 
 ### La Idea
 
@@ -420,6 +425,88 @@ Generación:
   - Perplexity: Confianza del modelo en respuesta
   - BLEU/ROUGE/METEOR
   - Human evaluation (gold standard)
+```
+
+### Perplexity: Entendiendo la Métrica Fundamental
+
+**Perplexity** mide qué tan "sorprendido" está el modelo por los datos. Un modelo que predice bien tiene baja perplejidad.
+
+```
+Perplexity = exp(Cross-Entropy Loss)
+
+Donde Cross-Entropy = -1/N * Σ log P(token_correcto)
+```
+
+**Interpretación intuitiva:**
+
+```
+Perplexity = 1:   Modelo predice perfectamente (imposible en práctica)
+Perplexity = 10:  Modelo tan seguro como eligiendo entre 10 opciones
+Perplexity = 100: Modelo tan seguro como eligiendo entre 100 opciones
+Perplexity = 50000: Modelo adivinando al azar (vocab_size típico)
+```
+
+```{code-cell} ipython3
+import numpy as np
+import torch
+import torch.nn.functional as F
+
+def calcular_perplexity(logits, targets):
+    """
+    Calcula perplexity dado logits y tokens objetivo.
+
+    Args:
+        logits: (seq_len, vocab_size) - salida del modelo
+        targets: (seq_len,) - índices de tokens correctos
+
+    Returns:
+        Perplexity (float)
+    """
+    # Cross-entropy loss
+    ce_loss = F.cross_entropy(logits, targets, reduction='mean')
+
+    # Perplexity = exp(cross_entropy)
+    perplexity = torch.exp(ce_loss)
+
+    return perplexity.item()
+
+# Ejemplo: modelo confiado vs modelo inseguro
+np.random.seed(42)
+vocab_size = 1000
+seq_len = 10
+
+# Simular logits de modelo "bueno" (alta probabilidad en token correcto)
+targets = torch.randint(0, vocab_size, (seq_len,))
+logits_bueno = torch.randn(seq_len, vocab_size)
+for i, t in enumerate(targets):
+    logits_bueno[i, t] += 5.0  # Aumentar score del token correcto
+
+# Simular logits de modelo "malo" (distribución uniforme)
+logits_malo = torch.randn(seq_len, vocab_size) * 0.1
+
+print("Perplexity - Comparación de Modelos:")
+print("=" * 50)
+print(f"Modelo bueno (predice bien): {calcular_perplexity(logits_bueno, targets):.2f}")
+print(f"Modelo malo (casi aleatorio): {calcular_perplexity(logits_malo, targets):.2f}")
+print(f"Referencia (aleatorio puro): {vocab_size}")
+```
+
+**Perplexity en práctica:**
+
+| Modelo | Perplexity (WikiText-103) | Interpretación |
+|--------|---------------------------|----------------|
+| GPT-2 Small | ~35 | Bueno para su tamaño |
+| GPT-2 XL | ~18 | Muy bueno |
+| GPT-3 | ~10-15 | Excelente |
+| Fine-tuned en dominio | ~5-10 | Óptimo para tarea |
+
+```{admonition} ⚠️ Limitaciones de Perplexity
+:class: warning
+
+1. **No mide calidad semántica**: Un modelo puede tener baja perplexity pero generar texto sin sentido.
+2. **Depende del tokenizador**: Diferentes tokenizadores = diferentes perplexities no comparables.
+3. **Sensible a outliers**: Un solo token muy improbable puede inflar la métrica.
+4. **No sirve para tareas de clasificación**: Solo para modelos de lenguaje autoregresivos.
 ```
 
 ---

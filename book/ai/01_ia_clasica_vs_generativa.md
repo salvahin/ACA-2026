@@ -9,7 +9,7 @@ kernelspec:
   name: python3
 ---
 
-# Lectura 1: IA Clásica vs Generativa
+# Lectura 1: Introducción al Aprendizaje Automático
 
 ```{admonition} Ejecutar en Google Colab
 :class: tip
@@ -28,10 +28,12 @@ print('Dependencies installed!')
 ```{admonition} Objetivos de Aprendizaje
 :class: tip
 Al finalizar esta lectura podrás:
-- Distinguir entre paradigmas de IA clásica (sistemas expertos), discriminativos y generativos
-- Identificar las ventajas y limitaciones de cada enfoque según el contexto del problema
-- Comprender la evolución histórica desde sistemas basados en reglas hasta modelos de deep learning
-- Seleccionar el paradigma apropiado (clásico, discriminativo o generativo) para un problema dado
+- Comprender la evolución histórica de la IA desde el taller de Dartmouth (1956) hasta el deep learning moderno
+- Distinguir entre los paradigmas de aprendizaje: supervisado, no supervisado y por refuerzo
+- Identificar los dos tipos clásicos de problemas: clasificación y regresión
+- Aplicar conceptos básicos de regresión lineal y logística
+- Entender el problema XOR como motivación para redes neuronales multicapa
+- Distinguir entre modelos discriminativos (P(Y|X)) y generativos (P(X,Y))
 ```
 
 ```{admonition} 🎬 Video Recomendado
@@ -54,6 +56,32 @@ En esta lectura exploraremos cómo la IA ha evolucionado desde ese primer enfoqu
 ---
 
 ## Parte 1: El Viaje del Aprendizaje Automático
+
+### Los Orígenes: El Taller de Dartmouth (1956)
+
+La historia de la Inteligencia Artificial como disciplina formal comenzó en el verano de 1956, cuando John McCarthy, Marvin Minsky, Claude Shannon y Nathaniel Rochester organizaron el **Taller de Dartmouth**. Este evento histórico definió el campo y estableció la visión fundamental:
+
+```
+"Cada aspecto del aprendizaje o cualquier otra característica de la inteligencia
+puede, en principio, ser descrito con tanta precisión que una máquina puede
+simularlo."
+— Propuesta del Taller de Dartmouth, 1956
+```
+
+Del taller emergieron ideas fundamentales que aún guían el campo:
+- La IA tendría **dos fases**: entrenamiento (aprender de datos) e inferencia (aplicar lo aprendido)
+- Las máquinas podrían aprender patrones sin ser programadas explícitamente
+- El lenguaje, la visión y el razonamiento podrían ser computacionales
+
+```{admonition} 💡 ¿Qué es la Inteligencia?
+:class: note
+Desde una perspectiva de ML, la **inteligencia** puede verse como la capacidad de:
+- **Reconocer patrones** en datos (clasificar imágenes, detectar spam)
+- **Generalizar** a partir de ejemplos (predecir en datos nuevos)
+- **Aprender distribuciones** estadísticas subyacentes en los datos
+
+Los modelos de ML no "piensan" — aprenden aproximaciones estadísticas de patrones en datos.
+```
 
 ### Era 1: Sistemas Expertos (1960s-1980s)
 
@@ -102,7 +130,202 @@ print(f"Paciente 2: {sistema_experto_diagnostico(paciente2)}")
 
 El gran salto: **en lugar de escribir reglas, enseña al sistema a descubrirlas a partir de datos.**
 
-Imagina que tienes 1,000 fotos de gatos y 1,000 de perros. Un algoritmo de aprendizaje automático examine automáticamente estas imágenes y descubra patrones: "Los gatos tienen orejas triangulares, los perros tienen orejas más redondeadas," etc.
+Imagina que tienes 1,000 fotos de gatos y 1,000 de perros. Un algoritmo de aprendizaje automático examina automáticamente estas imágenes y descubre patrones: "Los gatos tienen orejas triangulares, los perros tienen orejas más redondeadas," etc.
+
+```{admonition} 🎯 Bases Estadísticas del ML
+:class: important
+El aprendizaje automático es fundamentalmente **estadístico**:
+- El objetivo es **aprender una distribución de probabilidad** a partir de datos
+- Un modelo aprende a estimar P(Y|X): "dado X, ¿cuál es la probabilidad de Y?"
+- La calidad del modelo se mide por qué tan bien generaliza a datos no vistos
+```
+
+### Los Dos Tipos Clásicos de Problemas
+
+Antes de ver los paradigmas de aprendizaje, es importante distinguir los dos tipos fundamentales de problemas:
+
+#### Clasificación
+**Objetivo:** Asignar una etiqueta categórica a cada entrada.
+
+```
+Entrada: Imagen de animal
+Salida: "gato" o "perro" (categoría discreta)
+
+Entrada: Email
+Salida: "spam" o "no spam"
+```
+
+#### Regresión
+**Objetivo:** Predecir un valor numérico continuo.
+
+```
+Entrada: Características de una casa (m², ubicación, habitaciones)
+Salida: Precio en pesos (valor continuo)
+
+Entrada: Datos históricos de ventas
+Salida: Ventas del próximo mes
+```
+
+```{code-cell} ipython3
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Visualización: Clasificación vs Regresión
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+
+# Clasificación
+np.random.seed(42)
+class_0 = np.random.randn(50, 2) + np.array([2, 2])
+class_1 = np.random.randn(50, 2) + np.array([5, 5])
+
+axes[0].scatter(class_0[:, 0], class_0[:, 1], c='blue', alpha=0.6, label='Clase 0 (Gatos)', s=60)
+axes[0].scatter(class_1[:, 0], class_1[:, 1], c='red', alpha=0.6, label='Clase 1 (Perros)', s=60)
+axes[0].set_xlabel('Feature 1')
+axes[0].set_ylabel('Feature 2')
+axes[0].set_title('Clasificación: Asignar Categorías', fontsize=12, weight='bold')
+axes[0].legend()
+axes[0].grid(True, alpha=0.3)
+
+# Regresión
+x = np.linspace(0, 10, 50)
+y = 2 * x + 3 + np.random.randn(50) * 2
+
+axes[1].scatter(x, y, c='green', alpha=0.6, s=60, label='Datos observados')
+axes[1].plot(x, 2*x + 3, 'r--', linewidth=2, label='Línea de regresión')
+axes[1].set_xlabel('Tamaño (m²)')
+axes[1].set_ylabel('Precio ($)')
+axes[1].set_title('Regresión: Predecir Valores Continuos', fontsize=12, weight='bold')
+axes[1].legend()
+axes[1].grid(True, alpha=0.3)
+
+plt.tight_layout()
+plt.show()
+
+print("Clasificación: Salida discreta (categorías)")
+print("Regresión: Salida continua (números)")
+```
+
+### Regresión Lineal
+
+El modelo más simple de ML: una línea recta que mejor se ajusta a los datos.
+
+```
+y = w₁x₁ + w₂x₂ + ... + wₙxₙ + b
+
+donde:
+- y es la predicción
+- x₁, x₂, ..., xₙ son las características de entrada
+- w₁, w₂, ..., wₙ son los pesos (coeficientes)
+- b es el sesgo (intercepto)
+```
+
+```{code-cell} ipython3
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
+
+# Datos de ejemplo: área de casa vs precio
+np.random.seed(42)
+area = np.array([50, 60, 70, 80, 90, 100, 110, 120, 130, 140]).reshape(-1, 1)
+precio = area.flatten() * 15000 + 100000 + np.random.randn(10) * 50000
+
+# Entrenar modelo
+modelo = LinearRegression()
+modelo.fit(area, precio)
+
+# Predicción
+area_nueva = np.array([[85], [125]])
+predicciones = modelo.predict(area_nueva)
+
+# Visualización
+plt.figure(figsize=(10, 6))
+plt.scatter(area, precio, c='blue', s=100, alpha=0.7, label='Datos reales', edgecolors='black')
+plt.plot(area, modelo.predict(area), 'r-', linewidth=2, label='Regresión lineal')
+plt.scatter(area_nueva, predicciones, c='green', s=150, marker='*', label='Predicciones', edgecolors='black')
+
+plt.xlabel('Área (m²)', fontsize=12)
+plt.ylabel('Precio ($)', fontsize=12)
+plt.title('Regresión Lineal: Predecir Precio de Casas', fontsize=14, weight='bold')
+plt.legend()
+plt.grid(True, alpha=0.3)
+plt.show()
+
+print(f"Ecuación aprendida: Precio = {modelo.coef_[0]:.2f} × Área + {modelo.intercept_:.2f}")
+print(f"\nPredicciones:")
+for a, p in zip(area_nueva.flatten(), predicciones):
+    print(f"  Casa de {a} m² → ${p:,.0f}")
+```
+
+### Regresión Logística
+
+Para **clasificación binaria**, usamos regresión logística. A pesar del nombre, es un modelo de clasificación.
+
+```
+P(y=1|x) = σ(w·x + b) = 1 / (1 + e^(-(w·x + b)))
+
+La función sigmoide (σ) convierte cualquier valor en una probabilidad entre 0 y 1.
+```
+
+```{code-cell} ipython3
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.linear_model import LogisticRegression
+from sklearn.datasets import make_classification
+
+# Generar datos de clasificación binaria
+np.random.seed(42)
+X, y = make_classification(n_samples=100, n_features=2, n_redundant=0,
+                           n_informative=2, n_clusters_per_class=1, random_state=42)
+
+# Entrenar modelo
+modelo = LogisticRegression()
+modelo.fit(X, y)
+
+# Visualización
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+
+# Datos y frontera de decisión
+ax = axes[0]
+ax.scatter(X[y==0, 0], X[y==0, 1], c='blue', alpha=0.6, s=60, label='Clase 0')
+ax.scatter(X[y==1, 0], X[y==1, 1], c='red', alpha=0.6, s=60, label='Clase 1')
+
+# Dibujar frontera de decisión
+xx, yy = np.meshgrid(np.linspace(X[:, 0].min()-1, X[:, 0].max()+1, 100),
+                     np.linspace(X[:, 1].min()-1, X[:, 1].max()+1, 100))
+Z = modelo.predict_proba(np.c_[xx.ravel(), yy.ravel()])[:, 1]
+Z = Z.reshape(xx.shape)
+ax.contour(xx, yy, Z, levels=[0.5], colors='black', linewidths=2)
+ax.set_xlabel('Feature 1')
+ax.set_ylabel('Feature 2')
+ax.set_title('Regresión Logística: Frontera de Decisión', fontsize=12, weight='bold')
+ax.legend()
+ax.grid(True, alpha=0.3)
+
+# Función sigmoide
+ax = axes[1]
+z = np.linspace(-6, 6, 100)
+sigmoid = 1 / (1 + np.exp(-z))
+ax.plot(z, sigmoid, 'b-', linewidth=3)
+ax.axhline(y=0.5, color='red', linestyle='--', alpha=0.5, label='Umbral (0.5)')
+ax.axvline(x=0, color='gray', linestyle='--', alpha=0.5)
+ax.fill_between(z, 0, sigmoid, where=(sigmoid >= 0.5), alpha=0.3, color='red', label='Clase 1')
+ax.fill_between(z, 0, sigmoid, where=(sigmoid < 0.5), alpha=0.3, color='blue', label='Clase 0')
+ax.set_xlabel('z = w·x + b')
+ax.set_ylabel('P(y=1|x)')
+ax.set_title('Función Sigmoide: Convierte Score a Probabilidad', fontsize=12, weight='bold')
+ax.legend()
+ax.grid(True, alpha=0.3)
+
+plt.tight_layout()
+plt.show()
+
+print("Regresión Logística:")
+print("  - Entrada: características numéricas")
+print("  - Salida: probabilidad P(clase=1)")
+print("  - Decisión: si P > 0.5, predice clase 1; sino, clase 0")
+```
+
+### Los Paradigmas de Aprendizaje
 
 Los principales paradigmas son:
 
@@ -143,7 +366,31 @@ Después de miles de intentos, el sistema aprende estrategias ganadoras.
 
 ### Era 3: Aprendizaje Profundo (2010s)
 
-Las redes neuronales profundas revolucionaron todo. Pero antes de hablar de eso, necesitamos entender **modelos discriminativos vs generativos**.
+Las redes neuronales profundas revolucionaron todo. Esta era se caracteriza por:
+
+1. **Redes Neuronales Multicapa** (solucionan el problema XOR)
+2. **Backpropagation** para entrenar redes profundas
+3. **Gradiente Descendente Estocástico (SGD)** y optimizadores modernos
+4. **Arquitecturas especializadas**: CNNs, RNNs, LSTMs, y finalmente Transformers
+
+```{admonition} 🔧 Gradiente Descendente y Optimizadores
+:class: note
+El **gradiente descendente** es el algoritmo fundamental para entrenar redes neuronales:
+
+1. Calcula el error (loss) de la predicción
+2. Calcula el gradiente (dirección de mayor aumento del error)
+3. Actualiza los pesos en la dirección **opuesta** al gradiente
+
+```
+W_nuevo = W_viejo - learning_rate × gradiente
+```
+
+**SGD (Stochastic Gradient Descent):** Actualiza pesos usando mini-batches en lugar de todo el dataset.
+
+**Optimizadores modernos (Adam, AdaW):** Adaptan el learning rate por parámetro. Se explicarán en detalle en la **Lectura 2**.
+```
+
+Antes de hablar de arquitecturas, necesitamos entender **modelos discriminativos vs generativos**.
 
 ---
 
@@ -379,19 +626,25 @@ print(f"AND: Predicciones = {perceptron.predict(X_and)}, Esperado = {y_and}")
 print("\nXOR requiere redes multicapa con funciones de activación no lineales")
 ```
 
-### Redes Neuronales Multicapa
+### Arquitecturas de Redes Neuronales
 
 ```{admonition} 📌 Alcance de esta Lección
 :class: note
-Esta sección introduce redes neuronales **de forma conceptual e histórica** para completar
+Esta sección introduce arquitecturas de redes neuronales **de forma conceptual e histórica** para completar
 el panorama evolutivo de la IA. Los fundamentos matemáticos detallados de backpropagation,
 funciones de activación (ReLU, sigmoid, tanh), tensores y optimizadores se cubren
 en profundidad en la **Lectura 2: Fundamentos de Deep Learning**.
 ```
 
+#### 1. Redes Fully Connected (Densas)
+
+La arquitectura más básica: cada neurona está conectada con todas las neuronas de la capa siguiente.
 
 ```
 Capa de Entrada → Capas Ocultas → Capa de Salida
+     (n)              (m)              (k)
+
+Cada conexión tiene un peso que se aprende durante el entrenamiento.
 ```
 
 Múltiples capas de "neuronas" conectadas. Cada conexión tiene un peso. Al sumar múltiples transformaciones no-lineales, podemos aproximar cualquier función.
@@ -570,6 +823,31 @@ La retropropagación es cómo entrenamos redes neuronales profundas. Conceptualm
 
 Es como subir una montaña ciega: sientes hacia dónde está más empinado (gradiente) y das un paso en esa dirección.
 
+#### 2. Redes Convolucionales (CNNs)
+
+Especializadas para procesar imágenes. Usan **filtros** (kernels) que se deslizan sobre la imagen para detectar patrones locales.
+
+```
+Imagen → [Filtros Convolucionales] → [Pooling] → [Fully Connected] → Predicción
+
+Ejemplo (clasificación de dígitos):
+  28×28 imagen → Conv1 (32 filtros) → Pool → Conv2 (64 filtros) → Pool → Dense → "5"
+```
+
+**Ventajas:**
+- Invarianza a traslación (detecta gatos en cualquier posición)
+- Eficientes en parámetros (comparten pesos)
+- Revolucionaron la visión por computadora (AlexNet, 2012)
+
+#### 3. Series de Tiempo y Modelos Secuenciales
+
+Para datos donde el **orden importa** (texto, audio, series financieras), necesitamos modelos que procesen secuencias.
+
+**Métodos clásicos de autoregresión:**
+- AR (Autoregressive): predice basándose en valores pasados
+- ARIMA: agrega diferenciación y promedios móviles
+- Limitación: asumen relaciones lineales
+
 ### RNNs y la Secuencia
 
 Las redes neuronales recurrentes (RNNs) fueron diseñadas para procesar secuencias:
@@ -589,9 +867,89 @@ Palabra 3: "IA" + Estado2 → Estado3 (contiene contexto de todas las palabras a
 
 Arquitecturas mejoradas que mantienen "vías" especiales para que la información importante no desaparezca a través de secuencias largas.
 
+### Autoencoders: Aprendiendo Representaciones
+
+Antes de los Transformers, los **autoencoders** introdujeron una idea crucial: aprender representaciones comprimidas de los datos.
+
+```
+Entrada → [Encoder] → Representación Latente (cuello de botella) → [Decoder] → Reconstrucción
+                              ↑
+                    Vector de dimensión reducida
+                    que captura la "esencia" de los datos
+```
+
+**Estructura de "reloj de arena":** La red se comprime en el medio, forzando al modelo a aprender qué información es esencial.
+
+```{code-cell} ipython3
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Visualización conceptual de un autoencoder
+fig, ax = plt.subplots(figsize=(12, 6))
+ax.axis('off')
+
+# Capas del autoencoder
+layer_sizes = [8, 6, 4, 2, 4, 6, 8]  # Forma de reloj de arena
+layer_names = ['Input', 'Enc 1', 'Enc 2', 'Latent', 'Dec 1', 'Dec 2', 'Output']
+colors = ['lightblue', 'lightgreen', 'lightgreen', 'gold', 'lightcoral', 'lightcoral', 'lightblue']
+
+x_positions = np.linspace(0.1, 0.9, len(layer_sizes))
+
+for i, (x, size, name, color) in enumerate(zip(x_positions, layer_sizes, layer_names, colors)):
+    y_positions = np.linspace(0.5 - size*0.05, 0.5 + size*0.05, size)
+    for y in y_positions:
+        circle = plt.Circle((x, y), 0.02, color=color, ec='black', linewidth=1.5, zorder=3)
+        ax.add_patch(circle)
+    ax.text(x, 0.1, name, ha='center', fontsize=10, weight='bold')
+
+    # Conexiones
+    if i < len(layer_sizes) - 1:
+        next_y = np.linspace(0.5 - layer_sizes[i+1]*0.05, 0.5 + layer_sizes[i+1]*0.05, layer_sizes[i+1])
+        for y1 in y_positions[::2]:
+            for y2 in next_y[::2]:
+                ax.plot([x + 0.02, x_positions[i+1] - 0.02], [y1, y2], 'gray', alpha=0.2, linewidth=0.5)
+
+# Anotaciones
+ax.annotate('Encoder\n(compresión)', xy=(0.25, 0.85), fontsize=11, ha='center', color='green', weight='bold')
+ax.annotate('Decoder\n(reconstrucción)', xy=(0.75, 0.85), fontsize=11, ha='center', color='red', weight='bold')
+ax.annotate('Cuello de\nbotella', xy=(0.5, 0.15), fontsize=10, ha='center', color='goldenrod', weight='bold')
+
+ax.set_xlim(0, 1)
+ax.set_ylim(0, 1)
+ax.set_title('Arquitectura de Autoencoder: Forma de Reloj de Arena', fontsize=14, weight='bold')
+plt.show()
+
+print("Autoencoder:")
+print("  - Input: datos originales (ej: imagen 784 dims)")
+print("  - Latent: representación comprimida (ej: 32 dims)")
+print("  - Output: reconstrucción del input original")
+print("  - Objetivo: minimizar diferencia entre input y output")
+```
+
+### Autoencoders Variacionales (VAEs)
+
+Los **VAEs** extienden los autoencoders para permitir **generación** de nuevos datos:
+
+```
+Diferencia clave:
+- Autoencoder: latente es un vector fijo
+- VAE: latente es una distribución (media + varianza)
+
+Esto permite muestrear nuevos puntos del espacio latente y generar datos nuevos.
+```
+
+```{admonition} 📚 Conexión con Transformers
+:class: seealso
+Los conceptos de encoder-decoder de los autoencoders se trasladan directamente a la arquitectura Transformer:
+- **Encoder**: comprime la entrada en representaciones (como BERT)
+- **Decoder**: genera salidas a partir de representaciones (como GPT)
+
+Los Transformers no son autoencoders tradicionales, pero comparten esta filosofía de codificación-decodificación.
+```
+
 ### Transformers: El Cambio de Juego
 
-Los Transformers (2017) reemplazan la recurrencia con **mecanismo de atención**. Veremos detalles en la próxima lectura, pero la idea clave:
+Los Transformers (2017) reemplazan la recurrencia con **mecanismo de atención**. Veremos detalles en la Lectura 4, pero la idea clave:
 
 ```
 En lugar de procesar palabra por palabra en orden,
@@ -603,7 +961,7 @@ Esto escala mucho mejor y permite entrenar con más datos.
 
 ```{admonition} 📚 Conexión
 :class: seealso
-El mecanismo de atención que mencionamos aquí será explicado en profundidad en la Lectura 4: Arquitectura Transformer. Por ahora, basta entender que resuelve el problema de memoria a largo plazo de las RNNs.
+El mecanismo de atención que mencionamos aquí será explicado en profundidad en la **Lectura 4: Arquitectura Transformer**. Por ahora, basta entender que resuelve el problema de memoria a largo plazo de las RNNs. Antes de llegar allí, la **Lectura 3** cubrirá conceptos básicos de NLP y los modelos secuenciales tradicionales.
 ```
 
 ---
@@ -664,6 +1022,18 @@ El mecanismo de atención que mencionamos aquí será explicado en profundidad e
 2. Explica con tus propias palabras por qué un perceptrón simple no puede resolver el problema XOR.
 3. ¿Por qué es importante la distinción entre P(Y|X) y P(X,Y) para elegir un modelo?
 4. Da un ejemplo de un problema donde preferirías usar aprendizaje clásico en lugar de deep learning. Justifica tu respuesta.
+```
+
+## Errores Comunes
+
+```{admonition} ⚠️ Errores frecuentes
+:class: warning
+
+1. **Confundir paradigmas de aprendizaje**: Supervisado requiere etiquetas, no supervisado busca estructura sin etiquetas. No son intercambiables.
+2. **Creer que más datos siempre es mejor**: Sin datos de calidad, más datos solo amplifica el sesgo. Garbage in, garbage out.
+3. **Ignorar el costo computacional**: Deep learning no siempre es la respuesta. Para datasets pequeños (<10K), modelos clásicos (Random Forest, SVM) suelen funcionar mejor.
+4. **Confundir correlación con causalidad**: Un modelo puede aprender correlaciones espurias. Validación en datos independientes es crítica.
+5. **Olvidar la interpretabilidad**: En dominios regulados (medicina, finanzas), modelos interpretables pueden ser obligatorios aunque sean menos precisos.
 ```
 
 ## Resumen

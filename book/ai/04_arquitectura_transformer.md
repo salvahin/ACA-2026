@@ -484,6 +484,87 @@ Proyección linear de salida:
 
 El modelo aprende automáticamente a asignar diferentes tipos de atención a diferentes cabezas. Es una forma elegante de paralelizar múltiples tipos de análisis.
 
+### ¿Por Qué Multi-Head Evita el Colapso?
+
+```{admonition} 🔑 Importancia de Multi-Head
+:class: important
+Si usáramos **una sola cabeza de atención**, el modelo tendería a "colapsar" — todas las palabras atenderían a las mismas posiciones dominantes.
+
+**El problema del colapso:**
+- Una sola cabeza aprende UN tipo de relación
+- Si esa relación es "atender al verbo principal", TODAS las palabras atenderían al verbo
+- Se pierde información sobre otras relaciones (sujeto-objeto, modificadores, etc.)
+
+**La solución multi-head:**
+- Cada cabeza aprende relaciones DIFERENTES
+- Cabeza 1: relaciones sintácticas (sujeto-verbo)
+- Cabeza 2: relaciones semánticas (sinónimos)
+- Cabeza 3: dependencias de largo alcance
+- etc.
+
+Resultado: El modelo es **más expresivo** porque captura múltiples tipos de dependencias simultáneamente.
+```
+
+```{code-cell} ipython3
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Simulación: una cabeza vs múltiples cabezas
+np.random.seed(42)
+seq_len = 6
+palabras = ['El', 'gato', 'negro', 'saltó', 'sobre', 'cerca']
+
+# Una sola cabeza: tiende a concentrarse en pocas posiciones
+single_head = np.zeros((seq_len, seq_len))
+single_head[:, 3] = 0.7  # Todas atienden al verbo "saltó"
+single_head += np.random.rand(seq_len, seq_len) * 0.1
+single_head = single_head / single_head.sum(axis=1, keepdims=True)
+
+# Multi-head: diferentes patrones por cabeza
+head1 = np.eye(seq_len) * 0.3 + np.random.rand(seq_len, seq_len) * 0.2  # Diagonal (posición)
+head2 = np.zeros((seq_len, seq_len))
+head2[1, 0] = head2[1, 2] = 0.4  # "gato" atiende a "El" y "negro"
+head2[3, 1] = 0.5  # "saltó" atiende a "gato"
+head2 += np.random.rand(seq_len, seq_len) * 0.1
+head1 = head1 / head1.sum(axis=1, keepdims=True)
+head2 = head2 / head2.sum(axis=1, keepdims=True)
+
+fig, axes = plt.subplots(1, 3, figsize=(15, 4))
+
+# Single head
+im0 = axes[0].imshow(single_head, cmap='Blues', vmin=0, vmax=0.8)
+axes[0].set_xticks(range(seq_len))
+axes[0].set_yticks(range(seq_len))
+axes[0].set_xticklabels(palabras, rotation=45)
+axes[0].set_yticklabels(palabras)
+axes[0].set_title('Single Head: COLAPSO\n(todos atienden al verbo)', fontsize=11, weight='bold', color='red')
+
+# Head 1
+im1 = axes[1].imshow(head1, cmap='Greens', vmin=0, vmax=0.8)
+axes[1].set_xticks(range(seq_len))
+axes[1].set_yticks(range(seq_len))
+axes[1].set_xticklabels(palabras, rotation=45)
+axes[1].set_yticklabels(palabras)
+axes[1].set_title('Multi-Head 1: Posicional\n(atención local)', fontsize=11, weight='bold', color='green')
+
+# Head 2
+im2 = axes[2].imshow(head2, cmap='Oranges', vmin=0, vmax=0.8)
+axes[2].set_xticks(range(seq_len))
+axes[2].set_yticks(range(seq_len))
+axes[2].set_xticklabels(palabras, rotation=45)
+axes[2].set_yticklabels(palabras)
+axes[2].set_title('Multi-Head 2: Sintáctico\n(sujeto-verbo, adj-sustantivo)', fontsize=11, weight='bold', color='orange')
+
+plt.suptitle('Multi-Head Attention Evita el Colapso', fontsize=13, weight='bold')
+plt.tight_layout()
+plt.show()
+
+print("Resumen:")
+print("  - Single head: información limitada, patrones repetitivos")
+print("  - Multi-head: cada cabeza captura relaciones diferentes")
+print("  - Resultado: representaciones más ricas y expresivas")
+```
+
 ```{admonition} 📚 Conexión
 :class: seealso
 Multi-head attention es la razón por la que modelos como GPT y BERT pueden entender relaciones complejas en el lenguaje. En la Lectura 5 veremos cómo BERT usa esto de forma bidireccional mientras GPT lo usa causalmente (solo tokens anteriores).
@@ -1259,6 +1340,43 @@ DECODER:
 - Ejemplo: GPT (generación de texto)
 ```
 
+### El Transformer como Autoencoder
+
+```{admonition} 🔗 Conexión con Autoencoders
+:class: seealso
+Recuerda los **autoencoders** de la Lectura 1: comprimen información en un "cuello de botella" y luego la reconstruyen.
+
+El Transformer original (Vaswani et al., 2017) sigue una filosofía similar:
+
+```
+ENCODER-DECODER TRANSFORMER (traducción):
+
+Entrada (español):    "El gato saltó"
+         ↓
+    [ENCODER]         Comprime en representaciones
+         ↓
+  Representaciones    ← "Cuello de botella" semántico
+         ↓
+    [DECODER]         Genera de las representaciones
+         ↓
+Salida (inglés):      "The cat jumped"
+```
+
+**Similitudes con autoencoders:**
+- El encoder "comprime" la entrada en representaciones densas
+- El decoder "reconstruye" (o genera) salida de esas representaciones
+- El "espacio latente" son las representaciones del encoder
+
+**Diferencias:**
+- No buscan reconstruir la misma entrada, sino transformarla
+- El decoder puede generar secuencias de longitud diferente
+- Usan atención en lugar de capas densas simples
+
+Los modelos actuales (BERT, GPT) usan solo una parte:
+- **BERT**: Solo encoder (comprensión)
+- **GPT**: Solo decoder (generación)
+```
+
 :::{figure} diagrams/encoder_vs_decoder.png
 :name: fig-encoder-decoder
 :alt: Comparación de arquitectura encoder vs decoder
@@ -1371,6 +1489,18 @@ Predicción:             Siguiente token más probable
 4. Sin codificación posicional, ¿por qué "El gato persiguió al perro" sería idéntico a "El perro persiguió al gato" para el modelo?
 ```
 
+## Errores Comunes
+
+```{admonition} ⚠️ Errores frecuentes
+:class: warning
+
+1. **Olvidar escalar por √d_k**: Sin escala, los productos punto tienen varianza grande, causando softmax con gradientes muy pequeños (saturación).
+2. **Confundir encoder y decoder**: Encoder ve todo el contexto (bidireccional), decoder solo ve tokens anteriores (causal). Usarlos incorrectamente causa data leakage.
+3. **Ignorar las conexiones residuales**: Son críticas para entrenar modelos profundos. Sin ellas, los gradientes se desvanecen en capas tempranas.
+4. **Pensar que más cabezas siempre es mejor**: Demasiadas cabezas con d_k muy pequeño pierden capacidad expresiva. Típicamente d_k ≥ 64.
+5. **No normalizar antes de FFN**: Layer normalization estabiliza el entrenamiento. Omitirla causa inestabilidad y divergencia.
+```
+
 ## Resumen
 
 ```{admonition} Resumen
@@ -1408,6 +1538,8 @@ Predicción:             Siguiente token más probable
 ---
 
 ## Lecturas Recomendadas
+
+- **The Illustrated Transformer** - [jalammar.github.io/illustrated-transformer](https://jalammar.github.io/illustrated-transformer/). Guía visual paso a paso del funcionamiento interno del Transformer. Altamente recomendada para solidificar la comprensión.
 
 - **D2L: The Transformer Architecture** - [Capítulo 11.7](https://d2l.ai/chapter_attention-mechanisms-and-transformers/transformer.html). Una de las mejores explicaciones visuales y de código del Transformer original.
 

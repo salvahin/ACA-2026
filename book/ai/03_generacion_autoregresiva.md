@@ -9,7 +9,7 @@ kernelspec:
   name: python3
 ---
 
-# Lectura 3: Generación Autoregresiva
+# Lectura 3: Fundamentos de Procesamiento de Lenguaje Natural
 
 ```{admonition} Ejecutar en Google Colab
 :class: tip
@@ -21,54 +21,542 @@ kernelspec:
 :tags: [remove-input, setup]
 
 # Setup Colab Environment
-!pip install -q numpy pandas matplotlib seaborn scikit-learn torch transformers accelerate triton xgrammar
+!pip install -q numpy pandas matplotlib seaborn scikit-learn torch transformers accelerate triton xgrammar nltk
 print('Dependencies installed!')
 ```
 
 ```{admonition} Objetivos de Aprendizaje
 :class: tip
 Al finalizar esta lectura podrás:
-- Explicar el proceso de generación autoregresiva token por token en LLMs
-- Convertir logits a probabilidades usando softmax y ajustar con temperatura
-- Comparar estrategias de muestreo (greedy, Top-K, Top-P, beam search) según el caso de uso
-- Comprender cómo funciona el entrenamiento con cross-entropy loss
+- Aplicar técnicas de preprocesamiento de texto: tokenización, stemming, lematización
+- Representar texto numéricamente usando n-grams, one-hot encoding y embeddings
+- Comprender la evolución de RNNs a LSTMs/GRUs y sus limitantes (gradient vanishing)
+- Explicar cómo BERT aprende embeddings semánticos con Masked Language Modeling
 - Aplicar tokenización BPE para convertir texto a secuencias numéricas
+- Entender la generación autoregresiva y estrategias de muestreo
 ```
 
 ```{admonition} 🎬 Video Recomendado
 :class: tip
 
-**[Let's build GPT: from scratch (Andrej Karpathy)](https://www.youtube.com/watch?v=kCc8FmEb1nY)** - Andrej ilustra conceptualmente cómo se genera el siguiente token de manera iterativa.
+**[Word Embedding and Word2Vec (StatQuest)](https://www.youtube.com/watch?v=viZrOnJclY0)** - Explicación visual de cómo las palabras se convierten en vectores numéricos.
 ```
 
 ## Contexto
-Aprenderás cómo los LLMs generan texto token por token mediante procesos autoregresivos. Comprenderás estrategias de muestreo (greedy, Top-K, Top-P) y su impacto en creatividad vs coherencia.
+Esta lectura introduce los **fundamentos del Procesamiento de Lenguaje Natural (NLP)**. Antes de entender modelos modernos como Transformers (Lectura 4), necesitamos comprender cómo representar texto numéricamente y las técnicas clásicas que precedieron a la revolución del deep learning en NLP.
 
 ```{admonition} 📚 Prerequisito
 :class: note
 Antes de esta lección debes haber leido:
-- **Lectura 1: IA Clásica vs Generativa** — Paradigmas de IA
+- **Lectura 1: Introducción al Aprendizaje Automático** — Paradigmas de IA y fundamentos
 - **Lectura 2: Fundamentos de Deep Learning** — Redes neuronales, activaciones y backprop
 ```
 
 ## Introducción
 
-Hasta ahora, hemos entendido cómo funcionan los Transformers: procesan entrada, aplican atención, y producen representaciones. Pero ¿cómo generan texto un token por vez, como lo hace ChatGPT?
+El **Procesamiento de Lenguaje Natural (NLP)** es la rama de la IA que permite a las máquinas entender y generar lenguaje humano. Antes de que las redes neuronales dominaran este campo, los investigadores desarrollaron técnicas fundamentales que aún son relevantes hoy.
 
-Esta lectura responde esa pregunta. Explicaremos cómo los LLMs convierten números en palabras, cómo eligen qué palabra generar, y cómo aprenden a hacer esto bien durante el entrenamiento.
+En esta lectura cubriremos:
+1. **Preprocesamiento de texto**: cómo limpiar y normalizar datos textuales
+2. **Representación de texto**: cómo convertir palabras en números
+3. **Modelos secuenciales**: RNNs, LSTMs y sus limitaciones
+4. **Embeddings semánticos**: Word2Vec y BERT
+5. **Generación autoregresiva**: cómo los modelos generan texto token por token
 
 ---
 
-## Parte 1: De Transformers a Generación
+## Parte 0: Conceptos Básicos de NLP
 
+### Preprocesamiento de Texto
 
-![**Figura 1:** Proceso de generación autoregresiva token por token.](diagrams/autoregressive_generation.png)
+Antes de cualquier análisis, el texto debe limpiarse y normalizarse:
 
-***Figura 1:** Proceso de generación autoregresiva token por token.*
+```{code-cell} ipython3
+import re
 
-### Repaso: Salida del Transformer
+# Texto de ejemplo
+texto_raw = "Los GATOS están saltando! ¿No es increíble? Había 3 gatos en el jardín..."
 
-Recuerda que un Transformer toma una secuencia y produce:
+print("Preprocesamiento de Texto")
+print("=" * 60)
+print(f"Texto original:\n  '{texto_raw}'")
+
+# 1. Convertir a minúsculas
+texto_lower = texto_raw.lower()
+print(f"\n1. Minúsculas:\n  '{texto_lower}'")
+
+# 2. Eliminar puntuación
+texto_sin_punct = re.sub(r'[^\w\s]', '', texto_lower)
+print(f"\n2. Sin puntuación:\n  '{texto_sin_punct}'")
+
+# 3. Eliminar números (opcional)
+texto_sin_num = re.sub(r'\d+', '', texto_sin_punct)
+print(f"\n3. Sin números:\n  '{texto_sin_num}'")
+
+# 4. Tokenización (dividir en palabras)
+tokens = texto_sin_num.split()
+print(f"\n4. Tokens:\n  {tokens}")
+```
+
+### Tokenización
+
+**Tokenización** es dividir texto en unidades más pequeñas (tokens):
+
+```
+Tipos de tokenización:
+- Por palabras: "Hola mundo" → ["Hola", "mundo"]
+- Por caracteres: "Hola" → ["H", "o", "l", "a"]
+- Por subpalabras: "unhappy" → ["un", "happy"] (BPE, lo veremos después)
+```
+
+```{code-cell} ipython3
+# Diferentes estrategias de tokenización
+texto = "El gato saltó sobre la cerca"
+
+# Tokenización por palabras (simple)
+tokens_palabras = texto.split()
+print(f"Por palabras: {tokens_palabras}")
+print(f"  → {len(tokens_palabras)} tokens")
+
+# Tokenización por caracteres
+tokens_chars = list(texto.replace(" ", ""))
+print(f"\nPor caracteres: {tokens_chars[:10]}...")
+print(f"  → {len(tokens_chars)} tokens")
+
+# El balance: subpalabras (BPE) - se verá en detalle más adelante
+print("\nPor subpalabras (BPE): vocabulario limitado pero flexible")
+```
+
+### Stemming y Lematización
+
+Reducir palabras a su forma base:
+
+```{code-cell} ipython3
+# Stemming: cortar sufijos (reglas simples)
+def stemming_simple(palabra):
+    """Stemming muy básico para español"""
+    sufijos = ['ando', 'endo', 'aba', 'ía', 'aron', 'ieron', 'es', 's']
+    for sufijo in sufijos:
+        if palabra.endswith(sufijo) and len(palabra) > len(sufijo) + 2:
+            return palabra[:-len(sufijo)]
+    return palabra
+
+palabras = ['saltando', 'saltaba', 'saltaron', 'gatos', 'casas']
+print("Stemming (cortar sufijos):")
+for palabra in palabras:
+    print(f"  {palabra} → {stemming_simple(palabra)}")
+
+print("\nLematización (forma de diccionario):")
+print("  saltando → saltar (verbo infinitivo)")
+print("  gatos → gato (singular)")
+print("  mejores → bueno (adjetivo base)")
+print("\n  Nota: La lematización requiere un diccionario, no solo reglas.")
+```
+
+### N-gramas
+
+**N-gramas** son secuencias de N tokens consecutivos:
+
+```{code-cell} ipython3
+def generar_ngrams(tokens, n):
+    """Genera n-gramas de una lista de tokens"""
+    return [tuple(tokens[i:i+n]) for i in range(len(tokens)-n+1)]
+
+tokens = ["el", "gato", "saltó", "sobre", "la", "cerca"]
+
+print("N-gramas:")
+print(f"Tokens: {tokens}\n")
+
+for n in [1, 2, 3]:
+    ngrams = generar_ngrams(tokens, n)
+    print(f"{n}-gramas ({len(ngrams)} total):")
+    for ng in ngrams[:5]:  # Mostrar solo primeros 5
+        print(f"  {ng}")
+    if len(ngrams) > 5:
+        print(f"  ...")
+    print()
+
+print("Uso de n-gramas:")
+print("  - Modelado de lenguaje clásico (predecir siguiente palabra)")
+print("  - Detección de spam (bigramas frecuentes)")
+print("  - Análisis de sentimiento (frases clave)")
+```
+
+### One-Hot Encoding
+
+Representar cada palabra como un vector binario:
+
+```{code-cell} ipython3
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Vocabulario pequeño
+vocabulario = ["el", "gato", "saltó", "sobre", "la", "cerca", "perro"]
+vocab_size = len(vocabulario)
+
+# Crear one-hot encodings
+palabra_a_indice = {palabra: i for i, palabra in enumerate(vocabulario)}
+
+def one_hot(palabra, vocabulario):
+    """Convierte una palabra a one-hot vector"""
+    vec = np.zeros(len(vocabulario))
+    if palabra in palabra_a_indice:
+        vec[palabra_a_indice[palabra]] = 1
+    return vec
+
+# Visualizar
+fig, ax = plt.subplots(figsize=(10, 4))
+
+palabras_ejemplo = ["gato", "saltó", "perro"]
+vectors = np.array([one_hot(p, vocabulario) for p in palabras_ejemplo])
+
+im = ax.imshow(vectors, cmap='YlOrRd', aspect='auto')
+ax.set_yticks(range(len(palabras_ejemplo)))
+ax.set_yticklabels(palabras_ejemplo)
+ax.set_xticks(range(vocab_size))
+ax.set_xticklabels(vocabulario, rotation=45, ha='right')
+ax.set_xlabel('Vocabulario')
+ax.set_ylabel('Palabra')
+ax.set_title('One-Hot Encoding: Cada palabra es un vector binario', fontsize=12, weight='bold')
+
+# Añadir valores
+for i in range(len(palabras_ejemplo)):
+    for j in range(vocab_size):
+        ax.text(j, i, int(vectors[i, j]), ha='center', va='center', fontsize=10)
+
+plt.colorbar(im, ax=ax, label='Valor')
+plt.tight_layout()
+plt.show()
+
+print("Problemas del One-Hot Encoding:")
+print("  1. Vectores muy grandes (vocab de 50,000 → vectores de 50,000 dims)")
+print("  2. No captura similitud ('gato' y 'perro' son igual de diferentes que 'gato' y 'mesa')")
+print("  3. Vectores dispersos (la mayoría son ceros)")
+```
+
+### Vocabulario
+
+El **vocabulario** es el conjunto de todos los tokens únicos:
+
+```
+Corpus: "el gato saltó. el perro corrió."
+Vocabulario: {"el", "gato", "saltó", ".", "perro", "corrió"}
+Tamaño del vocabulario: 6
+
+Problema: ¿Qué pasa con palabras nuevas?
+  → Token especial [UNK] (unknown)
+  → O mejor: usar subpalabras (BPE) que veremos después
+```
+
+---
+
+## Parte 1: De Palabras a Vectores (Embeddings)
+
+### El Problema del One-Hot
+
+One-hot encoding tiene limitaciones graves. Necesitamos representaciones **densas** que capturen **similitud semántica**.
+
+```{code-cell} ipython3
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Simulación de embeddings semánticos (en realidad se aprenden)
+# Vectores de 3 dimensiones para visualización
+embeddings = {
+    "gato": np.array([0.9, 0.1, 0.8]),
+    "perro": np.array([0.85, 0.15, 0.75]),
+    "animal": np.array([0.8, 0.2, 0.7]),
+    "mesa": np.array([0.1, 0.9, 0.2]),
+    "silla": np.array([0.15, 0.85, 0.25]),
+    "mueble": np.array([0.12, 0.88, 0.22]),
+    "correr": np.array([0.5, 0.3, 0.1]),
+    "saltar": np.array([0.55, 0.25, 0.15]),
+}
+
+# Calcular similitudes (producto punto normalizado = coseno)
+def cosine_similarity(v1, v2):
+    return np.dot(v1, v2) / (np.linalg.norm(v1) * np.linalg.norm(v2))
+
+print("Similitud Coseno entre Embeddings")
+print("=" * 50)
+pares = [("gato", "perro"), ("gato", "mesa"), ("mesa", "silla"), ("correr", "saltar")]
+for p1, p2 in pares:
+    sim = cosine_similarity(embeddings[p1], embeddings[p2])
+    print(f"  sim('{p1}', '{p2}') = {sim:.3f}")
+
+# Visualización 3D
+fig = plt.figure(figsize=(10, 8))
+ax = fig.add_subplot(111, projection='3d')
+
+colors = {'animales': 'blue', 'muebles': 'red', 'acciones': 'green'}
+categorias = {
+    'gato': 'animales', 'perro': 'animales', 'animal': 'animales',
+    'mesa': 'muebles', 'silla': 'muebles', 'mueble': 'muebles',
+    'correr': 'acciones', 'saltar': 'acciones'
+}
+
+for palabra, vec in embeddings.items():
+    cat = categorias[palabra]
+    ax.scatter(vec[0], vec[1], vec[2], c=colors[cat], s=100, alpha=0.7)
+    ax.text(vec[0], vec[1], vec[2], f'  {palabra}', fontsize=9)
+
+ax.set_xlabel('Dim 1')
+ax.set_ylabel('Dim 2')
+ax.set_zlabel('Dim 3')
+ax.set_title('Embeddings: Palabras similares están cerca en el espacio', fontsize=12, weight='bold')
+
+# Leyenda manual
+from matplotlib.lines import Line2D
+legend_elements = [Line2D([0], [0], marker='o', color='w', markerfacecolor=c, markersize=10, label=cat)
+                   for cat, c in colors.items()]
+ax.legend(handles=legend_elements)
+
+plt.tight_layout()
+plt.show()
+
+print("\nVentajas de Embeddings:")
+print("  1. Vectores densos (100-1000 dims vs 50,000)")
+print("  2. Capturan similitud semántica")
+print("  3. Se pueden aprender de datos")
+```
+
+### Word2Vec y Embeddings Pre-entrenados
+
+**Word2Vec** (2013) fue revolucionario: entrenar embeddings prediciendo palabras del contexto.
+
+```
+Dos arquitecturas:
+1. CBOW (Continuous Bag of Words): predice palabra del contexto
+   Contexto: "el ___ saltó" → Predecir: "gato"
+
+2. Skip-gram: predice contexto de la palabra
+   Palabra: "gato" → Predecir: "el", "saltó"
+```
+
+```{admonition} 📚 Referencia: BERT y Embeddings Contextuales
+:class: seealso
+Word2Vec produce un embedding **fijo** por palabra. Pero "banco" (financiero) y "banco" (de parque) tienen el mismo vector.
+
+**BERT** (Devlin et al., 2019) resuelve esto con **embeddings contextuales**: el vector de una palabra depende de su contexto.
+
+Paper: [BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding](https://arxiv.org/abs/1810.04805)
+
+Veremos BERT en detalle más adelante en esta lectura y profundizaremos en la Lectura 4.
+```
+
+---
+
+## Parte 1.5: Modelos Secuenciales y sus Limitaciones
+
+### RNNs para Secuencias
+
+Las **Redes Neuronales Recurrentes (RNNs)** fueron diseñadas para procesar secuencias:
+
+```
+Entrada: "El gato saltó"
+
+Paso 1: procesa "El" → produce Estado₁
+Paso 2: procesa "gato" + Estado₁ → produce Estado₂
+Paso 3: procesa "saltó" + Estado₂ → produce Estado₃
+
+El estado "recuerda" información de pasos anteriores.
+```
+
+```{code-cell} ipython3
+import numpy as np
+
+# Simulación conceptual de RNN
+def rnn_step(x, h_prev, Wx, Wh, b):
+    """Un paso de RNN: combina input actual con estado previo"""
+    return np.tanh(Wx @ x + Wh @ h_prev + b)
+
+# Parámetros (simplificados)
+np.random.seed(42)
+hidden_size = 4
+input_size = 3
+
+Wx = np.random.randn(hidden_size, input_size) * 0.1
+Wh = np.random.randn(hidden_size, hidden_size) * 0.1
+b = np.zeros(hidden_size)
+
+# Secuencia de entrada (3 palabras, cada una con embedding de 3 dims)
+palabras = ["el", "gato", "saltó"]
+embeddings_seq = [np.random.randn(input_size) for _ in palabras]
+
+# Procesar secuencia
+h = np.zeros(hidden_size)  # Estado inicial
+estados = [h.copy()]
+
+print("Simulación de RNN")
+print("=" * 50)
+for i, (palabra, x) in enumerate(zip(palabras, embeddings_seq)):
+    h = rnn_step(x, h, Wx, Wh, b)
+    estados.append(h.copy())
+    print(f"Paso {i+1}: '{palabra}' → Estado: {h.round(3)}")
+
+print(f"\nEstado final contiene información de TODA la secuencia")
+```
+
+### El Problema del Gradient Vanishing
+
+**Problema crítico:** En secuencias largas, el gradiente se desvanece.
+
+```{code-cell} ipython3
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Simulación del desvanecimiento de gradientes
+seq_lengths = range(1, 51)
+gradient_magnitudes = []
+
+# Simular multiplicación repetida de matrices
+np.random.seed(42)
+W = np.random.randn(50, 50) * 0.5  # Pesos típicos < 1
+
+for length in seq_lengths:
+    grad = np.ones(50)  # Gradiente inicial
+    for _ in range(length):
+        grad = W.T @ grad  # Backprop a través de una capa
+    gradient_magnitudes.append(np.linalg.norm(grad))
+
+# Visualización
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+
+# Gráfica lineal
+axes[0].plot(seq_lengths, gradient_magnitudes, 'b-', linewidth=2)
+axes[0].set_xlabel('Longitud de secuencia', fontsize=11)
+axes[0].set_ylabel('Magnitud del gradiente', fontsize=11)
+axes[0].set_title('Desvanecimiento de Gradientes en RNNs', fontsize=12, weight='bold')
+axes[0].grid(True, alpha=0.3)
+
+# Gráfica logarítmica
+axes[1].semilogy(seq_lengths, gradient_magnitudes, 'r-', linewidth=2)
+axes[1].set_xlabel('Longitud de secuencia', fontsize=11)
+axes[1].set_ylabel('Magnitud del gradiente (log)', fontsize=11)
+axes[1].set_title('Escala Logarítmica: Decaimiento Exponencial', fontsize=12, weight='bold')
+axes[1].grid(True, alpha=0.3)
+
+plt.tight_layout()
+plt.show()
+
+print("Consecuencias del Gradient Vanishing:")
+print("  1. Las capas iniciales NO aprenden (gradiente ≈ 0)")
+print("  2. El modelo 'olvida' información de hace muchos pasos")
+print("  3. Dependencias de largo plazo son imposibles de aprender")
+print("\nEsto motivó el desarrollo de LSTMs, GRUs, y finalmente Transformers.")
+```
+
+### LSTMs: Puertas de Memoria
+
+Las **Long Short-Term Memory (LSTM)** networks agregan "puertas" para controlar el flujo de información:
+
+```
+LSTM tiene 3 puertas:
+1. Puerta de Olvido (forget gate): ¿Qué información descartar?
+2. Puerta de Entrada (input gate): ¿Qué información nueva agregar?
+3. Puerta de Salida (output gate): ¿Qué información exponer?
+
+Ventaja: La celda de memoria puede mantener información por muchos pasos.
+Problema: Sigue siendo secuencial → lento y aún tiene límites.
+```
+
+```{admonition} 🔮 Motivación para Transformers
+:class: important
+Las RNNs y LSTMs tienen limitaciones fundamentales:
+1. **Procesamiento secuencial**: no paralelizable, lento
+2. **Gradient vanishing** (aunque LSTMs lo mitigan, no lo eliminan)
+3. **Dependencias muy largas** siguen siendo difíciles
+
+La arquitectura **Transformer** (Lectura 4) resuelve todos estos problemas con el mecanismo de **atención**, permitiendo que cada palabra "vea" directamente a todas las demás.
+```
+
+---
+
+## Parte 2: BERT y Embeddings Contextuales
+
+### ¿Qué es BERT?
+
+**BERT** (Bidirectional Encoder Representations from Transformers) revolucionó NLP en 2018.
+
+```
+Diferencia clave con Word2Vec:
+- Word2Vec: "banco" siempre tiene el mismo vector
+- BERT: "banco financiero" vs "banco del parque" → vectores DIFERENTES
+
+BERT ve el contexto COMPLETO (bidireccional) antes de producir el embedding.
+```
+
+### Pre-entrenamiento de BERT: Masked Language Modeling
+
+BERT se entrena con **Masked Language Modeling (MLM)**:
+
+```
+Entrada:  "El [MASK] saltó sobre la cerca"
+Objetivo: Predecir "gato"
+
+Se enmascara ~15% de los tokens y el modelo aprende a predecirlos.
+Esto fuerza al modelo a entender el contexto bidireccional.
+```
+
+```{code-cell} ipython3
+# Simulación conceptual de MLM
+import numpy as np
+
+oracion = ["El", "gato", "saltó", "sobre", "la", "cerca"]
+print("Masked Language Modeling (MLM)")
+print("=" * 50)
+
+# Mostrar ejemplos de masking
+np.random.seed(42)
+for i in range(3):
+    mask_idx = np.random.randint(0, len(oracion))
+    masked = oracion.copy()
+    original = masked[mask_idx]
+    masked[mask_idx] = "[MASK]"
+    print(f"\nEjemplo {i+1}:")
+    print(f"  Input:    {' '.join(masked)}")
+    print(f"  Target:   Predecir '{original}'")
+    print(f"  Contexto: BERT ve todas las palabras excepto la enmascarada")
+
+print("\n" + "=" * 50)
+print("Resultado del entrenamiento:")
+print("  - BERT aprende representaciones CONTEXTUALES")
+print("  - El mismo token tiene diferente embedding según el contexto")
+print("  - Captura relaciones semánticas profundas")
+```
+
+```{admonition} 📖 Para Profundizar
+:class: seealso
+BERT usa la arquitectura Transformer (encoder only) que veremos en detalle en la **Lectura 4**.
+
+Por ahora, lo importante es entender que BERT produce embeddings que:
+1. Dependen del contexto completo
+2. Son pre-entrenados en grandes cantidades de texto
+3. Se pueden "afinar" (fine-tune) para tareas específicas
+```
+
+---
+
+## Parte 3: Generación Autoregresiva
+
+Ahora que entendemos cómo representar texto, veamos cómo los modelos **generan** texto nuevo.
+
+### El Proceso Autoregresivo
+
+Los modelos generativos (como GPT) producen texto **token por token**:
+
+:::{figure} diagrams/autoregressive_generation.png
+:name: fig-autoregressive-generation
+:alt: Proceso de generación autoregresiva token por token
+:align: center
+:width: 90%
+
+**Figura 1:** Proceso de generación autoregresiva token por token.
+:::
+
+### Salida del Modelo
+
+Un modelo de lenguaje toma una secuencia y produce:
 
 ```
 Entrada:  "El gato saltó"
@@ -1105,6 +1593,19 @@ Como puedes ver, `model.generate()` simplemente oculta este ciclo `for` detrás 
 2. Explica con tus palabras por qué Top-P sampling es más flexible que Top-K.
 3. ¿Cuándo elegirías beam search sobre Top-P sampling? Menciona un caso de uso específico.
 4. ¿Por qué cross-entropy loss usa logaritmo? ¿Qué pasaría si usáramos simplemente |y - ŷ|?
+```
+
+## Errores Comunes
+
+```{admonition} ⚠️ Errores frecuentes
+:class: warning
+
+1. **Confundir logits con probabilidades**: Logits son scores sin normalizar (pueden ser negativos o >1). Aplica softmax antes de interpretar como probabilidades.
+2. **Temperatura mal aplicada**: Dividir logits por T **antes** de softmax, no después. `softmax(logits/T)` ≠ `softmax(logits)/T`.
+3. **Top-K con K muy pequeño**: K=1 es greedy. K=5 puede excluir tokens correctos en distribuciones planas. Ajusta según varianza de logits.
+4. **Olvidar el token EOS**: Sin condición de parada, el modelo genera indefinidamente. Siempre verifica `if next_token == eos_token: break`.
+5. **BPE inconsistente**: Usar tokenizador diferente al del modelo causa errores silenciosos. Siempre usa `tokenizer = AutoTokenizer.from_pretrained(model_name)`.
+6. **Cross-entropy con índices incorrectos**: El target debe ser el índice del token correcto, no un vector one-hot. Verifica `loss = F.cross_entropy(logits, labels)`.
 ```
 
 ## Resumen

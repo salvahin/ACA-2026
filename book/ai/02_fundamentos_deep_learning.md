@@ -90,7 +90,7 @@ Sin funciones de activación, aunque stapiles múltiples capas, el resultado ser
 
 ### Funciones de Activación Comunes
 
-:::{figure} ../images/AI_02_05_Activation_Functions_Sigmoid_ReLU.jpeg
+:::{figure} images/AI_02_05_Activation_Functions_Sigmoid_ReLU.jpeg
 :name: fig-activation-functions
 :alt: Funciones de activación Sigmoid, Tanh y ReLU
 :align: center
@@ -407,7 +407,7 @@ print("  .T o .transpose() → transpuesta")
 
 ### Arquitectura
 
-:::{figure} ../images/AI_02_01_Red_Neuronal_Multicapa_Arquitectura.jpeg
+:::{figure} images/AI_02_01_Red_Neuronal_Multicapa_Arquitectura.jpeg
 :name: fig-mlp-architecture
 :alt: Arquitectura de red neuronal multicapa
 :align: center
@@ -758,7 +758,7 @@ Error propagates: [Capa N] → [Capa N-1] → ... → [Capa 1]
                   ↑ Calcula gradientes en cada paso
 ```
 
-:::{figure} ../images/AI_02_03_Retropropagacion_Flujo_Backward.jpeg
+:::{figure} images/AI_02_03_Retropropagacion_Flujo_Backward.jpeg
 :name: fig-backprop
 :alt: Flujo de forward pass y backpropagation en redes neuronales
 :align: center

@@ -170,7 +170,7 @@ Esto es muy costoso a escala.
 ## Parte 3: Constrained Decoding - Enfoque Conceptual
 
 
-:::{figure} ../images/AI_06_04_Constrained_Decoding_Pipeline_Steps.jpeg
+:::{figure} images/AI_06_04_Constrained_Decoding_Pipeline_Steps.jpeg
 :name: fig-constrained-decoding
 :alt: Pipeline de Constrained Decoding con gramáticas
 :align: center

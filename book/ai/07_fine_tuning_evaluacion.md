@@ -58,7 +58,7 @@ Esta lectura cubre fine-tuning (full, LoRA, QLoRA), evaluación rigurosa y métr
 ## Parte 1: Full Fine-Tuning
 
 
-:::{figure} ../images/AI_07_01_LoRA_Descomposicion.jpeg
+:::{figure} images/AI_07_01_LoRA_Descomposicion.jpeg
 :name: fig-lora-architecture
 :alt: Arquitectura LoRA mostrando las matrices de bajo rango A y B
 :align: center

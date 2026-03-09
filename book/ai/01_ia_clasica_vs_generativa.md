@@ -85,7 +85,7 @@ Los modelos de ML no "piensan" — aprenden aproximaciones estadísticas de patr
 
 ### Era 1: Sistemas Expertos (1960s-1980s)
 
-:::{figure} ../images/AI_01_01_IA_Era_Timeline_Systems_to_LLMs.jpeg
+:::{figure} images/AI_01_01_IA_Era_Timeline_Systems_to_LLMs.jpeg
 :name: fig-ai-eras
 :alt: Timeline de las cuatro eras de la IA
 :align: center
@@ -453,7 +453,7 @@ Matemáticamente:
 - **Discriminativo** modela P(Y|X): "¿cuál es la probabilidad de la etiqueta Y dado el dato X?"
 - **Generativo** modela P(X,Y): "¿cuál es la probabilidad conjunta de X e Y?" De aquí puedes derivar P(X|Y) si lo necesitas, pero también P(X): "¿qué datos son probables?"
 
-:::{figure} ../images/AI_01_02_Modelos_Discriminativo_vs_Generativo.jpeg
+:::{figure} images/AI_01_02_Modelos_Discriminativo_vs_Generativo.jpeg
 :name: fig-disc-gen
 :alt: Comparación visual entre modelos discriminativos y generativos
 :align: center

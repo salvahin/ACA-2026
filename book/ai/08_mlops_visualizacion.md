@@ -162,7 +162,7 @@ Las herramientas que aprenderás (MLflow) aplican a ambos paradigmas.
 
 ## Parte 1: El Problema del Tracking
 
-:::{figure} ../images/AI_08_01_MLOps_Tracking_Componentes.jpeg
+:::{figure} images/AI_08_01_MLOps_Tracking_Componentes.jpeg
 :name: fig-mlops-tracking
 :alt: Componentes de MLOps tracking
 :align: center

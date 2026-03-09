@@ -545,7 +545,7 @@ Ahora que entendemos cómo representar texto, veamos cómo los modelos **generan
 
 Los modelos generativos (como GPT) producen texto **token por token**:
 
-:::{figure} ../images/AI_03_02_Softmax_Funcion_Visualization.jpeg
+:::{figure} images/AI_03_02_Softmax_Funcion_Visualization.jpeg
 :name: fig-softmax-visualization
 :alt: Visualización de la función softmax en generación
 :align: center

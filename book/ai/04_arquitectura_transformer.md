@@ -46,7 +46,7 @@ Al finalizar esta lectura podrás:
 
 **[Transformer Explainer](https://poloclub.github.io/transformer-explainer/)** - Visualización interactiva de GPT-2: ingresa texto y observa cómo Self-Attention procesa la información token por token.
 ```
-:::{figure} ../images/transformer_explainer.png
+:::{figure} images/transformer_explainer.png
 :name: transformer-explainer
 :alt: Captura de pantalla de la herramienta Transformer Explainer
 :align: center
@@ -1079,7 +1079,7 @@ Entrada: x (secuencia de embeddings)
 Salida: x' (secuencia transformada)
 ```
 
-:::{figure} ../images/AI_04_01_Transformer_Block_Architecture.jpeg
+:::{figure} images/AI_04_01_Transformer_Block_Architecture.jpeg
 :name: fig-transformer-block
 :alt: Arquitectura completa de un bloque Transformer
 :align: center
@@ -1377,7 +1377,7 @@ Los modelos actuales (BERT, GPT) usan solo una parte:
 - **GPT**: Solo decoder (generación)
 ```
 
-:::{figure} ../images/AI_04_03_BERT_Encoder_vs_GPT_Decoder.jpeg
+:::{figure} images/AI_04_03_BERT_Encoder_vs_GPT_Decoder.jpeg
 :name: fig-encoder-decoder
 :alt: Comparación de arquitectura encoder vs decoder
 :align: center

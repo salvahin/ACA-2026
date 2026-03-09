@@ -539,7 +539,7 @@ vocabulary = {'l o w </w>': 5, 'l o w e r </w>': 2,
 # Repetir hasta alcanzar tamaño de vocabulario deseado
 ```
 
-:::{figure} ../images/AI_05_03_BPE_Tokenization_Proceso.jpeg
+:::{figure} images/AI_05_03_BPE_Tokenization_Proceso.jpeg
 :name: fig-bpe
 :alt: Proceso de Byte Pair Encoding para tokenización
 :align: center

@@ -853,6 +853,15 @@ class SimpleNetwork:
         return loss
 ```
 
+:::{figure} images/AI_02_06_Backpropagation_Algorithm_Forward_Backward.jpeg
+:name: fig-backprop-algorithm
+:alt: Algoritmo de backpropagation forward y backward
+:align: center
+:width: 90%
+
+**Figura 4:** Algoritmo Backpropagation - forward pass calcula predicciones, backward pass propaga error y actualiza pesos.
+:::
+
 Ahora que tenemos la arquitectura estructurada en código, vamos a usarla para resolver el famoso problema clásico de puerta lógica XOR, el cual no puede ser resuelto por un modelo lineal simple.
 
 ```{code-cell} ipython3

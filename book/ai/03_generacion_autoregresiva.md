@@ -692,13 +692,13 @@ Logits modificados = logits / T
 donde T es la temperatura (típicamente entre 0.1 y 2.0)
 ```
 
-:::{figure} diagrams/temperature_sampling.png
-:name: fig-temperature
-:alt: Efecto de temperatura en distribución de probabilidades
+:::{figure} images/AI_03_01_Beam_Search_Visualization.jpeg
+:name: fig-beam-search
+:alt: Visualización de Beam Search
 :align: center
 :width: 90%
 
-**Figura 2:** Efecto de la Temperatura - controla determinis, baja temperatura = determinístico, alta = creativo.
+**Figura 2:** Beam Search - explora múltiples caminos simultáneamente manteniendo los K mejores candidatos.
 :::
 
 ```{code-cell} ipython3
@@ -1039,13 +1039,13 @@ Top-P(0.9): Suma [0.35, 0.32, 0.18, 0.07] = 0.92 > 0.9
             Muestrea aleatoriamente
 ```
 
-:::{figure} diagrams/sampling_strategies.png
-:name: fig-sampling
-:alt: Comparación de estrategias de muestreo (greedy, Top-K, Top-P)
+:::{figure} images/AI_03_03_Generation_Cost_Token_Count.jpeg
+:name: fig-generation-cost
+:alt: Costo de generación por número de tokens
 :align: center
 :width: 90%
 
-**Figura 3:** Estrategias de Sampling - comparación visual de greedy vs Top-K vs Top-P.
+**Figura 3:** Costo de Generación - el tiempo y costo escalan linealmente con el número de tokens generados.
 :::
 
 ---

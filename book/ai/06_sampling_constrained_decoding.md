@@ -84,6 +84,15 @@ El modelo es **libre** de elegir cualquier token (con probabilidades aprendidas)
 
 ## Parte 2: El Problema - Salidas Inválidas
 
+:::{figure} images/AI_06_01_Quality_Constraint_Tradeoff.jpeg
+:name: fig-quality-tradeoff
+:alt: Trade-off entre calidad y restricciones
+:align: center
+:width: 90%
+
+**Figura 2:** Trade-off Calidad vs Restricciones - más restricciones garantizan formato válido pero pueden reducir la calidad del contenido.
+:::
+
 ### Ejemplo 1: JSON
 
 ```
@@ -528,6 +537,15 @@ print(f"\n✓ Mejor secuencia: {' '.join(best['tokens'])}")
 ---
 
 ## Parte 7: Trade-offs - Calidad vs Restricciones
+
+:::{figure} images/AI_06_02_JSON_State_Machine_Valid_Transitions.jpeg
+:name: fig-json-state-machine
+:alt: Máquina de estados para JSON válido
+:align: center
+:width: 90%
+
+**Figura 3:** Máquina de Estados JSON - el constrained decoding sigue transiciones válidas para garantizar sintaxis correcta.
+:::
 
 ### El Dilema
 

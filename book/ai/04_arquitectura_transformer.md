@@ -76,6 +76,15 @@ En esta lectura entenderemos cómo funcionan Transformers desde sus componentes 
 
 ## Parte 1: Motivación - El Problema de las Secuencias Largas
 
+:::{figure} images/AI_04_02_RNN_vs_Transformer_Comparison.jpeg
+:name: fig-rnn-vs-transformer
+:alt: Comparación RNN vs Transformer
+:align: center
+:width: 90%
+
+**Figura 1:** RNN vs Transformer - las RNNs procesan secuencialmente mientras los Transformers procesan en paralelo con atención.
+:::
+
 ### El Desafío de RNNs
 
 Recuerda de la lectura anterior:
@@ -153,6 +162,15 @@ V = X @ W_V    (Value: una tercera proyección linear)
 ```
 
 donde X es la matriz de embeddings de entrada y W_Q, W_K, W_V son matrices de peso aprendidas.
+
+:::{figure} images/AI_04_05_Query_Key_Value_Attention_Mechanism.jpeg
+:name: fig-qkv-attention
+:alt: Mecanismo de atención Query-Key-Value
+:align: center
+:width: 90%
+
+**Figura 2:** Query-Key-Value - el query busca keys relevantes y agrega sus values ponderados por similitud.
+:::
 
 ### Puntuación y Softmax
 
@@ -583,6 +601,15 @@ Explora cómo funciona un Transformer paso a paso:
 ---
 
 ## Parte 4: Codificación Posicional
+
+:::{figure} images/AI_04_04_Positional_Encoding_Heatmap.jpeg
+:name: fig-positional-encoding
+:alt: Heatmap de codificación posicional
+:align: center
+:width: 90%
+
+**Figura 3:** Codificación Posicional - funciones seno/coseno de diferentes frecuencias codifican la posición de cada token.
+:::
 
 Un problema: la atención ignora orden. Si mezclas las palabras:
 

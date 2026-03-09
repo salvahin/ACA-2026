@@ -77,6 +77,15 @@ En esta lectura:
 
 ## Parte 1: GPT - Generación Autoregresiva a Escala
 
+:::{figure} images/AI_05_01_BERT_Arquitectura_Estructura.jpeg
+:name: fig-bert-architecture
+:alt: Arquitectura de BERT
+:align: center
+:width: 90%
+
+**Figura 1:** Arquitectura BERT - encoder bidireccional con Masked Language Modeling y Next Sentence Prediction.
+:::
+
 ### Filosofía GPT
 
 Mientras BERT comprende, GPT genera. La apuesta: **escalar funciona**.
@@ -106,6 +115,15 @@ Proceso:
 ```
 
 ### Emergent Abilities
+
+:::{figure} images/AI_05_02_GPT_Scaling_Laws_Emergent_Abilities.jpeg
+:name: fig-gpt-scaling
+:alt: Leyes de escalado y habilidades emergentes de GPT
+:align: center
+:width: 90%
+
+**Figura 2:** Scaling Laws - a mayor escala emergen capacidades como razonamiento, few-shot learning y seguimiento de instrucciones.
+:::
 
 A cierta escala, emergen capacidades no entrenadas explícitamente:
 
@@ -470,6 +488,15 @@ print("5. PATRONES ESTADÍSTICOS: el modelo aprende correlaciones, no hechos")
 ---
 
 ## Parte 4: Tokenización
+
+:::{figure} images/AI_05_05_Tokenization_Strategies_Word_Char_BPE.jpeg
+:name: fig-tokenization-strategies
+:alt: Estrategias de tokenización: palabra, caracter, BPE
+:align: center
+:width: 90%
+
+**Figura 4:** Estrategias de Tokenización - por palabra (vocabulario grande), por caracter (secuencias largas), BPE (balance óptimo).
+:::
 
 ```{admonition} 📚 Referencia
 :class: seealso

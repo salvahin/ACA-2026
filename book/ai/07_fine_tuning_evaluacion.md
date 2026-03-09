@@ -352,6 +352,15 @@ Problema: Modelo funciona en training pero falla en producción
 
 ## Parte 5: Evaluación Rigurosa
 
+:::{figure} images/AI_07_03_Metricas_Evaluacion_BLEU_ROUGE.jpeg
+:name: fig-bleu-rouge
+:alt: Métricas de evaluación BLEU y ROUGE
+:align: center
+:width: 90%
+
+**Figura 2:** Métricas de Evaluación - BLEU mide precisión de n-gramas, ROUGE mide recall para resumenes.
+:::
+
 ### Métricas Automáticas
 
 #### BLEU (Machine Translation)
@@ -513,6 +522,15 @@ print(f"Referencia (aleatorio puro): {vocab_size}")
 
 ## Parte 6: Pass@k Metrics
 
+:::{figure} images/AI_07_02_Pass_k_Metricas_Evaluacion.jpeg
+:name: fig-pass-k
+:alt: Métricas Pass@k para evaluación de código
+:align: center
+:width: 90%
+
+**Figura 3:** Pass@k - probabilidad de obtener al menos una solución correcta en k intentos.
+:::
+
 Métrica importante para generación de código y problemas complejos:
 
 ### Idea
@@ -554,6 +572,15 @@ O más simplemente (si puedes generar muchos intentos):
 ---
 
 ## Parte 7: Benchmark Contamination y Cómo Evitarlo
+
+:::{figure} images/AI_07_04_Benchmark_Contamination_Detection.jpeg
+:name: fig-contamination
+:alt: Detección de contaminación en benchmarks
+:align: center
+:width: 90%
+
+**Figura 4:** Benchmark Contamination - cuando los datos de evaluación aparecen en el entrenamiento, los resultados no son confiables.
+:::
 
 ### Tipos de Contaminación
 

@@ -149,7 +149,7 @@ Todos los módulos se imparten en paralelo durante las 10 semanas del curso.
   - [Compilación Gramáticas](compilers/08-compilacion-gramaticas)
   - [Tamaño de Efecto](stats/08-tamano-efecto)
   - [Conclusiones Abstract](research/08-conclusiones-y-abstract)
-  - [Serving LLMs](project_1/08_serving_llms)
+  - [Serving: Inference](project_1/08a_serving_inference) / [Optimization](project_1/08b_serving_optimization)
   - [Baseline Experimentos](project_2/08_baseline_experimentos)
 * - **9** (27 May)
   - *Revisión y Proyecto*

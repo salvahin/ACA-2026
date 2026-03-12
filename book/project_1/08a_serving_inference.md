@@ -400,6 +400,5 @@ state = generate_json.run("Información: Juan, 30 años")
 
 ---
 
----
 ## Siguiente Paso
 En la **[Lectura 8b](08b_serving_optimization.md)**, exploraremos técnicas avanzadas: Continuous Batching, Speculative Decoding y Cuantización para maximizar el throughput y minimizar costos.

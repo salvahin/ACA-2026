@@ -260,8 +260,6 @@ fig.update_layout(
 fig.show()
 ```
 
----
-
 ## El Entregable Final
 
 ```{admonition} Tu Proyecto

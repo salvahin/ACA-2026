@@ -77,7 +77,8 @@ parts:
           - file: project_1/05_json_grammar
           - file: project_1/06_gramatica_triton_l1l2
           - file: project_1/07_gramatica_triton_l3l4
-          - file: project_1/08_serving_llms
+          - file: project_1/08a_serving_inference
+          - file: project_1/08b_serving_optimization
           - file: project_1/09_token_economics_integracion
           - file: project_1/10_agentic_systems
 

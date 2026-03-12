@@ -26,3 +26,14 @@ book/_build/
 .idea/
 .gemini/
 .claude/
+
+# Archivos de documentación/notas (no parte del libro)
+Comentarios_github_gerardo.txt
+IMAGENES_RENOMBRADAS_CORRECTAMENTE.md
+RESUMEN_FINAL_IMAGENES_INSERTADAS.md
+RESUMEN_IMAGENES_INTEGRADAS.md
+RESUMEN_VALIDACION_VISUAL.md
+VALIDACION_IMAGENES_MAPEO_CORRECTO.md
+PROMPTS_IMAGENES_CURSO.md
+Guia_Profesores_TC3002B.docx
+Imagenes gemini/

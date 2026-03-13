@@ -1,0 +1,412 @@
+# BNF, EBNF y Estrategias de Parsing
+
+## Del Formalismo a la Práctica
+
+Hasta ahora hemos escrito gramáticas en notación teórica:
+
+```
+E → E + T | T
+T → T * F | F
+```
+
+Esto funciona para matemáticas, pero en la práctica los compiladores usan **notaciones más prácticas**: **BNF** y **EBNF**. Además, necesitamos decidir **cómo parser** la entrada: ¿top-down o bottom-up?
+
+## BNF: Backus-Naur Form
+
+**BNF** es la notación estándar para especificar sintaxis de lenguajes de programación. Es casi idéntica a la notación teórica, pero con convenciones de legibilidad.
+
+### Sintaxis BNF
+
+```
+Notación teórica: A → B C | D
+Notación BNF:    <A> ::= <B> <C> | <D>
+
+Elementos:
+- <no-terminal>: entre ángulos
+- "terminal": entre comillas (caracteres literales)
+- |: alternancia (O)
+- ::=: "se define como"
+```
+
+### Ejemplo: Expresión Simple en BNF
+
+```bnf
+<expression> ::= <term> | <expression> "+" <term>
+<term>       ::= <factor> | <term> "*" <factor>
+<factor>     ::= "(" <expression> ")" | <number>
+<number>     ::= <digit> | <number> <digit>
+<digit>      ::= "0" | "1" | ... | "9"
+```
+
+Comparado con notación teórica:
+
+```
+E → T | E + T
+T → F | T * F
+F → (E) | N
+N → D | ND
+D → 0|1|...|9
+```
+
+**BNF es lo mismo, solo más legible.**
+
+## EBNF: Extended BNF
+
+**EBNF** añade **cuantificadores** para hacer las gramáticas más compactas:
+
+### Operadores EBNF
+
+```
+{X}      → repetición cero o más veces (kleene star)
+[X]      → optional (cero o una vez)
+X+       → una o más veces
+X?       → cero o una vez (alternativa a [X])
+(X|Y)    → agrupamiento
+
+Equivalencias con BNF:
+{X} ≡ X* (en algunos sistemas)
+[X] ≡ X?
+X+ ≡ X {X}
+```
+
+### Reescritura con EBNF
+
+La gramática anterior en EBNF es **mucho más simple**:
+
+```ebnf
+expression ::= term ("+" term)*
+term       ::= factor ("*" factor)*
+factor     ::= "(" expression ")" | number
+number     ::= digit+
+digit      ::= "0".."9"
+```
+
+¿Ves la diferencia? Los cuantificadores eliminan la necesidad de recursión izquierdista.
+
+### Comparación Visual
+
+```
+BNF (recursión explícita):
+expr → expr "+" term | term
+
+EBNF (cuantificador implícito):
+expr → term ("+" term)*
+
+Ambos aceptan: 1+2+3+4
+Pero EBNF es más legible.
+```
+
+## Clases de Caracteres (Alternativa a Enumeración)
+
+EBNF también permite especificar conjuntos de caracteres compactamente:
+
+```ebnf
+digit     ::= "0".."9"           (rango)
+letter    ::= "a".."z" | "A".."Z"
+alphanumeric ::= letter | digit
+hexdigit  ::= "0".."9" | "a".."f"
+
+identifier ::= letter (letter | digit | "_")*
+```
+
+Internamente, esto es **idéntico a las regex** que vimos en la lectura de DFAs.
+
+## Ejemplo: JSON en EBNF
+
+```ebnf
+json       ::= value
+value      ::= object | array | string | number | "true" | "false" | "null"
+object     ::= "{" [pair ("," pair)*] "}"
+array      ::= "[" [value ("," value)*] "]"
+pair       ::= string ":" value
+string     ::= '"' char* '"'
+number     ::= ["-"] int ["." digit+]
+int        ::= "0" | ("1".."9" digit*)
+char       ::= /* cualquier carácter excepto comillas */
+digit      ::= "0".."9"
+```
+
+Compara esto con si lo escribiéramos en BNF puro - sería mucho más largo con recursión anidada.
+
+## Introducción a Estrategias de Parsing
+
+Ahora que sabemos cómo **escribir** gramáticas, necesitamos saber cómo **reconocerlas**.
+
+Hay dos enfoques principales:
+
+### Estrategia 1: Top-Down (Descendente)
+
+**Idea**: Empezar desde el símbolo inicial, derivar hacia los terminales.
+
+```
+Símbolo inicial: expression
+Predicción: ¿Cuál regla aplico?
+Basado en: lo que veo en la entrada (lookahead)
+
+Proceso:
+1. Tengo "expression" y debo derivar
+2. Leo el primer token: es un número
+3. Como es un número, debo aplicar: expression → term (→ factor (→ number))
+4. Consumo el número
+5. Veo "+", así que aplico: expression → term "+" expression
+6. Continúo recursivamente
+```
+
+**Top-Down ≈ Predictivo ≈ Descendente Recursivo**
+
+### Estrategia 2: Bottom-Up (Ascendente)
+
+**Idea**: Empezar desde los terminales, reducir hacia el símbolo inicial.
+
+```
+Entrada: número "+" número
+Reducción:
+1. número → factor (reduce)
+2. factor → term (reduce)
+3. term → expression (reduce)
+4. Veo "+", necesito otro expression
+5. número → factor → term → expression
+6. Tengo expression "+" expression
+7. Reduce a expression
+
+Proceso: SHIFT tokens, REDUCE cuando coincide con regla derecha
+```
+
+**Bottom-Up ≈ Shift-Reduce ≈ Ascendente**
+
+### Visualización Comparativa
+
+```
+TOP-DOWN                      BOTTOM-UP
+─────────────────────────────────────────
+
+Árbol crecimiento:            Árbol crecimiento:
+        expr                      número
+         |                           |
+        term                       factor
+         |                           |
+       número                      term
+                                    |
+                                  expr
+                                    |
+                                   (root)
+
+Lee de arriba            Lee de abajo hacia arriba
+hacia abajo
+
+Predicción:              Reconocimiento:
+¿Qué regla usar?        ¿Qué regla coincide?
+
+Fácil de implementar     Más poderoso (LALR, LR)
+(recursión manual)       (tablas de transición)
+
+Limitado en             Maneja más gramatic
+gramáticas que acepta   as (menos restricciones)
+```
+
+## LL vs LR Parsing
+
+Estas clasificaciones describen **qué gramáticas puede manejar** cada estrategia.
+
+### LL(1): Left-to-right, Leftmost derivation, 1 token lookahead
+
+- **Top-down**
+- Mira 1 token adelante para decidir qué regla aplicar
+- Implementable como **parsers recursivos descendentes** (código a mano)
+
+```
+Ventaja: Fácil de escribir
+Desventaja: No maneja recursión izquierdista
+             if (expr "+" expr) → infinito
+
+Solución: Transformar a recursión derechista o usar cuantificadores EBNF
+```
+
+### LR(1): Left-to-right, Rightmost derivation, 1 token lookahead
+
+- **Bottom-up**
+- Usa una **pila** y una **tabla de transición**
+- Implementable con generadores como **YACC, Bison**
+
+```
+Ventaja: Maneja recursión izquierdista, más gramaticas
+Desventaja: Más complejo, requiere generador
+
+Ejemplo LR válido:
+  expr → expr "+" term | term   ← ¡Recursión izquierdista!
+
+Este no es LL(1), pero sí es LR(1).
+```
+
+![Comparativa LL(1) vs LR(1) vs Earley: tradeoffs de poder, velocidad y flexibilidad](./diagrams/ll_lr_earley_comparativa.png)
+
+> **Tres Estrategias de Parsing: Comparativa de Tradeoffs**
+>
+> LL(1) es top-down con 1 token de lookahead — fácil de implementar a mano, pero no maneja recursión izquierda. LR(1) es bottom-up con tablas de estado — más poderoso y acepta más gramáticas, pero requiere generador externo. Earley acepta cualquier CFG sin restricciones usando programación dinámica — es el más flexible pero con mayor costo computacional para gramáticas simples.
+
+## Earley Parsing: El Algoritmo "Mágico"
+
+XGrammar usa **Earley parsing**, que es interesante porque:
+- Maneja **cualquier CFG** (no solo LL o LR)
+- Es **top-down** pero tan generoso que acepta gramáticas más generales
+- Complejidad: O(n³) en general, O(n) para gramáticas LL/LR
+
+![**Figura 1:** Proceso del algoritmo Earley Parser.](diagrams/earley_parsing.png)
+
+***Figura 1:** Proceso del algoritmo Earley Parser.*
+
+
+El algoritmo es elegante pero un poco complejo. Lo veremos en detalle en la próxima lectura.
+
+## Ejemplo: Parsear "2 + 3" con Diferentes Estrategias
+
+### LL(1) Top-Down
+
+```
+Entrada: [2, +, 3]
+Stack: [expression]
+
+Paso 1: Ver 2 (número)
+  Predigo: expression → term
+  Stack: [term]
+
+Paso 2: Ver 2 (número)
+  Predigo: term → factor
+  Stack: [factor]
+
+Paso 3: Ver 2 (número)
+  Predigo: factor → number
+  Stack: [number]
+
+Paso 4: Consumo 2
+  Stack: []
+
+Paso 5: Veo +, necesito que expression → term "+" expression
+  Predigo (retroceso en derivación): expression → term "+" expression
+  Termino term, ahora espero "+"
+  Stack: ["+", expression]
+
+Paso 6: Veo +, lo consumo
+  Stack: [expression]
+
+Paso 7: Veo 3, predigo expression → term → factor → number
+  Consumo 3
+
+Resultado: ✓ Aceptado, árbol construido
+```
+
+### LR(1) Bottom-Up
+
+```
+Entrada: [2, +, 3]
+Stack: []
+Acciones: [shift 2, reduce, shift +, shift 3, reduce*]
+
+1. SHIFT 2 → Stack: [2]
+2. REDUCE (2 → number) → Stack: [number]
+3. REDUCE (number → factor) → Stack: [factor]
+4. REDUCE (factor → term) → Stack: [term]
+5. SHIFT + → Stack: [term, +]
+6. SHIFT 3 → Stack: [term, +, 3]
+7. REDUCE (3 → number) → Stack: [term, +, number]
+8. REDUCE (number → factor) → Stack: [term, +, factor]
+9. REDUCE (factor → term) → Stack: [term, +, term]
+10. REDUCE (term "+" term → expression) → Stack: [expression]
+
+Resultado: ✓ Aceptado
+```
+
+## Ventajas de EBNF para Compiladores
+
+```
+Razón 1: Menos reglas
+  BNF:   expr → term | expr "+" term
+         term → factor | term "*" factor
+  EBNF:  expr → term ("+" term)*
+         term → factor ("*" factor)*
+
+Razón 2: Más claro conceptualmente
+  {X}* claramente significa "cero o más"
+  No necesitas entender recursión derechista
+
+Razón 3: Fácil de mapear a código
+  Cuantificadores → while loops
+  | → if/else
+  () → función auxiliar
+```
+
+## Ejemplo XGrammar: Tokenización Kernel CUDA
+
+```ebnf
+kernel     ::= "def" identifier "(" parameters? ")" ":" block
+parameters ::= parameter ("," parameter)*
+parameter  ::= identifier ":" type_spec
+type_spec  ::= "i32" | "f32" | "tensor"
+block      ::= statement+
+statement  ::= assignment | loop | kernel_call
+assignment ::= identifier "=" expression ";"
+loop       ::= "for" identifier "in" "range" "(" expr "," expr ")" ":" block
+kernel_call ::= identifier "(" arguments? ")"
+arguments  ::= expression ("," expression)*
+expression ::= term ("+" term | "-" term)*
+term       ::= factor ("*" factor | "/" factor)*
+factor     ::= "(" expression ")" | identifier | literal
+identifier ::= letter (letter | digit | "_")*
+literal    ::= number | string
+number     ::= digit+
+letter     ::= "a".."z" | "A".."Z" | "_"
+digit      ::= "0".."9"
+```
+
+Esta gramática EBNF sería **mucho más larga** en BNF puro.
+
+## De EBNF a Código
+
+Un **parser generator** como ANTLR toma EBNF y genera código que:
+
+```python
+# De esta regla EBNF:
+expression ::= term ("+" term)*
+
+# Genera esta función Python:
+def parseExpression(tokens):
+    term = parseTerm(tokens)
+    while currentToken() == "+":
+        consume("+")
+        term = Binary("+", term, parseTerm(tokens))
+    return term
+```
+
+**Automatización**: No escribes el parser a mano, el generador lo crea.
+
+## Ejercicios
+
+1. **Conversión BNF → EBNF**: Reescribe en EBNF:
+   ```
+   statement ::= variable "=" expression
+   statement ::= statement ";" statement
+   ```
+
+2. **Cuantificadores**: ¿Qué lenguaje acepta cada una?
+   ```
+   a) "a" "b"*
+   b) ("a" | "b")+
+   c) ["-"] digit+
+   ```
+
+3. **LL vs LR**: ¿Cuál estrategia se usaría para?
+   ```
+   expr → expr "+" expr | number
+   expr → expr "-" expr | expr "+" expr | number
+   ```
+
+4. **EBNF Completa**: Escribe EBNF para una lista JSON simple `[1, 2, 3]`
+
+5. **Predicción**: Para la expresión `2 + 3`, ¿qué token debe verparse primero para decidir qué regla aplicar en un parser LL(1)?
+
+## Preguntas de Reflexión
+
+- ¿Por qué EBNF usa cuantificadores en lugar de solo BNF recursivo?
+- ¿Cuál es el trade-off entre "gramáticas simples (LL)" y "poder expresivo (LR)"?
+- En XGrammar, ¿por qué elegimos Earley (que maneja cualquier CFG) en lugar de generar LL o LR?
+- ¿Cómo el lookahead (LL(1) vs LR(1)) afecta la complejidad del parser?

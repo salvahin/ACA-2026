@@ -237,6 +237,12 @@ shared_mem[row * 33 + col]  # 33 en vez de 32
 
 ---
 
+![Acceso coalescido de memoria](./diagrams/memory_coalescing.png)
+
+> **Patrones de Acceso Coalescido vs No-Coalescido**
+>
+> Cuando threads consecutivos acceden a direcciones contiguas, la GPU fusiona los accesos en pocas transacciones de memoria (coalescido). Con stride alto o acceso aleatorio, cada thread genera una transacción independiente, reduciendo el ancho de banda efectivo hasta 32×.
+
 ## Tiling: Mejorando Localidad
 
 ### Concepto

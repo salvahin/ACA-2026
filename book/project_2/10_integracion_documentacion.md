@@ -162,6 +162,12 @@ StoreResult ::= "tl.store(y_ptr + offsets, y, mask=offsets < n)"
 
 ---
 
+![Integración del proyecto completo](./diagrams/project_integration.png)
+
+> **Arquitectura Integrada del Proyecto**
+>
+> El sistema completo conecta gramática XGrammar → LLM generador → kernels Triton → evaluación KernelBench → análisis de resultados → documentación. Cada componente retroalimenta al anterior: los errores encontrados en evaluación guían mejoras en la gramática; los resultados de análisis informan las hipótesis de la siguiente iteración.
+
 ## Parte 2: Documentación Profesional
 
 ### Estructura de Documentación

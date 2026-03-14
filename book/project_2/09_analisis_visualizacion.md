@@ -152,6 +152,12 @@ def analyze_distributions(df: pd.DataFrame):
 
 ---
 
+![Pipeline de análisis de resultados](./diagrams/analysis_pipeline.png)
+
+> **Pipeline de Análisis: De Métricas a Conclusiones**
+>
+> El flujo de análisis transforma métricas brutas (latencia, correctness, speedup) en visualizaciones comparativas y finalmente en conclusiones accionables: qué variante gana en qué condiciones, cuáles son los trade-offs y qué optimizaciones recomendar para el sistema.
+
 ## Visualizaciones Efectivas
 
 ### 1. Comparación de Variantes

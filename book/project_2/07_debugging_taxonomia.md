@@ -68,6 +68,12 @@ Al finalizar esta lectura podrás:
 
 ---
 
+![Taxonomía de errores en kernels GPU](./diagrams/error_classification_tree.png)
+
+> **Árbol de Clasificación de Errores**
+>
+> Los errores en kernels GPU se dividen en tres categorías: compilación (sintaxis Triton, tipos), correctness (resultados incorrectos, out-of-bounds, condiciones de carrera) y rendimiento (divergencia de warps, accesos no coalescidos, baja occupancy). Cada categoría tiene herramientas de diagnóstico distintas.
+
 ## Taxonomía de Errores en Kernels GPU
 
 ### Categoría 1: Errores de Compilación

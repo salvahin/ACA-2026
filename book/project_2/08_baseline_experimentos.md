@@ -226,6 +226,12 @@ for i in range(100):
 
 ---
 
+![Diseño de experimentos de rendimiento](./diagrams/experiment_flow.png)
+
+> **Flujo de un Experimento de Rendimiento**
+>
+> Un experimento bien diseñado define hipótesis, controla variables, calienta la GPU (warmup), repite N veces y calcula media ± desviación estándar. Las comparaciones A/B/C/D deben variar solo un parámetro a la vez para aislar el efecto de cada decisión de diseño.
+
 ## Diseño de Experimentos A/B/C/D
 
 ### Estructura de un Experimento

@@ -285,6 +285,12 @@ fig.show()
 
 ---
 
+![Estrategia de Tiling](./diagrams/tiling_strategy.png)
+
+> **Tiling: División del Trabajo en Bloques**
+>
+> El tiling divide matrices grandes en tiles que caben en shared memory. Cada bloque CUDA procesa su propio tile, reutilizando los datos cargados una vez para múltiples cálculos y aumentando la intensidad aritmética al amortizar el costo de carga desde memoria global.
+
 ## Reducciones
 
 ### Reducciones Locales (Dentro del Bloque)

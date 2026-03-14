@@ -360,6 +360,12 @@ corpus/
 
 ---
 
+![Niveles de KernelBench](./diagrams/benchmark_pipeline.png)
+
+> **Pipeline de Evaluación KernelBench**
+>
+> El proceso de evaluación va desde la generación del kernel hasta el reporte final: compilación, verificación de correctness contra PyTorch, medición de latencia con warmup, cálculo de speedup relativo y clasificación por nivel L1/L2/L3. Un kernel pasa si es correcto y supera el threshold de rendimiento.
+
 ## Métricas de Evaluación
 
 ### Métrica 1: Correctness

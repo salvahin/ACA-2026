@@ -356,6 +356,12 @@ tiempo_minimo = 1 GB / 500 GB/s = 2 ms
 
 ---
 
+![Modelo Roofline](./diagrams/roofline_model.png)
+
+> **Modelo Roofline: Compute-Bound vs Memory-Bound**
+>
+> El techo de compute (pico TFLOPS) y el techo de memoria (BW × intensidad aritmética) crean dos regiones: kernels memory-bound (a la izquierda del ridge point) y compute-bound (a la derecha). Para optimizar, primero identifica en qué región está tu kernel y ataca el cuello de botella correcto.
+
 ## Modelo Roofline
 
 El modelo roofline indica si un kernel está limitado por **compute** o **memoria**:

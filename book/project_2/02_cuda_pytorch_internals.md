@@ -269,6 +269,12 @@ Cuando uses shared memory para tiling (ej: matmul), usa padding: `__shared__ flo
 
 ---
 
+![Jerarquía de threads CUDA](./diagrams/thread_hierarchy.png)
+
+> **Jerarquía Grid → Block → Warp → Thread**
+>
+> La organización jerárquica de threads dicta cómo se distribuye el trabajo en la GPU. Los warps (32 threads) son la unidad mínima de scheduling; si hay divergencia dentro del warp, las ramas se serializan y el paralelismo se destruye.
+
 ## Parte 2: PyTorch GPU Internals
 
 ### Tensores en GPU

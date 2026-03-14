@@ -313,6 +313,14 @@ def simulate_gpu_grid_mapping(grid_dim_x, block_dim_x):
 simulate_gpu_grid_mapping(grid_dim_x=3, block_dim_x=4)
 ```
 
+---
+
+![Jerarquía de Memoria GPU](./diagrams/gpu_memory_hierarchy.png)
+
+> **Jerarquía de Memoria GPU**
+>
+> Los niveles van de registros (~0 ciclos, privados por thread) hasta la memoria global HBM (~400-800 ciclos, 40-80 GB). La clave es que la GPU compensa la alta latencia de DRAM manteniendo miles de warps listos para ejecutar mientras otros esperan datos.
+
 ## Jerarquía de Memoria GPU
 
 Si bien las GPUs tienen miles de cores, su verdadero superpoder es el **ancho de banda de memoria**.

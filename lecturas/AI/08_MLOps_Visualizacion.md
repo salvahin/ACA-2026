@@ -71,6 +71,10 @@ Semana 5:
 ### Setup Básico
 
 ```python
+# ⚠️ Requiere cuenta en wandb.ai y API key
+# !pip install wandb
+# Ejecutar: wandb login
+
 import wandb
 
 # Inicializar proyecto
@@ -184,6 +188,10 @@ for run in runs:
 ### Setup Básico
 
 ```python
+# ⚠️ MLflow requiere servidor de tracking
+# !pip install mlflow
+# Para uso local: mlflow ui
+
 import mlflow
 
 # Configurar tracking server
@@ -277,6 +285,9 @@ seeds:
 ### Hydra para Configuración
 
 ```python
+# ⚠️ Hydra requiere estructura de configuración
+# !pip install hydra-core omegaconf
+
 import hydra
 from omegaconf import DictConfig
 
@@ -456,6 +467,10 @@ def generate_experiment_report(run_dir: str) -> str:
 ### Dashboard con Streamlit
 
 ```python
+# ⚠️ Streamlit NO funciona en notebooks
+# Ejecutar como script: streamlit run app.py
+# !pip install streamlit
+
 import streamlit as st
 
 st.title("Kernel Generation Experiments")

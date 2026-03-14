@@ -84,6 +84,7 @@ Características:
 ✓ Multitarea: múltiples usuarios simultáneamente
 
 Ejemplo:
+# ⚠️ Requiere GPU y: pip install vllm
 from vllm import LLM
 
 llm = LLM("meta-llama/Llama-2-7b")
@@ -106,6 +107,7 @@ Características:
 ✓ Requiere compilación (menos flexible que vLLM)
 
 Ejemplo:
+# ⚠️ TensorRT-LLM requiere instalación especial de NVIDIA
 from tensorrt_llm.llm import LLM
 
 llm = LLM("models/llama2-7b-tensorrt")
@@ -128,6 +130,7 @@ Características:
 ✓ Optimizado para cadenas de solicitudes complejas
 
 Ejemplo:
+# ⚠️ SGLang requiere: pip install sglang
 import sglang as sgl
 
 @sgl.function

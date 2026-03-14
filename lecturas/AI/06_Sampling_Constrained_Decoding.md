@@ -188,6 +188,10 @@ class ConstrainedLogitsProcessor:
 ### Ejemplo: JSON Válido
 
 ```python
+# === CÓDIGO CONCEPTUAL ===
+# Muestra la estructura de un LogitsProcessor
+# !pip install transformers
+
 import json
 from transformers import LogitsProcessor
 
@@ -440,6 +444,9 @@ response = model.generate(
 ### Con Constrained Decoding
 
 ```python
+# ⚠️ XGrammar requiere instalación especial
+# !pip install xgrammar
+
 from xgrammar import Grammar, CompiledGrammar
 
 json_grammar = """

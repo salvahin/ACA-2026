@@ -573,10 +573,13 @@ if __name__ == "__main__":
 ## Tests L3-L4
 
 ```python
-# tests/test_l3_l4.py
+# === CÓDIGO CONCEPTUAL ===
+# Este archivo se crearía en: tests/test_l3_l4.py
+# Los imports asumen que ya creaste los módulos generadores
+# !pip install pytest
 
 import pytest
-from generators.l3_l4_generator import ExpressionGenerator, StatementGenerator
+# from generators.l3_l4_generator import ExpressionGenerator, StatementGenerator  # Módulo local
 
 class TestExpressions:
     """Tests para expresiones L3"""

@@ -608,6 +608,10 @@ W&B es una plataforma para trackear experimentos ML. Complementa matplotlib con 
 ### Setup Básico
 
 ```python
+# ⚠️ Requiere cuenta en wandb.ai y API key
+# !pip install wandb
+# Ejecutar: wandb login
+
 import wandb
 
 # Inicializar proyecto

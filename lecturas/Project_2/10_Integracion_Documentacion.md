@@ -169,10 +169,13 @@ docs/
 ## Quick Start
 
 ```bash
+# ⚠️ kernelagent es un paquete ficticio para este ejemplo
 pip install kernelagent
 ```
 
 ```python
+# === CÓDIGO CONCEPTUAL ===
+# kernelagent es un ejemplo hipotético del proyecto final
 from kernelagent import generate_kernel
 
 kernel = generate_kernel("Implement softmax")

@@ -64,6 +64,10 @@ Triton maneja automáticamente:
 ## El Decorador @triton.jit
 
 ```python
+# ⚠️ Requiere GPU NVIDIA y Triton instalado
+# En Colab: Runtime > Change runtime type > T4 GPU
+# !pip install triton
+
 import triton
 import triton.language as tl
 

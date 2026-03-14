@@ -12,6 +12,10 @@ Es lo más básico. Una vez que domines esto, L3 (expresiones) y L4 (control flo
 ## Anatomía de un Kernel Triton Mínimo
 
 ```python
+# ⚠️ Requiere GPU NVIDIA y Triton instalado
+# En Colab: Runtime > Change runtime type > T4 GPU
+# !pip install triton
+
 import triton
 import triton.language as tl
 
@@ -190,7 +194,9 @@ STRING = '"' (~["])* '"'
 Ahora convertiremos esto a JSON Schema que XGrammar pueda compilar:
 
 ```python
-# schemas/triton_l1_l2_schema.py
+# === CÓDIGO CONCEPTUAL ===
+# Este archivo se crearía en: schemas/triton_l1_l2_schema.py
+# Aquí se muestra la estructura del schema
 
 import json
 
@@ -290,7 +296,8 @@ TRITON_L1_L2_SCHEMA = {
 Ahora creamos un generador que convierte el JSON estructurado de vuelta a código Python:
 
 ```python
-# generators/triton_generator.py
+# === CÓDIGO CONCEPTUAL ===
+# Este archivo se crearía en: generators/triton_generator.py
 
 import json
 from typing import Dict, List, Any
@@ -419,12 +426,15 @@ if __name__ == "__main__":
 Tests para verificar que nuestra gramática funciona:
 
 ```python
-# tests/test_l1_l2.py
+# === CÓDIGO CONCEPTUAL ===
+# Este archivo se crearía en: tests/test_l1_l2.py
+# Los imports asumen que ya creaste los módulos anteriores
+# !pip install pytest jsonschema
 
 import pytest
 import json
-from generators.triton_generator import TritonCodeGenerator
-from schemas.triton_l1_l2_schema import TRITON_L1_L2_SCHEMA
+# from generators.triton_generator import TritonCodeGenerator  # Módulo local
+# from schemas.triton_l1_l2_schema import TRITON_L1_L2_SCHEMA  # Módulo local
 from jsonschema import validate, ValidationError
 
 class TestTritonL1L2:

@@ -50,6 +50,10 @@ Con tiling: acceso secuencial agrupado
 ### Ejemplo: Multiplicación de Matrices con Tiling
 
 ```python
+# ⚠️ Requiere GPU NVIDIA y Triton instalado
+# En Colab: Runtime > Change runtime type > T4 GPU
+# !pip install triton
+
 import torch
 import triton
 import triton.language as tl

@@ -50,6 +50,9 @@ Esta gramática especifica: "generarás un JSON objeto con propiedades nombre, e
 - **Composición**: `oneOf`, `anyOf`, `allOf`
 
 ```python
+# ⚠️ XGrammar requiere instalación especial
+# !pip install xgrammar
+
 import xgrammar as xgr
 
 # Ejemplo: gramática para números
@@ -252,6 +255,8 @@ Para que XGrammar funcione con modelos de lenguaje, necesita saber cómo el mode
 - **T5**: Sentencepiece
 
 ```python
+# ⚠️ Requiere: !pip install xgrammar transformers
+
 import xgrammar as xgr
 from transformers import AutoTokenizer
 
@@ -353,6 +358,8 @@ xgrammar/
 ### Inspeccionando objetos de XGrammar
 
 ```python
+# ⚠️ Requiere: !pip install xgrammar
+
 import xgrammar as xgr
 import json
 
@@ -415,6 +422,9 @@ print_fsm(grammar)
 Aquí está todo junto:
 
 ```python
+# ⚠️ Requiere GPU y librerías especiales:
+# !pip install xgrammar transformers torch
+
 import xgrammar as xgr
 from transformers import AutoTokenizer, AutoModelForCausalLM
 import torch

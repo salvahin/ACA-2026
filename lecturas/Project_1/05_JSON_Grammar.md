@@ -100,10 +100,12 @@ Empecemos simple. Un subgrafo de KernelAgent tiene:
 Ahora compilaremos este schema con XGrammar:
 
 ```python
-# schemas/kernel_subgraph_schema.py
+# === CÓDIGO CONCEPTUAL ===
+# Este archivo se crearía en: schemas/kernel_subgraph_schema.py
+# ⚠️ xgrammar requiere instalación especial: !pip install xgrammar
 
 import json
-import xgrammar as xgr
+# import xgrammar as xgr  # Descomentar cuando xgrammar esté instalado
 from pathlib import Path
 
 KERNEL_SUBGRAPH_SCHEMA = {
@@ -200,11 +202,13 @@ save_grammar(kernel_grammar, "compiled_grammars/kernel_subgraph.xgr")
 Ahora probemos que la gramática funciona correctamente. Escribiremos test cases: ejemplos que DEBEN pasar (positivos) y ejemplos que DEBEN fallar (negativos).
 
 ```python
-# tests/test_kernel_schema.py
+# === CÓDIGO CONCEPTUAL ===
+# Este archivo se crearía en: tests/test_kernel_schema.py
+# !pip install pytest
 
 import json
 import pytest
-from schemas.kernel_subgraph_schema import KERNEL_SUBGRAPH_SCHEMA, compile_schema
+# from schemas.kernel_subgraph_schema import KERNEL_SUBGRAPH_SCHEMA, compile_schema  # Módulo local
 
 class TestKernelSchema:
     """Test suite para la gramática JSON"""
@@ -512,12 +516,14 @@ class TestKernelSchema:
 Ahora creemos un script que valide JSON contra nuestro schema:
 
 ```python
-# utils/validate_schema.py
+# === CÓDIGO CONCEPTUAL ===
+# Este archivo se crearía en: utils/validate_schema.py
+# !pip install jsonschema
 
 import json
 from pathlib import Path
 from jsonschema import validate, ValidationError
-from schemas.kernel_subgraph_schema import KERNEL_SUBGRAPH_SCHEMA
+# from schemas.kernel_subgraph_schema import KERNEL_SUBGRAPH_SCHEMA  # Módulo local
 
 def validate_kernel_json(json_str):
     """

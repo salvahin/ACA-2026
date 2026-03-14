@@ -49,6 +49,13 @@ Aquí llegamos a un aspecto crítico que muchos estudiantes pasan por alto: la *
 
 ## Por Qué la Reproducibilidad Importa
 
+:::{figure} diagrams/reproducibility_workflow.png
+:width: 100%
+:name: fig-reproducibility-workflow
+
+Flujo de trabajo completo para garantizar reproducibilidad en experimentos de ML: desde fijar semillas hasta compartir código y datos públicamente.
+:::
+
 Hay una **crisis de reproducibilidad** en la ciencia. Estudios muestran que:
 - ~50% de estudios en psicología no pueden ser reproducidos
 - Muchas conclusiones en ML dependen de semillas aleatorias no reportadas
@@ -189,6 +196,13 @@ Código reproducible en https://github.com/.../, commit abc123."
 ```
 
 ## Amenazas a la Validez: Resumen
+
+:::{figure} diagrams/validity_threats.png
+:width: 100%
+:name: fig-validity-threats
+
+Las cuatro dimensiones de validez que debes considerar y reportar en tu investigación: constructo, interna, externa y estadística.
+:::
 
 ### Amenazas a Validez de Constructo
 

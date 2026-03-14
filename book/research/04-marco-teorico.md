@@ -128,6 +128,15 @@ Nivel 1: Conceptos amplios y bien conocidos
          └─ Nivel 4: Tu formulación específica del problema
 ```
 
+:::{figure} diagrams/theoretical_funneling.png
+:name: fig-theoretical-funneling
+:alt: Diagrama de embudo mostrando la estructura del marco teórico de lo general a lo específico
+:align: center
+:width: 80%
+
+**Figura 1:** El funneling teórico: cada nivel estrecha el enfoque hasta llegar a tu formulación específica del problema. Evita saltar niveles — el lector necesita la progresión completa.
+:::
+
 ### Ejemplo Concreto: Nuestro Dominio
 
 **Nivel 1: Computación Paralela (asume conocimiento mínimo)**

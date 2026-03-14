@@ -97,6 +97,15 @@ Algunas proyecto de investigación combinan estas ("Resultados y Discusión"), l
 
 > 💡 **Concepto clave:** En Resultados, tu trabajo es comunicar; en Discusión, tu trabajo es explicar.
 
+:::{figure} diagrams/results_vs_discussion.png
+:name: fig-results-vs-discussion
+:alt: Diagrama comparativo entre sección de Resultados y sección de Discusión en escritura científica
+:align: center
+:width: 90%
+
+**Figura 1:** La separación conceptual entre Resultados (los hechos) y Discusión (el significado) es obligatoria aunque se combinen en una sola sección. Mezclarlas sin estructura confunde al lector.
+:::
+
 ---
 
 ## Presentación de Resultados Cuantitativos

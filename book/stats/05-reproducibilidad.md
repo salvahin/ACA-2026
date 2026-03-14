@@ -277,6 +277,15 @@ Prueba: t-test de dos muestras
 Variables secundarias: iteraciones, tiempo
 ```
 
+:::{figure} diagrams/preregistration_flow.png
+:name: fig-preregistration-flow
+:alt: Flujo del proceso de pre-registro de análisis estadístico en Open Science Framework
+:align: center
+:width: 90%
+
+**Figura 3:** Flujo del proceso de pre-registro: desde la formulación de hipótesis hasta la publicación de resultados, diferenciando análisis confirmatorios de exploratorios.
+:::
+
 ## Checklist de Reproducibilidad
 
 ```{admonition} Resumen

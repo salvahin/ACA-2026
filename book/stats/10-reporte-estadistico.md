@@ -49,6 +49,15 @@ Reportar resultados es como contar una historia con números. No solo digas "gan
 
 Usado en psicología, ciencias sociales, educación.
 
+:::{figure} diagrams/apa_format_anatomy.png
+:name: fig-apa-format-anatomy
+:alt: Anatomía de un reporte estadístico en formato APA con todos sus elementos etiquetados
+:align: center
+:width: 90%
+
+**Figura 1:** Anatomía de un reporte APA completo: cada elemento (M, DE, estadístico, df, p, d, IC) cumple una función específica para que el lector pueda evaluar tanto la significancia estadística como la importancia práctica.
+:::
+
 ```{admonition} 📊 Cómo interpretar formato APA
 :class: note
 **Estructura completa**:
@@ -366,6 +375,15 @@ print("=" * 70)
 ```
 
 ## Estructura de Sección de Resultados
+
+:::{figure} diagrams/results_section_flow.png
+:name: fig-results-section-flow
+:alt: Flujo de la estructura de una sección de resultados científicos profesional
+:align: center
+:width: 90%
+
+**Figura 2:** Estructura canónica de una sección de resultados: el orden importa. Primero el contexto general, luego estadística descriptiva, después supuestos, y finalmente los resultados de las pruebas con su interpretación.
+:::
 
 ### 1. Descripciones Generales
 

@@ -905,6 +905,15 @@ Rechaza hipótesis 1-5, no 6-10
 
 ## Resumen: Cuándo Usar Qué
 
+:::{figure} diagrams/significance_matrix.png
+:name: fig-significance-matrix
+:alt: Matriz de decisión para elegir el método de corrección por comparaciones múltiples
+:align: center
+:width: 90%
+
+**Figura 8:** Matriz de decisión: qué método de corrección usar según el número de comparaciones, tipo de hipótesis (confirmatorias vs. exploratorias) y tolerancia al error Tipo I.
+:::
+
 ```{admonition} Resumen
 :class: important
 **Checklist para comparaciones múltiples:**

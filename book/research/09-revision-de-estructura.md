@@ -82,6 +82,15 @@ Mejor aún, esta auditoría es algo que *puedes hacer tú mismo* antes de entreg
 
 Este es el "hilo dorado" de tu proyecto de investigación. Cada pregunta de investigación debe tener una correspondencia clara en resultados y conclusiones.
 
+:::{figure} diagrams/integrity_audit_map.png
+:name: fig-integrity-audit-map
+:alt: Mapa de trazabilidad mostrando la alineación entre RQs, metodología, resultados y conclusiones
+:align: center
+:width: 100%
+
+**Figura 1:** Mapa de trazabilidad del "hilo dorado": cada RQ debe tener correspondencia explícita en metodología, resultados y conclusiones. Celdas en rojo indican vacíos que debes resolver antes de entregar.
+:::
+
 ### Creando el Mapa
 
 En una hoja de papel o documento, crea una tabla:

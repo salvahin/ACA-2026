@@ -62,6 +62,15 @@ Pregunta de investigación → Tipo de gráfico
 "¿Cuál es el mejor en cada condición?" → Heatmap
 ```
 
+:::{figure} diagrams/chart_selection_guide.png
+:name: fig-chart-selection-guide
+:alt: Guía visual para seleccionar el tipo de gráfico según la pregunta de investigación
+:align: center
+:width: 90%
+
+**Figura 1:** Árbol de decisión para elegir el tipo de visualización correcto: el punto de partida siempre es la pregunta de investigación, no la estética.
+:::
+
 ```{admonition} 🎯 Aplicación en ML
 :class: important
 En tu proyecto de evaluación de kernels GPU:
@@ -93,6 +102,15 @@ En tu proyecto de evaluación de kernels GPU:
 Regla: Usa posición para la comparación más importante
 ```
 
+:::{figure} diagrams/visual_hierarchy.png
+:name: fig-visual-hierarchy
+:alt: Jerarquía de canales visuales de mayor a menor precisión perceptual
+:align: center
+:width: 90%
+
+**Figura 2:** Ranking de canales visuales según precisión perceptual (Cleveland & McGill). Siempre que sea posible, codifica la variable más importante usando posición en escala común.
+:::
+
 ### Data-Ink Ratio
 
 Edward Tufte propuso maximizar el **data-ink ratio**:
@@ -112,6 +130,15 @@ MALO (bajo ratio):          BUENO (alto ratio):
 ```
 
 Elimina: gridlines innecesarios, fondos, bordes 3D, efectos decorativos.
+
+:::{figure} diagrams/data_ink_ratio.png
+:name: fig-data-ink-ratio
+:alt: Comparación entre gráficas con bajo y alto data-ink ratio
+:align: center
+:width: 90%
+
+**Figura 3:** Comparación práctica del data-ink ratio: la versión con alto ratio elimina decoración innecesaria y deja que los datos hablen por sí solos.
+:::
 
 ---
 

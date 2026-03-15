@@ -740,14 +740,15 @@ print(json.dumps(ResenaInfo.model_json_schema(), indent=2))
 ### Paso 2: Cargar Modelo y Compilar Gramática
 
 ```{code-cell} ipython3
-from transformers import AutoModelForCausalLM, AutoTokenizer
-from xgrammar import GrammarCompiler, TokenizerInfo
+import xgrammar as xgr
+from transformers import AutoModelForCausalLM, AutoTokenizer, AutoConfig
 
 model_id = "Qwen/Qwen2.5-1.5B-Instruct"
 
 print(f"Cargando modelo: {model_id}")
 print("(Esto puede tomar ~30 segundos la primera vez...)")
 
+config = AutoConfig.from_pretrained(model_id)
 tokenizer = AutoTokenizer.from_pretrained(model_id)
 model = AutoModelForCausalLM.from_pretrained(
     model_id,
@@ -759,18 +760,16 @@ print("✓ Modelo cargado")
 
 # Compilar gramática XGrammar desde el esquema Pydantic
 print("\nCompilando gramática XGrammar...")
-# Convertir tokenizer de HuggingFace a formato XGrammar
-tokenizer_info = TokenizerInfo.from_huggingface(tokenizer, vocab_size=tokenizer.vocab_size)
-compiler = GrammarCompiler(tokenizer_info)
-compiled_grammar = compiler.compile_json_schema(ResenaInfo.model_json_schema())
+# Convertir tokenizer de HuggingFace a formato XGrammar (usando vocab_size del config)
+tokenizer_info = xgr.TokenizerInfo.from_huggingface(tokenizer, vocab_size=config.vocab_size)
+grammar_compiler = xgr.GrammarCompiler(tokenizer_info)
+compiled_grammar = grammar_compiler.compile_json_schema(ResenaInfo.model_json_schema())
 print("✓ Gramática compilada (DFA creado)")
 ```
 
 ### Paso 3: Función de Extracción con Constrained Decoding
 
 ```{code-cell} ipython3
-import xgrammar as xgr
-
 def extraer_info_resena(review_text: str, use_grammar: bool = True) -> str:
     """
     Extrae información estructurada de una reseña.
@@ -790,8 +789,12 @@ def extraer_info_resena(review_text: str, use_grammar: bool = True) -> str:
     text = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
     inputs = tokenizer(text, return_tensors="pt").to(model.device)
 
-    # Configurar LogitsProcessor solo si usamos gramática (API de HuggingFace)
-    logits_processor = [xgr.contrib.hf.LogitsProcessor(compiled_grammar)] if use_grammar else None
+    # IMPORTANTE: Crear un nuevo LogitsProcessor para cada llamada
+    # El LogitsProcessor mantiene estado interno que se modifica durante la generación
+    if use_grammar:
+        logits_processor = [xgr.contrib.hf.LogitsProcessor(compiled_grammar)]
+    else:
+        logits_processor = None
 
     with torch.no_grad():
         outputs = model.generate(

@@ -769,7 +769,7 @@ print("✓ Gramática compilada (DFA creado)")
 ### Paso 3: Función de Extracción con Constrained Decoding
 
 ```{code-cell} ipython3
-from xgrammar import XGrammarLogitsProcessor
+import xgrammar as xgr
 
 def extraer_info_resena(review_text: str, use_grammar: bool = True) -> str:
     """
@@ -790,8 +790,8 @@ def extraer_info_resena(review_text: str, use_grammar: bool = True) -> str:
     text = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
     inputs = tokenizer(text, return_tensors="pt").to(model.device)
 
-    # Configurar LogitsProcessor solo si usamos gramática
-    logits_processor = [XGrammarLogitsProcessor(compiled_grammar)] if use_grammar else None
+    # Configurar LogitsProcessor solo si usamos gramática (API de HuggingFace)
+    logits_processor = [xgr.contrib.hf.LogitsProcessor(compiled_grammar)] if use_grammar else None
 
     with torch.no_grad():
         outputs = model.generate(

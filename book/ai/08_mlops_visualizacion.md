@@ -451,13 +451,12 @@ with mlflow.start_run():
 
 ### Model Registry en Databricks
 
-```{code-cell} ipython3
-:tags: [skip-execution]
-
+```python
+# Ejemplo de registro de modelo (requiere run_id de un experimento previo)
 import mlflow
 
 # Registrar un modelo en el Model Registry
-model_uri = f"runs:/{run_id}/model"
+model_uri = f"runs:/{run_id}/model"  # run_id viene del experimento anterior
 model_name = "kernel-generator"
 
 # Registrar nueva versión

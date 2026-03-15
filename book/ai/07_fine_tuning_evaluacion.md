@@ -15,11 +15,63 @@ kernelspec:
 # Setup condicional para Google Colab
 import sys
 if 'google.colab' in sys.modules:
-    !pip install -q transformers peft
+    !pip install -q transformers peft huggingface_hub
     print('Dependencias instaladas!')
 ```
 
+```{admonition} ⚠️ Acceso a Modelos Llama en Hugging Face
+:class: warning
 
+Los modelos de Meta Llama requieren **solicitar acceso** antes de poder usarlos:
+
+1. **Crear cuenta en Hugging Face:** [huggingface.co/join](https://huggingface.co/join)
+2. **Solicitar acceso al modelo:** Visita [meta-llama/Llama-2-7b-hf](https://huggingface.co/meta-llama/Llama-2-7b-hf) y haz clic en "Request access"
+3. **Aceptar licencia de Meta:** Completa el formulario aceptando los términos de uso
+4. **Crear token de acceso:** En [huggingface.co/settings/tokens](https://huggingface.co/settings/tokens), crea un token con permisos de lectura
+5. **Esperar aprobación:** Generalmente toma minutos, pero puede tardar hasta 24 horas
+
+Una vez aprobado, ejecuta la siguiente celda para autenticarte.
+```
+
+```{code-cell} ipython3
+# Autenticación con Hugging Face para acceder a modelos Llama
+import os
+from huggingface_hub import login
+
+def autenticar_huggingface():
+    """
+    Autentica con Hugging Face usando token del ambiente o solicitándolo al usuario.
+    """
+    # Opción 1: Token en variable de ambiente (recomendado para Colab)
+    token = os.environ.get("HF_TOKEN") or os.environ.get("HUGGING_FACE_HUB_TOKEN")
+
+    # Opción 2: Token en Colab Secrets (si está configurado)
+    if token is None:
+        try:
+            from google.colab import userdata
+            token = userdata.get('HF_TOKEN')
+            print("✓ Token encontrado en Colab Secrets")
+        except:
+            pass
+
+    # Opción 3: Solicitar al usuario
+    if token is None:
+        print("No se encontró token de Hugging Face en el ambiente.")
+        print("Obtén tu token en: https://huggingface.co/settings/tokens")
+        print()
+        token = input("Ingresa tu Hugging Face token: ").strip()
+
+    if token:
+        login(token=token)
+        print("✓ Autenticación exitosa con Hugging Face")
+        return True
+    else:
+        print("✗ No se proporcionó token. No podrás acceder a modelos con restricción.")
+        return False
+
+# Ejecutar autenticación
+autenticar_huggingface()
+```
 
 ```{admonition} Ejecutar en Google Colab
 :class: tip
@@ -93,7 +145,7 @@ Paso 1: Prepare datos
 
 Paso 2: Configura entrenamiento
   ```
-  modelo = AutoModelForCausalLM.from_pretrained("meta-llama/Llama-2-7b")
+  modelo = AutoModelForCausalLM.from_pretrained("meta-llama/Llama-2-7b-hf")
 
   optimizer = AdamW(modelo.parameters(), lr=1e-5)
 
@@ -223,7 +275,7 @@ config = LoraConfig(
     task_type="CAUSAL_LM"
 )
 
-modelo = AutoModelForCausalLM.from_pretrained("meta-llama/Llama-2-7b")
+modelo = AutoModelForCausalLM.from_pretrained("meta-llama/Llama-2-7b-hf")
 modelo = get_peft_model(modelo, config)
 
 # Ahora entrenar como normal, pero:

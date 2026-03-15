@@ -21,8 +21,8 @@ kernelspec:
 :tags: [remove-input, setup]
 
 # Setup Colab Environment
-!pip install -q numpy pandas matplotlib seaborn scikit-learn torch transformers accelerate triton
-print('Dependencies installed!')
+!pip install -q plotly
+print('Dependencias instaladas!')
 ```
 
 ```{admonition} Objetivos de Aprendizaje

@@ -20,9 +20,8 @@ kernelspec:
 ```{code-cell} ipython3
 :tags: [remove-input, setup]
 
-# Setup Colab Environment
-!pip install -q numpy pandas matplotlib seaborn scikit-learn torch transformers accelerate triton
-print('Dependencies installed!')
+# Setup Colab Environment (todas las dependencias ya vienen en Colab)
+print('Entorno listo!')
 ```
 
 ```{admonition} Objetivos de Aprendizaje

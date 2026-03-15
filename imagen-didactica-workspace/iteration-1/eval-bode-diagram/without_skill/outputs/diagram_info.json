@@ -1,0 +1,20 @@
+{
+  "timestamp": "2026-03-14T17:18:03.510545",
+  "task_description": "Generate educational Bode diagram for second-order system",
+  "system_parameters": {
+    "natural_frequency_rad_s": 10,
+    "damping_factor": 0.5,
+    "transfer_function": "H(s) = wn^2 / (s^2 + 2*zeta*wn*s + wn^2)"
+  },
+  "output_file": "/sessions/vibrant-compassionate-dijkstra/mnt/TC3002B-2026/imagen-didactica-workspace/iteration-1/eval-bode-diagram/without_skill/outputs/bode_diagram.png",
+  "output_dpi": 300,
+  "figure_size": [
+    12,
+    10
+  ],
+  "frequency_range": {
+    "min_rad_s": 1.0,
+    "max_rad_s": 1000.0,
+    "points": 1000
+  }
+}

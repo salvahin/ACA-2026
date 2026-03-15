@@ -1,0 +1,224 @@
+================================================================================
+PRINCIPIO DE SUPERPOSICIÓN EN CIRCUITOS ELÉCTRICOS
+Superposition Principle in Electrical Circuits
+================================================================================
+
+INTRODUCCIÓN / INTRODUCTION
+================================================================================
+
+El principio de superposición es una herramienta fundamental en el análisis de
+circuitos eléctricos que permite simplificar problemas complejos con múltiples
+fuentes de voltaje o corriente.
+
+The superposition principle is a fundamental tool in electrical circuit analysis
+that allows simplifying complex problems with multiple voltage or current sources.
+
+================================================================================
+DEFINICIÓN FORMAL / FORMAL DEFINITION
+================================================================================
+
+En un circuito lineal con múltiples fuentes independientes, la tensión o 
+corriente en cualquier elemento es la suma algebraica de las contribuciones 
+de cada fuente actuando sola, con todas las demás fuentes desactivadas.
+
+In a linear circuit with multiple independent sources, the voltage or current 
+in any element is the algebraic sum of the contributions of each source acting 
+alone, with all other sources deactivated.
+
+Fórmula General / General Formula:
+────────────────────────────────────
+V_total = Σ V_i   (para i = 1 a n)
+I_total = Σ I_i   (para i = 1 a n)
+
+================================================================================
+REQUISITOS PARA APLICAR SUPERPOSICIÓN / REQUIREMENTS
+================================================================================
+
+✓ El circuito DEBE ser LINEAL (resistencias, inductores, capacitores)
+  The circuit MUST be LINEAR (resistors, inductors, capacitors)
+
+✓ Fuentes INDEPENDIENTES (voltaje o corriente constantes)
+  INDEPENDENT sources (constant voltage or current)
+
+✗ NO se puede usar en circuitos NO lineales (diodos, transistores)
+  CANNOT be used in NON-LINEAR circuits (diodes, transistors)
+
+✗ NO se puede usar con elementos controlados por voltaje/corriente
+  CANNOT be used with voltage/current-dependent elements
+
+================================================================================
+PROCEDIMIENTO PASO A PASO / STEP-BY-STEP PROCEDURE
+================================================================================
+
+PASO 1 / STEP 1: Contar el número de fuentes independientes
+                 Count the number of independent sources
+
+PASO 2 / STEP 2: Para cada fuente:
+                 For each source:
+                 
+    a) Deactivar todas las otras fuentes:
+       Deactivate all other sources:
+       
+       - Fuentes de voltaje → Cortocircuito (V = 0)
+         Voltage sources → Short circuit (V = 0)
+       
+       - Fuentes de corriente → Circuito abierto (I = 0)
+         Current sources → Open circuit (I = 0)
+    
+    b) Analizar el circuito resultante más simple
+       Analyze the resulting simpler circuit
+    
+    c) Calcular la variable deseada (V o I)
+       Calculate the desired variable (V or I)
+
+PASO 3 / STEP 3: Sumar algebraicamente todos los resultados
+                 Add algebraically all the results
+
+PASO 4 / STEP 4: Verificar que la suma sea correcta
+                 Verify that the sum is correct
+
+================================================================================
+EJEMPLO PRÁCTICO / PRACTICAL EXAMPLE
+================================================================================
+
+CIRCUITO ORIGINAL / ORIGINAL CIRCUIT:
+────────────────────────────────────────
+    V₁ = 10V      V₂ = 5V       R = 2Ω
+    
+Problema: Encontrar la corriente total I en la resistencia R
+
+SOLUCIÓN / SOLUTION:
+
+ANÁLISIS 1 / ANALYSIS 1 - Solo V₁ activa (V₂ = 0):
+────────────────────────────────────────────────────
+    V₁ = 10V                  R = 2Ω
+    V₂ = 0 (cortocircuito)
+    
+    Ley de Ohm: I₁ = V₁/R = 10V / 2Ω = 5A
+    
+ANÁLISIS 2 / ANALYSIS 2 - Solo V₂ activa (V₁ = 0):
+────────────────────────────────────────────────────
+    V₁ = 0 (cortocircuito)
+    V₂ = 5V                   R = 2Ω
+    
+    Ley de Ohm: I₂ = V₂/R = 5V / 2Ω = 2.5A
+
+SUPERPOSICIÓN / SUPERPOSITION - Suma de efectos:
+──────────────────────────────────────────────────
+    I_total = I₁ + I₂ = 5A + 2.5A = 7.5A
+
+VERIFICACIÓN / VERIFICATION:
+─────────────────────────────
+    Aplicando Kirchhoff directamente:
+    V_total = V₁ + V₂ = 10V + 5V = 15V
+    I_total = V_total / R = 15V / 2Ω = 7.5A ✓
+
+================================================================================
+DEACTIVACIÓN DE FUENTES / SOURCE DEACTIVATION
+================================================================================
+
+FUENTES DE VOLTAJE / VOLTAGE SOURCES
+────────────────────────────────────
+    Para desactivar una fuente de voltaje:
+    To deactivate a voltage source:
+    
+    ┌─────────┐                    ┌─────┐
+    │  V = 0  │  Se convierte en:  │     │  (cortocircuito)
+    └─────────┘                    └─────┘
+    
+    Se reemplaza por un cortocircuito (cable sin resistencia)
+    It is replaced by a short circuit (wire with no resistance)
+
+FUENTES DE CORRIENTE / CURRENT SOURCES
+──────────────────────────────────────
+    Para desactivar una fuente de corriente:
+    To deactivate a current source:
+    
+    ┌─────────┐                      ╱╱
+    │  I = 0  │  Se convierte en:   ╱╱  (circuito abierto)
+    └─────────┘                     ╱╱
+    
+    Se reemplaza por un circuito abierto (sin conexión)
+    It is replaced by an open circuit (no connection)
+
+================================================================================
+VENTAJAS DEL MÉTODO / METHOD ADVANTAGES
+================================================================================
+
+✓ SIMPLIFICACIÓN: Divide un problema complejo en varios simples
+  SIMPLIFICATION: Divides a complex problem into several simple ones
+
+✓ FLEXIBILIDAD: Se puede aplicar a cualquier circuito lineal
+  FLEXIBILITY: Can be applied to any linear circuit
+
+✓ COMPRENSIÓN: Ayuda a entender cómo contribuye cada fuente
+  UNDERSTANDING: Helps understand how each source contributes
+
+✓ CORRIENTE/VOLTAJE: Se puede calcular la variable deseada
+  CURRENT/VOLTAGE: Can calculate the desired variable
+
+✓ VERIFICACIÓN: Facilita verificar respuestas complejas
+  VERIFICATION: Makes it easy to verify complex answers
+
+================================================================================
+LIMITACIONES / LIMITATIONS
+================================================================================
+
+✗ Solo para circuitos LINEALES
+  Only for LINEAR circuits
+
+✗ No funciona con potencia disipada (es no lineal)
+  Doesn't work with dissipated power (it's non-linear)
+  
+  Ejemplo: P = I² R no es aditivo
+  Example: P = I² R is not additive
+  
+  P_total ≠ P₁ + P₂
+  Porque: (I₁ + I₂)² ≠ I₁² + I₂²
+
+✗ Requiere fuentes independientes
+  Requires independent sources
+
+✗ No se puede usar con fuentes controladas
+  Cannot be used with dependent sources
+
+================================================================================
+APLICACIONES / APPLICATIONS
+================================================================================
+
+1. ANÁLISIS DE CIRCUITOS: Simplificar circuitos complejos con múltiples fuentes
+   CIRCUIT ANALYSIS: Simplifying complex circuits with multiple sources
+
+2. MÉTODO DE THÉVENIN: Base para calcular resistencia Thévenin
+   THÉVENIN METHOD: Basis for calculating Thévenin resistance
+
+3. MÉTODO DE NORTON: Encontrar equivalentes Norton
+   NORTON METHOD: Finding Norton equivalents
+
+4. REDES COMPLEJAS: Analizar sistemas de potencia
+   COMPLEX NETWORKS: Analyzing power systems
+
+5. ELECTRÓNICA: Diseño de amplificadores y filtros
+   ELECTRONICS: Design of amplifiers and filters
+
+================================================================================
+RESUMEN / SUMMARY
+================================================================================
+
+El principio de superposición es una técnica poderosa que:
+
+1. Simplifica el análisis de circuitos con múltiples fuentes
+2. Se basa en la linealidad del circuito
+3. Requiere desactivar fuentes: V→cortocircuito, I→circuito abierto
+4. La respuesta total es la suma algebraica de respuestas individuales
+5. No se puede usar para potencia o circuitos no lineales
+
+The superposition principle is a powerful technique that:
+
+1. Simplifies analysis of circuits with multiple sources
+2. Is based on circuit linearity
+3. Requires deactivating sources: V→short circuit, I→open circuit
+4. Total response is the algebraic sum of individual responses
+5. Cannot be used for power or non-linear circuits
+
+================================================================================

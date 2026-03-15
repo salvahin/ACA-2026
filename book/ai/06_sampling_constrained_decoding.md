@@ -687,6 +687,32 @@ else:
     print("  ⚠️ No hay GPU disponible. Este ejemplo requiere GPU.")
 ```
 
+#### ¿Qué es Pydantic?
+
+**Pydantic** es una librería de Python para validación de datos usando anotaciones de tipo. En lugar de escribir código manual para verificar que los datos tienen el formato correcto, defines una clase con tipos y Pydantic se encarga de:
+
+1. **Validar** que los datos cumplen el esquema
+2. **Convertir** tipos automáticamente (ej: `"123"` → `123`)
+3. **Generar JSON Schema** para usar con otras herramientas
+
+```python
+# Sin Pydantic (manual y propenso a errores)
+def validar_resena(data):
+    if not isinstance(data.get("sentimiento"), str):
+        raise ValueError("sentimiento debe ser string")
+    if not isinstance(data.get("calificacion"), int):
+        raise ValueError("calificacion debe ser int")
+    # ... más validaciones manuales
+
+# Con Pydantic (declarativo y robusto)
+class ResenaInfo(pydantic.BaseModel):
+    sentimiento: str
+    calificacion: int
+    recomendado: bool
+```
+
+La magia para constrained decoding: Pydantic genera automáticamente un **JSON Schema** que XGrammar compila a un autómata finito, garantizando que el LLM solo genere JSON válido según ese esquema.
+
 ```{code-cell} ipython3
 import pydantic
 import json
@@ -700,6 +726,15 @@ class ResenaInfo(pydantic.BaseModel):
 # Mostrar el JSON Schema generado automáticamente
 print("JSON Schema generado por Pydantic:")
 print(json.dumps(ResenaInfo.model_json_schema(), indent=2))
+```
+
+```{admonition} 💡 Ventajas de Pydantic + XGrammar
+:class: tip
+
+1. **Declarativo**: Defines QUÉ quieres, no CÓMO validarlo
+2. **Type hints**: El mismo código sirve para IDE autocompletado y validación
+3. **Composable**: Puedes anidar modelos (`List[ResenaInfo]`, `Optional[str]`)
+4. **Estándar**: JSON Schema es un estándar abierto, no propietario
 ```
 
 ### Paso 2: Cargar Modelo y Compilar Gramática

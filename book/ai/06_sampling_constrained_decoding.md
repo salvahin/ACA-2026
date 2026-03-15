@@ -999,18 +999,26 @@ Veamos los resultados probabilísticos ahora que hemos forzado agresivamente la 
 ```{code-cell} ipython3
 # 7. Imprimir Auditoría Visual Comparativa
 print("SIN restricciones:")
-print(f"  Top 5 tokens más probables originalmente: {torch.topk(probs_original, 5).indices.tolist()}")
+top5 = torch.topk(probs_original, 5)
+top5_ids = top5.indices.tolist()
+top5_tokens = [tokenizer.decode([t]) for t in top5_ids]
+top5_probs = top5.values.tolist()
+print(f"  Top 5 tokens más probables:")
+for i, (tid, tok, prob) in enumerate(zip(top5_ids, top5_tokens, top5_probs), 1):
+    print(f"    {i}. ID={tid:5d} | '{tok}' | P={prob:.4f}")
 print(f"  Confirmar suma global de probabilidades: {probs_original.sum():.4f}")
 
 print("\nCON máscara (solo 'Sí' o 'No'):")
 print(f"  Tokens permitidos: {allowed_tokens}")
+print(f"    - {allowed_tokens[0]} = '{tokenizer.decode([allowed_tokens[0]])}'")
+print(f"    - {allowed_tokens[1]} = '{tokenizer.decode([allowed_tokens[1]])}'")
 print(f"  Probabilidad re-ajustada del 'Sí' (43521): {probs_masked[43521]:.4f}")
 print(f"  Probabilidad re-ajustada del 'No' (2949): {probs_masked[2949]:.4f}")
 print(f"  Suma validada de P() del vocabulario restrictivo: {probs_masked.sum():.4f}")
 
-# 8. Muestreo seguro 
+# 8. Muestreo seguro
 sampled_token = torch.multinomial(probs_masked, 1).item()
-print(f"\nToken finalmente seleccionado durante inferencia: {sampled_token}")
+print(f"\nToken finalmente seleccionado durante inferencia: {sampled_token} ('{tokenizer.decode([sampled_token])}')")
 print(f"  ¿Es un token esperado?: {sampled_token in allowed_tokens}")
 ```
 

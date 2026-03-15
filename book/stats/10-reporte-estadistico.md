@@ -21,7 +21,7 @@ kernelspec:
 :tags: [remove-input, setup]
 
 # Setup Colab Environment
-!pip install -q numpy pandas matplotlib seaborn scikit-learn torch transformers accelerate triton
+!pip install -q plotly
 print('Dependencies installed!')
 ```
 ## Semana 10 - Estadística para Generación de Kernels GPU

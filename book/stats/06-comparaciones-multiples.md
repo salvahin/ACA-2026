@@ -91,7 +91,7 @@ Con corrección Bonferroni: FWER ≤ 0.05
 :align: center
 :width: 90%
 
-**Figura 7:** Inflación de la tasa de error familia-wise (FWER) según el número de pruebas realizadas.
+**Figura 1:** Inflación de la tasa de error familia-wise (FWER) según el número de pruebas realizadas.
 :::
 
 ### Corrección de Bonferroni
@@ -911,7 +911,7 @@ Rechaza hipótesis 1-5, no 6-10
 :align: center
 :width: 90%
 
-**Figura 8:** Matriz de decisión: qué método de corrección usar según el número de comparaciones, tipo de hipótesis (confirmatorias vs. exploratorias) y tolerancia al error Tipo I.
+**Figura 2:** Matriz de decisión: qué método de corrección usar según el número de comparaciones, tipo de hipótesis (confirmatorias vs. exploratorias) y tolerancia al error Tipo I.
 :::
 
 ```{admonition} Resumen

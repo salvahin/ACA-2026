@@ -80,7 +80,7 @@ Al decidir si rechazamos H₀, podemos cometer dos tipos de errores:
 :align: center
 :width: 80%
 
-**Figura 5:** Matriz de errores en pruebas de hipótesis: Tipo I (falso positivo) y Tipo II (falso negativo).
+**Figura 2:** Matriz de errores en pruebas de hipótesis: Tipo I (falso positivo) y Tipo II (falso negativo).
 :::
 
 ### Error Tipo I (False Positive)
@@ -129,7 +129,7 @@ El **p-valor** es probablemente el concepto más mal entendido en estadística.
 :align: center
 :width: 90%
 
-**Figura 4:** Regiones de p-valor y zonas críticas para la interpretación de pruebas de hipótesis.
+**Figura 3:** Regiones de p-valor y zonas críticas para la interpretación de pruebas de hipótesis.
 :::
 
 > El **p-valor** es la probabilidad de observar datos tan o más extremos que los que observaste, SI H₀ fuera verdadera.

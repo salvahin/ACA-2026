@@ -107,6 +107,15 @@ Diferencia clave con BERT:
   - Entrenado para predecir siguiente token
   - Genera texto autorregressivamente
 
+:::{figure} diagrams/encoder_vs_decoder.png
+:name: fig-encoder-vs-decoder
+:alt: Diferencia arquitectónica entre encoder (BERT) y decoder (GPT)
+:align: center
+:width: 90%
+
+**Figura 2:** Encoder (BERT) vs Decoder (GPT): el encoder procesa toda la secuencia bidireccialmente para comprensión; el decoder procesa causalmente para generación. La misma base Transformer, distintos patrones de atención.
+:::
+
 Entrada:  "El gato"
 Proceso:
   P(siguiente | "El gato") → "salta"
@@ -122,7 +131,7 @@ Proceso:
 :align: center
 :width: 90%
 
-**Figura 2:** Scaling Laws - a mayor escala emergen capacidades como razonamiento, few-shot learning y seguimiento de instrucciones.
+**Figura 3:** Scaling Laws - a mayor escala emergen capacidades como razonamiento, few-shot learning y seguimiento de instrucciones.
 :::
 
 A cierta escala, emergen capacidades no entrenadas explícitamente:
@@ -548,6 +557,15 @@ Ventajas:
 
 ### BPE (Byte Pair Encoding)
 
+:::{figure} diagrams/bpe_tokenization.png
+:name: fig-bpe-tokenization
+:alt: Algoritmo BPE paso a paso mostrando la fusión iterativa de pares de caracteres
+:align: center
+:width: 90%
+
+**Figura 5:** BPE en acción: el algoritmo fusiona iterativamente los pares de caracteres más frecuentes hasta alcanzar el tamaño de vocabulario deseado. Resultado: subpalabras que balancean vocabulario manejable con secuencias de longitud razonable.
+:::
+
 Algoritmo paso a paso:
 
 ```python
@@ -572,7 +590,7 @@ vocabulary = {'l o w </w>': 5, 'l o w e r </w>': 2,
 :align: center
 :width: 90%
 
-**Figura 3:** Byte Pair Encoding (BPE) - proceso iterativo de fusión de pares de caracteres más frecuentes.
+**Figura 6:** Byte Pair Encoding (BPE) - proceso iterativo de fusión de pares de caracteres más frecuentes.
 :::
 
 ### Implementación con tiktoken (OpenAI)
@@ -657,7 +675,7 @@ tokens = sp.encode_as_pieces("Hello world")
 :align: center
 :width: 90%
 
-**Figura 5:** Comparación de Tokenizadores - BPE usa frecuencia, WordPiece maximiza likelihood, SentencePiece es agnóstico al idioma.
+**Figura 7:** Comparación de Tokenizadores - BPE usa frecuencia, WordPiece maximiza likelihood, SentencePiece es agnóstico al idioma.
 :::
 
 | Aspecto | BPE (GPT) | WordPiece (BERT) | SentencePiece |

@@ -431,7 +431,7 @@ Cada capa realiza: y = σ(W @ x + b)
 :align: center
 :width: 90%
 
-**Figura 5:** Capas y Activaciones - cada capa aplica transformación lineal seguida de activación no-lineal.
+**Figura 3:** Capas y Activaciones - cada capa aplica transformación lineal seguida de activación no-lineal.
 :::
 
 Imagina una red simple:
@@ -560,7 +560,7 @@ El forward pass que acabamos de ver es el mismo proceso que ocurre en cada capa 
 :align: center
 :width: 90%
 
-**Figura 6:** Estructura Completa - entrada, capas ocultas con pesos/bias, activaciones, y salida con función de pérdida.
+**Figura 4:** Estructura Completa - entrada, capas ocultas con pesos/bias, activaciones, y salida con función de pérdida.
 :::
 
 ### Funciones de Pérdida (Loss Functions)
@@ -697,6 +697,15 @@ La retropropagación es donde la red **aprende**. Usando la **regla de la cadena
 
 La retropropagación es el algoritmo que permite entrenar redes profundas. Es el motor detrás de todo modelo de IA moderno.
 
+:::{figure} diagrams/backpropagation_flow.png
+:name: fig-backpropagation-flow
+:alt: Flujo de retropropagación mostrando el cálculo de gradientes capa por capa
+:align: center
+:width: 90%
+
+**Figura 5:** Flujo de retropropagación: el error se propaga desde la capa de salida hacia atrás aplicando la regla de la cadena en cada capa, actualizando los pesos según su contribución al error total.
+:::
+
 ### La Regla de la Cadena: Fundamento Matemático
 
 La **regla de la cadena** es el teorema matemático que hace posible el deep learning:
@@ -782,7 +791,7 @@ Error propagates: [Capa N] → [Capa N-1] → ... → [Capa 1]
 :align: center
 :width: 90%
 
-**Figura 3:** Flujo de Backpropagation - forward pass calcula activaciones, backward pass propaga gradientes para actualizar pesos.
+**Figura 6:** Flujo de Backpropagation - forward pass calcula activaciones, backward pass propaga gradientes para actualizar pesos.
 :::
 
 ### Pseudocódigo
@@ -877,7 +886,7 @@ class SimpleNetwork:
 :align: center
 :width: 90%
 
-**Figura 4:** Algoritmo Backpropagation - forward pass calcula predicciones, backward pass propaga error y actualiza pesos.
+**Figura 7:** Algoritmo Backpropagation - forward pass calcula predicciones, backward pass propaga error y actualiza pesos.
 :::
 
 Ahora que tenemos la arquitectura estructurada en código, vamos a usarla para resolver el famoso problema clásico de puerta lógica XOR, el cual no puede ser resuelto por un modelo lineal simple.
@@ -1074,7 +1083,7 @@ En lugar de procesar palabra por palabra:
 :align: center
 :width: 90%
 
-**Figura 1:** Diagrama del mecanismo de atención mostrando Query, Key y Value.
+**Figura 8:** Diagrama del mecanismo de atención mostrando Query, Key y Value.
 :::
 
 

@@ -297,7 +297,7 @@ def matmul_tiled(
 :align: center
 :width: 90%
 
-**Figura 3:** Estrategia de Tiling - Dividir matrices grandes en tiles pequeños que caben en Shared Memory (rápida), minimizando accesos a Global Memory.
+**Figura 2:** Estrategia de Tiling - Dividir matrices grandes en tiles pequeños que caben en Shared Memory (rápida), minimizando accesos a Global Memory.
 :::
 
 ### Beneficios
@@ -367,7 +367,7 @@ def analyze_kernel(flops, bytes_transferred):
 :align: center
 :width: 90%
 
-**Figura 2:** Modelo Roofline - Visualiza el rendimiento máximo alcanzable según la intensidad aritmética. Ridge Point separa kernels memory-bound de compute-bound.
+**Figura 3:** Modelo Roofline - Visualiza el rendimiento máximo alcanzable según la intensidad aritmética. Ridge Point separa kernels memory-bound de compute-bound.
 :::
 
 ### Operaciones Comunes

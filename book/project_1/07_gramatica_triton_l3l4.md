@@ -149,6 +149,15 @@ args = expression ("," expression)*
 literal = NUMBER | STRING | "True" | "False" | "None"
 ```
 
+:::{figure} diagrams/triton_railroad.png
+:name: fig-triton-railroad
+:alt: Diagrama de ferrocarril (railroad diagram) para la gramática de expresiones L3 en Triton
+:align: center
+:width: 100%
+
+**Figura 1:** Diagrama de ferrocarril para la gramática L3: cada camino posible por el diagrama corresponde a una expresión Triton válida. Los nodos terminales (en recuadros redondeados) son tokens literales; los rectangulares son no-terminales.
+:::
+
 ### Expresiones Comunes en Triton
 
 ```python

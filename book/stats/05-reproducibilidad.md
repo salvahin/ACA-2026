@@ -283,7 +283,7 @@ Variables secundarias: iteraciones, tiempo
 :align: center
 :width: 90%
 
-**Figura 3:** Flujo del proceso de pre-registro: desde la formulación de hipótesis hasta la publicación de resultados, diferenciando análisis confirmatorios de exploratorios.
+**Figura 1:** Flujo del proceso de pre-registro: desde la formulación de hipótesis hasta la publicación de resultados, diferenciando análisis confirmatorios de exploratorios.
 :::
 
 ## Checklist de Reproducibilidad

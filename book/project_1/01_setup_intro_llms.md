@@ -250,6 +250,15 @@ El resultado es un archivo que garantiza exactitud total.
 
 XGrammar es una librería C++ con bindings Python. Compilarla requiere pasos especiales.
 
+:::{figure} diagrams/xgrammar_build_pipeline.png
+:name: fig-xgrammar-build-pipeline
+:alt: Pipeline de compilación de XGrammar desde código C++ hasta módulo Python
+:align: center
+:width: 100%
+
+**Figura 1:** Pipeline de compilación de XGrammar: el código C++ se procesa a través de CMake y GCC, nanobind genera los bindings Python, y el resultado es un módulo importable directamente desde Python.
+:::
+
 ### Prerequisitos
 
 XGrammar usa:

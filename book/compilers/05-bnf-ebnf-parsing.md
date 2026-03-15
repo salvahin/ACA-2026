@@ -301,9 +301,9 @@ XGrammar usa **Earley parsing**, que es interesante porque:
 - Es **top-down** pero tan generoso que acepta gramáticas más generales
 - Complejidad: O(n³) en general, O(n) para gramáticas LL/LR
 
-![**Figura 1:** Proceso del algoritmo Earley Parser.](diagrams/earley_parsing.png)
+![**Figura 2:** Proceso del algoritmo Earley Parser.](diagrams/earley_parsing.png)
 
-***Figura 1:** Proceso del algoritmo Earley Parser.*
+***Figura 2:** Proceso del algoritmo Earley Parser.*
 
 
 El algoritmo es elegante pero un poco complejo. Lo veremos en detalle en la próxima lectura.

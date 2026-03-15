@@ -539,6 +539,15 @@ Por ahora, lo importante es entender que BERT produce embeddings que:
 
 ## Parte 3: Generación Autoregresiva
 
+:::{figure} diagrams/autoregressive_generation.png
+:name: fig-autoregressive-generation
+:alt: Proceso de generación autoregresiva token por token en un modelo de lenguaje
+:align: center
+:width: 90%
+
+**Figura 1:** Generación autoregresiva: el modelo genera un token a la vez, cada nuevo token se agrega al contexto y se usa como entrada para predecir el siguiente. El proceso termina al generar un token especial `[END]` o al alcanzar el límite de longitud.
+:::
+
 Ahora que entendemos cómo representar texto, veamos cómo los modelos **generan** texto nuevo.
 
 ### El Proceso Autoregresivo
@@ -551,7 +560,7 @@ Los modelos generativos (como GPT) producen texto **token por token**:
 :align: center
 :width: 90%
 
-**Figura 1:** Función Softmax - convierte logits en probabilidades normalizadas para seleccionar el siguiente token.
+**Figura 2:** Función Softmax - convierte logits en probabilidades normalizadas para seleccionar el siguiente token.
 :::
 
 ### Salida del Modelo
@@ -698,7 +707,7 @@ donde T es la temperatura (típicamente entre 0.1 y 2.0)
 :align: center
 :width: 90%
 
-**Figura 2:** Beam Search - explora múltiples caminos simultáneamente manteniendo los K mejores candidatos.
+**Figura 3:** Beam Search - explora múltiples caminos simultáneamente manteniendo los K mejores candidatos.
 :::
 
 ```{code-cell} ipython3
@@ -1045,7 +1054,7 @@ Top-P(0.9): Suma [0.35, 0.32, 0.18, 0.07] = 0.92 > 0.9
 :align: center
 :width: 90%
 
-**Figura 3:** Costo de Generación - el tiempo y costo escalan linealmente con el número de tokens generados.
+**Figura 4:** Costo de Generación - el tiempo y costo escalan linealmente con el número de tokens generados.
 :::
 
 ---

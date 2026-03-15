@@ -171,7 +171,7 @@ Típicamente buscamos poder ≥ 0.80, significando 80% de probabilidad de detect
 :align: center
 :width: 90%
 
-**Figura 6:** Relación entre tamaño muestral y poder estadístico en análisis de potencia.
+**Figura 2:** Relación entre tamaño muestral y poder estadístico en análisis de potencia.
 :::
 
 ### Factores que Afectan el Poder

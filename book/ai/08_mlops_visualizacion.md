@@ -51,6 +51,15 @@ Has entrenado modelos, generado código, evaluado resultados. Pero, ¿cómo **ra
 
 **MLOps (Machine Learning Operations)** resuelve esto: logging sistemático, versionado de experimentos, y gestión del ciclo de vida de modelos. Esta lectura te da las herramientas para investigación reproducible.
 
+:::{figure} diagrams/rag_pipeline.png
+:name: fig-rag-pipeline
+:alt: Pipeline RAG mostrando recuperación de documentos e integración con el LLM
+:align: center
+:width: 90%
+
+**Figura 1:** Pipeline RAG (Retrieval-Augmented Generation): un patrón LLMOps clave donde la base de conocimiento externa se indexa como vectores, se recuperan fragmentos relevantes en cada consulta, y se inyectan como contexto al LLM para respuestas fundamentadas y actualizadas.
+:::
+
 ### ¿Qué es MLOps?
 
 ```{admonition} 📚 Definición
@@ -168,7 +177,7 @@ Las herramientas que aprenderás (MLflow) aplican a ambos paradigmas.
 :align: center
 :width: 90%
 
-**Figura 1:** Componentes del Tracking en MLOps - experimentos, parámetros, métricas, artefactos y versiones de modelos.
+**Figura 2:** Componentes del Tracking en MLOps - experimentos, parámetros, métricas, artefactos y versiones de modelos.
 :::
 
 ### Escenario Común

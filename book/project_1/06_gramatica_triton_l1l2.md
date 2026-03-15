@@ -84,7 +84,7 @@ def kernel_name(x_ptr, y_ptr, BLOCK_SIZE: tl.constexpr):
 :align: center
 :width: 90%
 
-**Figura 5:** Arquitectura de niveles de gramática para kernels Triton.
+**Figura 1:** Arquitectura de niveles de gramática para kernels Triton.
 :::
 
 Desglosemos:

@@ -55,7 +55,7 @@ Hasta ahora hemos asumido normalidad: que nuestros datos siguen aproximadamente 
 :align: center
 :width: 90%
 
-**Figura 8:** Comparación entre pruebas paramétricas (asumen distribución normal) y no paramétricas (robustas a distribuciones arbitrarias).
+**Figura 1:** Comparación entre pruebas paramétricas (asumen distribución normal) y no paramétricas (robustas a distribuciones arbitrarias).
 :::
 
 Usa pruebas no paramétricas cuando:

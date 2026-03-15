@@ -127,7 +127,7 @@ fig.show()
 :align: center
 :width: 90%
 
-**Figura 4:** Máquina de estados finitos generada desde JSON Schema - estados y transiciones válidas.
+**Figura 1:** Máquina de estados finitos generada desde JSON Schema - estados y transiciones válidas.
 :::
 
 ```json

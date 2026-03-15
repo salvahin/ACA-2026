@@ -80,6 +80,15 @@ Paso 5: Repite desde Paso 1 hasta [END] o límite de longitud
 
 El modelo es **libre** de elegir cualquier token (con probabilidades aprendidas).
 
+:::{figure} diagrams/sampling_strategies.png
+:name: fig-sampling-strategies
+:alt: Comparación de estrategias de sampling en generación de texto
+:align: center
+:width: 90%
+
+**Figura 1:** Estrategias de sampling: Greedy (siempre el más probable), Top-K (muestrea de los K más probables), Top-P/Nucleus (muestrea de los tokens que acumulan masa de probabilidad p), Temperatura (controla la aleatoriedad distribuyendo o concentrando la distribución).
+:::
+
 ---
 
 ## Parte 2: El Problema - Salidas Inválidas
@@ -185,7 +194,7 @@ Esto es muy costoso a escala.
 :align: center
 :width: 90%
 
-**Figura 1:** Pipeline de Constrained Decoding - filtrando tokens inválidos según gramática especificada.
+**Figura 3:** Pipeline de Constrained Decoding - filtrando tokens inválidos según gramática especificada.
 :::
 
 ### La Idea
@@ -292,6 +301,15 @@ etc.
 
 ## Parte 5: XGrammar - Constrained Decoding Avanzado
 
+:::{figure} diagrams/constrained_decoding.png
+:name: fig-constrained-decoding-xgrammar
+:alt: Flujo de constrained decoding con XGrammar mostrando la máscara de tokens válidos
+:align: center
+:width: 90%
+
+**Figura 4:** XGrammar en acción: la gramática se compila en una máscara de bitmask que, en cada paso de decodificación, bloquea los tokens que producirían una salida inválida según la gramática especificada.
+:::
+
 XGrammar es un framework especializado en constrained decoding. Permite especificar restricciones mediante **gramáticas formales**.
 
 ### Gramáticas sin Contexto (CFG)
@@ -375,6 +393,15 @@ for token_id in allowed_token_ids:
 
 **Ventaja:** Muy rápido, ningún overhead computacional
 **Desventaja:** Solo funciona para restricciones simples
+
+:::{figure} diagrams/temperature_sampling.png
+:name: fig-temperature-sampling
+:alt: Efecto de la temperatura en la distribución de probabilidades del siguiente token
+:align: center
+:width: 90%
+
+**Figura 5:** Temperatura en sampling: T < 1 concentra la distribución (más determinístico), T = 1 mantiene la distribución original, T > 1 aplana la distribución (más aleatorio y creativo). Para código: T ≈ 0 garantiza salidas consistentes.
+:::
 
 ```{admonition} 🎮 Simulación Interactiva: Top-K vs Top-P Sampling
 :class: tip
@@ -544,7 +571,7 @@ print(f"\n✓ Mejor secuencia: {' '.join(best['tokens'])}")
 :align: center
 :width: 90%
 
-**Figura 3:** Máquina de Estados JSON - el constrained decoding sigue transiciones válidas para garantizar sintaxis correcta.
+**Figura 6:** Máquina de Estados JSON - el constrained decoding sigue transiciones válidas para garantizar sintaxis correcta.
 :::
 
 ### El Dilema
@@ -604,7 +631,7 @@ Menos flexibilidad, pero garantizado haiku
 :align: center
 :width: 90%
 
-**Figura 4:** Calidad vs Restricción - restricciones más estrictas garantizan formato pero pueden afectar creatividad.
+**Figura 7:** Calidad vs Restricción - restricciones más estrictas garantizan formato pero pueden afectar creatividad.
 :::
 
 ### Recomendaciones

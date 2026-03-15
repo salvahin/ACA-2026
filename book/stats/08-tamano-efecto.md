@@ -142,7 +142,7 @@ fig.show()
 :align: center
 :width: 90%
 
-**Figura 9:** Visualización de Cohen's d: diferentes tamaños de efecto y su interpretación en términos de solapamiento entre distribuciones.
+**Figura 1:** Visualización de Cohen's d: diferentes tamaños de efecto y su interpretación en términos de solapamiento entre distribuciones.
 :::
 
 ```{admonition} 🎯 Aplicación en ML

@@ -467,6 +467,15 @@ Para código:
 2. **Agrega testing automático:** Valida lógica
 3. **Combina:** Constrained decoding (sintaxis) + reintento en fallos (lógica)
 
+:::{figure} diagrams/code_llm_strategy.png
+:name: fig-code-llm-strategy
+:alt: Comparación entre generación libre y constrained decoding para modelos de código
+:align: center
+:width: 90%
+
+**Figura 1:** Generación libre vs. constrained decoding: la estrategia óptima combina restricciones gramaticales para garantizar sintaxis válida con testing automático para validar la lógica.
+:::
+
 ---
 
 ## Parte 7: Ejemplo Completo: Sistema de Generación de Código

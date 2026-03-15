@@ -444,7 +444,7 @@ La distribución más importante en estadística. **Muchos fenómenos naturales 
 :align: center
 :width: 90%
 
-**Figura 3:** Comparación de las principales distribuciones de probabilidad usadas en estadística.
+**Figura 1:** Comparación de las principales distribuciones de probabilidad usadas en estadística.
 :::
 
 ```

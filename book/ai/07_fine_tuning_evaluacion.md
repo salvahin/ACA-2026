@@ -173,6 +173,15 @@ Solo un 1% de A100 puede hacer esto
 
 ### La Solución: PEFT (LoRA)
 
+:::{figure} diagrams/lora_architecture.png
+:name: fig-lora-architecture-diagram
+:alt: Arquitectura LoRA mostrando la descomposición de la matriz de actualización en dos matrices de bajo rango
+:align: center
+:width: 80%
+
+**Figura 2:** LoRA congela los pesos originales W y aprende dos matrices de bajo rango A y B cuyo producto BA ≈ ΔW. Con rango r=8, LoRA entrena solo el 0.1–1% de los parámetros totales con calidad comparable al full fine-tuning.
+:::
+
 En lugar de actualizar TODOS los pesos, actualiza solo una **matriz de rango bajo**:
 
 ```
@@ -254,7 +263,7 @@ QLoRA               2 GB       0.15x     300 MB    99%
 :align: center
 :width: 90%
 
-**Figura 2:** Comparación de Métodos de Fine-Tuning - full tuning vs LoRA vs QLoRA.
+**Figura 3:** Comparación de Métodos de Fine-Tuning - full tuning vs LoRA vs QLoRA.
 :::
 
 ---
@@ -358,7 +367,7 @@ Problema: Modelo funciona en training pero falla en producción
 :align: center
 :width: 90%
 
-**Figura 2:** Métricas de Evaluación - BLEU mide precisión de n-gramas, ROUGE mide recall para resumenes.
+**Figura 4:** Métricas de Evaluación - BLEU mide precisión de n-gramas, ROUGE mide recall para resumenes.
 :::
 
 ### Métricas Automáticas
@@ -528,7 +537,7 @@ print(f"Referencia (aleatorio puro): {vocab_size}")
 :align: center
 :width: 90%
 
-**Figura 3:** Pass@k - probabilidad de obtener al menos una solución correcta en k intentos.
+**Figura 5:** Pass@k - probabilidad de obtener al menos una solución correcta en k intentos.
 :::
 
 Métrica importante para generación de código y problemas complejos:
@@ -579,7 +588,7 @@ O más simplemente (si puedes generar muchos intentos):
 :align: center
 :width: 90%
 
-**Figura 4:** Benchmark Contamination - cuando los datos de evaluación aparecen en el entrenamiento, los resultados no son confiables.
+**Figura 6:** Benchmark Contamination - cuando los datos de evaluación aparecen en el entrenamiento, los resultados no son confiables.
 :::
 
 ### Tipos de Contaminación
@@ -631,7 +640,7 @@ Test 3: Simil coseno
 :align: center
 :width: 90%
 
-**Figura 5:** Heatmap de Correctitud - visualiza rendimiento del modelo por categoría/dificultad de tarea.
+**Figura 7:** Heatmap de Correctitud - visualiza rendimiento del modelo por categoría/dificultad de tarea.
 :::
 
 ### Flujo de Fine-Tuning y Evaluación

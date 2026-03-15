@@ -82,7 +82,7 @@ En esta lectura entenderemos cómo funcionan Transformers desde sus componentes 
 :align: center
 :width: 90%
 
-**Figura 1:** RNN vs Transformer - las RNNs procesan secuencialmente mientras los Transformers procesan en paralelo con atención.
+**Figura 2:** RNN vs Transformer - las RNNs procesan secuencialmente mientras los Transformers procesan en paralelo con atención.
 :::
 
 ### El Desafío de RNNs
@@ -169,7 +169,7 @@ donde X es la matriz de embeddings de entrada y W_Q, W_K, W_V son matrices de pe
 :align: center
 :width: 90%
 
-**Figura 2:** Query-Key-Value - el query busca keys relevantes y agrega sus values ponderados por similitud.
+**Figura 3:** Query-Key-Value - el query busca keys relevantes y agrega sus values ponderados por similitud.
 :::
 
 ### Puntuación y Softmax
@@ -364,6 +364,15 @@ print(f"   Vector final 'saltó': {output[2][:3].round(2)}... (dim={d_v})")
 ---
 
 ### Atención Causal (GPT-style) vs Bidireccional (BERT-style)
+
+:::{figure} diagrams/transformer_block.png
+:name: fig-transformer-block-diagram
+:alt: Diferencia entre encoder bidireccional (BERT) y decoder causal (GPT)
+:align: center
+:width: 90%
+
+**Figura 4:** Encoder bidireccional (BERT) vs decoder causal (GPT): el encoder puede atender a todos los tokens en ambas direcciones; el decoder solo puede atender a tokens anteriores gracias a la máscara causal.
+:::
 
 Hasta ahora hemos visto **atención bidireccional**: cada token puede atender a *todos* los demás tokens de la secuencia. Esto es perfecto para tareas de comprensión (BERT).
 
@@ -608,7 +617,7 @@ Explora cómo funciona un Transformer paso a paso:
 :align: center
 :width: 90%
 
-**Figura 3:** Codificación Posicional - funciones seno/coseno de diferentes frecuencias codifican la posición de cada token.
+**Figura 5:** Codificación Posicional - funciones seno/coseno de diferentes frecuencias codifican la posición de cada token.
 :::
 
 Un problema: la atención ignora orden. Si mezclas las palabras:
@@ -1090,6 +1099,15 @@ Las conexiones residuales ayudan a los gradientes a fluir a través de redes pro
 
 ## Parte 6: Bloques y Capas del Transformer
 
+:::{figure} diagrams/transformer_architecture.png
+:name: fig-transformer-architecture
+:alt: Arquitectura completa del Transformer con encoder y decoder
+:align: center
+:width: 80%
+
+**Figura 6:** Arquitectura completa del Transformer: el stack de encoders (izquierda) y decoders (derecha) con sus conexiones residuales, layer normalization y feed-forward networks en cada bloque.
+:::
+
 ### Un Bloque Transformer Completo
 
 ```
@@ -1112,7 +1130,7 @@ Salida: x' (secuencia transformada)
 :align: center
 :width: 90%
 
-**Figura 5:** Bloque Transformer Completo - Multi-Head Attention, Add & Norm, y Feed-Forward Network.
+**Figura 7:** Bloque Transformer Completo - Multi-Head Attention, Add & Norm, y Feed-Forward Network.
 :::
 
 ```{code-cell} ipython3
@@ -1410,7 +1428,7 @@ Los modelos actuales (BERT, GPT) usan solo una parte:
 :align: center
 :width: 90%
 
-**Figura 6:** BERT (Encoder) vs GPT (Decoder) - BERT ve contexto bidireccional, GPT genera autoregressivamente.
+**Figura 8:** BERT (Encoder) vs GPT (Decoder) - BERT ve contexto bidireccional, GPT genera autoregressivamente.
 :::
 
 **Causal Masking:**
@@ -1433,7 +1451,7 @@ así softmax los convierte en 0.
 :align: center
 :width: 90%
 
-**Figura 7:** Paralelización - RNNs procesan secuencialmente (O(n)), Transformers procesan en paralelo (O(1) con atención).
+**Figura 9:** Paralelización - RNNs procesan secuencialmente (O(n)), Transformers procesan en paralelo (O(1) con atención).
 :::
 
 Los modelos modernos apilan múltiples bloques:

@@ -395,17 +395,32 @@ import pandas as pd
 
 # Obtener todos los runs de un experimento
 experiment = mlflow.get_experiment_by_name("kernel-generation")
-runs = mlflow.search_runs(experiment_ids=[experiment.experiment_id])
 
-# Convertir a DataFrame para análisis
-print("Comparación de Experimentos:")
-print(runs[["run_id", "params.learning_rate", "params.model",
-            "metrics.final_val_loss", "status"]].head(10))
+if experiment is None:
+    print("No se encontró el experimento 'kernel-generation'.")
+    print("Ejecuta primero las celdas de entrenamiento para crear experimentos.")
+else:
+    runs = mlflow.search_runs(experiment_ids=[experiment.experiment_id])
 
-# Encontrar el mejor run
-best_run = runs.loc[runs["metrics.final_val_loss"].idxmin()]
-print(f"\nMejor run: {best_run['run_id']}")
-print(f"Val Loss: {best_run['metrics.final_val_loss']:.4f}")
+    if runs.empty:
+        print("No hay runs en el experimento.")
+    else:
+        # Mostrar columnas disponibles para debug
+        print("Columnas disponibles:", [c for c in runs.columns if c.startswith(('params.', 'metrics.'))])
+
+        # Seleccionar columnas que existan
+        cols_deseadas = ["run_id", "params.learning_rate", "params.model",
+                        "metrics.final_val_loss", "status"]
+        cols_disponibles = [c for c in cols_deseadas if c in runs.columns]
+
+        print("\nComparación de Experimentos:")
+        print(runs[cols_disponibles].head(10))
+
+        # Encontrar el mejor run (si existe la métrica)
+        if "metrics.final_val_loss" in runs.columns:
+            best_run = runs.loc[runs["metrics.final_val_loss"].idxmin()]
+            print(f"\nMejor run: {best_run['run_id']}")
+            print(f"Val Loss: {best_run['metrics.final_val_loss']:.4f}")
 ```
 
 ---

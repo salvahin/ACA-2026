@@ -451,35 +451,46 @@ with mlflow.start_run():
 
 ### Model Registry en Databricks
 
-```python
-# Ejemplo de registro de modelo (requiere run_id de un experimento previo)
+```{code-cell} ipython3
+:tags: [skip-execution]
+
 import mlflow
-
-# Registrar un modelo en el Model Registry
-model_uri = f"runs:/{run_id}/model"  # run_id viene del experimento anterior
-model_name = "kernel-generator"
-
-# Registrar nueva versión
-mlflow.register_model(model_uri, model_name)
-
-# Transicionar a staging/production
 from mlflow.tracking import MlflowClient
 
-client = MlflowClient()
+# Obtener el run_id más reciente del experimento
+experiment = mlflow.get_experiment_by_name("kernel-generation")
 
-# Mover a Staging
-client.transition_model_version_stage(
-    name=model_name,
-    version=1,
-    stage="Staging"
-)
+if experiment is None:
+    print("No se encontró el experimento. Ejecuta primero las celdas anteriores.")
+else:
+    runs = mlflow.search_runs(
+        experiment_ids=[experiment.experiment_id],
+        order_by=["start_time DESC"],
+        max_results=1
+    )
 
-# Después de validación, mover a Production
-client.transition_model_version_stage(
-    name=model_name,
-    version=1,
-    stage="Production"
-)
+    if runs.empty:
+        print("No hay runs en el experimento.")
+    else:
+        run_id = runs.iloc[0]["run_id"]
+        print(f"Usando run_id: {run_id}")
+
+        # Registrar un modelo en el Model Registry
+        model_uri = f"runs:/{run_id}/model"
+        model_name = "kernel-generator"
+
+        # Nota: Esto requiere que el run tenga un modelo guardado
+        # Si no hay modelo, solo mostramos cómo se haría
+        print(f"Model URI: {model_uri}")
+        print(f"Model name: {model_name}")
+        print("\n# Para registrar (requiere modelo guardado en el run):")
+        print("# mlflow.register_model(model_uri, model_name)")
+
+        # Ejemplo de transición de stages
+        print("\n# Para transicionar stages:")
+        print("# client = MlflowClient()")
+        print("# client.transition_model_version_stage(name=model_name, version=1, stage='Staging')")
+        print("# client.transition_model_version_stage(name=model_name, version=1, stage='Production')")
 ```
 
 ### Ejercicio Práctico: MLflow con Databricks

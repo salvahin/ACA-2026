@@ -741,7 +741,7 @@ print(json.dumps(ResenaInfo.model_json_schema(), indent=2))
 
 ```{code-cell} ipython3
 from transformers import AutoModelForCausalLM, AutoTokenizer
-from xgrammar import GrammarCompiler
+from xgrammar import GrammarCompiler, TokenizerInfo
 
 model_id = "Qwen/Qwen2.5-1.5B-Instruct"
 
@@ -759,7 +759,9 @@ print("✓ Modelo cargado")
 
 # Compilar gramática XGrammar desde el esquema Pydantic
 print("\nCompilando gramática XGrammar...")
-compiler = GrammarCompiler(tokenizer)
+# Convertir tokenizer de HuggingFace a formato XGrammar
+tokenizer_info = TokenizerInfo.from_huggingface(tokenizer, vocab_size=tokenizer.vocab_size)
+compiler = GrammarCompiler(tokenizer_info)
 compiled_grammar = compiler.compile_json_schema(ResenaInfo.model_json_schema())
 print("✓ Gramática compilada (DFA creado)")
 ```

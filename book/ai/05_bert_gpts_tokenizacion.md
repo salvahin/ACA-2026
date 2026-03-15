@@ -15,8 +15,8 @@ kernelspec:
 # Setup condicional para Google Colab
 import sys
 if 'google.colab' in sys.modules:
-    !pip install -q transformers bitsandbytes triton vllm auto-gptq datasets evaluate
-    # Nota: la lista anterior puede contener librerías extra, las cuales Colab ignorará o instalará rápido.
+    !pip install -q tiktoken sentencepiece transformers
+    print('Dependencias instaladas!')
 ```
 
 
@@ -644,27 +644,96 @@ print(f"Tokens: {len(tokens)}")  # ~25-30 tokens
 
 ### SentencePiece (Google)
 
-Alternativa a BPE, usado en T5, LLaMA:
+Alternativa a BPE, usado en T5, LLaMA. Entrenemos un modelo real con un corpus de código Triton y texto técnico:
 
 ```{code-cell} ipython3
-:tags: [skip-execution]
-
 import sentencepiece as spm
+import tempfile
+import os
 
-# Entrenar modelo
+# Crear corpus de ejemplo con código Triton y texto técnico
+corpus_text = """
+@triton.jit
+def add_kernel(x_ptr, y_ptr, output_ptr, n_elements, BLOCK_SIZE: tl.constexpr):
+    pid = tl.program_id(axis=0)
+    block_start = pid * BLOCK_SIZE
+    offsets = block_start + tl.arange(0, BLOCK_SIZE)
+    mask = offsets < n_elements
+    x = tl.load(x_ptr + offsets, mask=mask)
+    y = tl.load(y_ptr + offsets, mask=mask)
+    output = x + y
+    tl.store(output_ptr + offsets, output, mask=mask)
+
+@triton.jit
+def matmul_kernel(a_ptr, b_ptr, c_ptr, M, N, K, BLOCK_M: tl.constexpr, BLOCK_N: tl.constexpr):
+    pid_m = tl.program_id(0)
+    pid_n = tl.program_id(1)
+    offs_m = pid_m * BLOCK_M + tl.arange(0, BLOCK_M)
+    offs_n = pid_n * BLOCK_N + tl.arange(0, BLOCK_N)
+
+The Transformer architecture revolutionized natural language processing.
+Attention mechanisms allow models to focus on relevant parts of the input.
+GPT uses causal attention where each token only attends to previous tokens.
+BERT uses bidirectional attention for better language understanding.
+Tokenization converts text into numerical representations for the model.
+BPE and WordPiece are subword tokenization algorithms used in modern LLMs.
+SentencePiece is language-agnostic and works directly on raw text.
+
+Los modelos de lenguaje grandes aprenden patrones estadísticos del texto.
+La tokenización es el primer paso en el procesamiento de lenguaje natural.
+Los embeddings representan palabras como vectores en un espacio continuo.
+"""
+
+# Guardar corpus en archivo temporal
+with tempfile.NamedTemporaryFile(mode='w', suffix='.txt', delete=False) as f:
+    f.write(corpus_text)
+    corpus_path = f.name
+
+# Entrenar modelo SentencePiece
+model_prefix = tempfile.mktemp()
 spm.SentencePieceTrainer.train(
-    input='corpus.txt',
-    model_prefix='tokenizer',
-    vocab_size=32000,
-    model_type='bpe'  # o 'unigram'
+    input=corpus_path,
+    model_prefix=model_prefix,
+    vocab_size=500,  # Vocabulario pequeño para demo
+    model_type='bpe',
+    character_coverage=1.0,
+    pad_id=3
 )
 
-# Usar modelo
+# Cargar modelo entrenado
 sp = spm.SentencePieceProcessor()
-sp.load('tokenizer.model')
+sp.load(f'{model_prefix}.model')
 
-tokens = sp.encode_as_pieces("Hello world")
-# ['▁Hello', '▁world']  # ▁ marca inicio de palabra
+print("SentencePiece - Entrenamiento y Uso Real")
+print("=" * 60)
+print(f"Vocabulario entrenado: {sp.get_piece_size()} tokens")
+
+# Demostrar tokenización
+test_texts = [
+    "tl.load(x_ptr + offsets, mask=mask)",
+    "The Transformer architecture",
+    "tokenización de texto"
+]
+
+print("\nTokenización de ejemplos:")
+print("-" * 60)
+for text in test_texts:
+    pieces = sp.encode_as_pieces(text)
+    ids = sp.encode(text)
+    print(f"\nTexto: '{text}'")
+    print(f"  Tokens: {pieces}")
+    print(f"  IDs:    {ids}")
+
+# Mostrar algunos tokens del vocabulario
+print("\n\nMuestra del vocabulario aprendido:")
+print("-" * 60)
+for i in range(min(20, sp.get_piece_size())):
+    print(f"  {i}: '{sp.id_to_piece(i)}'")
+
+# Limpiar archivos temporales
+os.unlink(corpus_path)
+os.unlink(f'{model_prefix}.model')
+os.unlink(f'{model_prefix}.vocab')
 ```
 
 ### Comparación de Tokenizadores

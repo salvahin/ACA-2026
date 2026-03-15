@@ -1006,22 +1006,31 @@ ax4.set_ylim(0, 1.2)
 ax5 = fig.add_subplot(gs[2, :])
 ax5.axis('off')
 
+# Guardar el ejemplo [0, 1] antes de llamar forward (que modifica network.X)
+example_input = X[1].reshape(1, -1)  # [0, 1]
+Z1_example = example_input @ network.W1 + network.b1
+A1_example = network.sigmoid(Z1_example)
+Z2_example = A1_example @ network.W2 + network.b2
+A2_example = network.sigmoid(Z2_example)[0, 0]
+loss_example = (A2_example - 1) ** 2
+dLoss_dA2 = 2 * (A2_example - 1)
+
 step_by_step = f"""
 EJEMPLO DE BACKPROPAGATION - ÚLTIMA ÉPOCA
 
 1. FORWARD PASS:
    Input: X = [0, 1]
-   Z1 = X @ W1 + b1 = {network.X[1] @ network.W1 + network.b1}
-   A1 = sigmoid(Z1) = {network.sigmoid(network.X[1] @ network.W1 + network.b1)}
-   Z2 = A1 @ W2 + b2 = {(network.sigmoid(network.X[1] @ network.W1 + network.b1) @ network.W2 + network.b2)[0]}
-   A2 = sigmoid(Z2) = {network.forward(network.X[1].reshape(1, -1))[0, 0]:.4f} (predicción)
+   Z1 = X @ W1 + b1 = {Z1_example}
+   A1 = sigmoid(Z1) = {A1_example}
+   Z2 = A1 @ W2 + b2 = {Z2_example[0]}
+   A2 = sigmoid(Z2) = {A2_example:.4f} (predicción)
    Target: y = 1
 
 2. CALCULAR PÉRDIDA:
-   Loss = (A2 - y)² = ({network.forward(network.X[1].reshape(1, -1))[0, 0]:.4f} - 1)² = {((network.forward(network.X[1].reshape(1, -1))[0, 0] - 1) ** 2):.6f}
+   Loss = (A2 - y)² = ({A2_example:.4f} - 1)² = {loss_example:.6f}
 
 3. BACKWARD PASS:
-   ∂Loss/∂A2 = 2(A2 - y) = {2 * (network.forward(network.X[1].reshape(1, -1))[0, 0] - 1):.4f}
+   ∂Loss/∂A2 = 2(A2 - y) = {dLoss_dA2:.4f}
    ∂Loss/∂Z2 = ∂Loss/∂A2 * sigmoid'(A2) (regla de la cadena)
    ∂Loss/∂W2 = A1ᵀ @ ∂Loss/∂Z2 (gradiente para W2)
 

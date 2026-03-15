@@ -18,9 +18,55 @@ COLAB_BADGE = """
 ```
 """
 
+def has_executable_code_cells(content: str) -> bool:
+    """
+    Verifica si el archivo tiene code-cells ejecutables REALES.
+
+    Ignora celdas que son solo setup (pip install, imports básicos, prints de verificación).
+    """
+    # Encontrar todas las code-cells
+    code_cell_pattern = r'```\{code-cell\}[^\n]*\n(.*?)```'
+    matches = re.findall(code_cell_pattern, content, re.DOTALL)
+
+    if not matches:
+        return False
+
+    # Patrones que indican celda de setup (no educativa)
+    setup_patterns = [
+        r'^:tags:\s*\[.*setup.*\]',           # Tags de setup
+        r'^\s*#\s*Setup\s',                    # Comentarios de setup
+        r'^\s*!pip\s+install',                 # Instalaciones pip
+        r"^\s*print\(['\"]Dependencies",       # Print de dependencias
+        r"^\s*print\(['\"]Módulo",             # Print de módulo
+        r'^\s*import\s+sys\s*\n\s*if\s+[\'"]google\.colab',  # Check de Colab
+    ]
+
+    for cell_content in matches:
+        cell_lines = cell_content.strip()
+
+        # Verificar si la celda es puramente de setup
+        is_setup_only = False
+        for pattern in setup_patterns:
+            if re.search(pattern, cell_lines, re.MULTILINE | re.IGNORECASE):
+                is_setup_only = True
+                break
+
+        # Si encontramos una celda que NO es setup, el archivo tiene código ejecutable
+        if not is_setup_only:
+            # Verificar que la celda tiene contenido significativo (no solo comentarios)
+            non_comment_lines = [
+                line for line in cell_lines.split('\n')
+                if line.strip() and not line.strip().startswith('#') and not line.strip().startswith(':')
+            ]
+            if non_comment_lines:
+                return True
+
+    return False
+
+
 def has_code_cells(content: str) -> bool:
     """Verifica si el archivo tiene code-cells ejecutables."""
-    return "```{code-cell}" in content
+    return has_executable_code_cells(content)
 
 def has_colab_badge(content: str) -> bool:
     """Verifica si ya tiene un badge de Colab."""
@@ -72,7 +118,7 @@ def main():
     print("Agregando badges de Google Colab")
     print("=" * 50)
 
-    modules = ["ai", "compilers", "stats", "project_1", "project_2"]
+    modules = ["ai", "compilers", "stats", "project_1", "project_2", "research"]
     total_added = 0
 
     for module in modules:

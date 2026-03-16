@@ -37,3 +37,8 @@ VALIDACION_IMAGENES_MAPEO_CORRECTO.md
 PROMPTS_IMAGENES_CURSO.md
 Guia_Profesores_TC3002B.docx
 Imagenes gemini/
+
+.python-version
+pyproject.toml
+uv.lock
+

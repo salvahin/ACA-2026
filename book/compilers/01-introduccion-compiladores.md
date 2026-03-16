@@ -21,7 +21,7 @@ kernelspec:
 :tags: [remove-input, setup]
 
 # Setup Colab Environment
-!pip install -q numpy pandas matplotlib seaborn scikit-learn torch transformers accelerate triton xgrammar
+!pip install -q plotly
 print('Dependencies installed!')
 ```
 
@@ -283,20 +283,9 @@ ID → [a-zA-Z_][a-zA-Z0-9_]*
 
 ### Jerarquía Ilustrada
 
-```
-Tipo 0 (Recursivamente Enumerable)
-    ↑
-    ├─── Más poder expresivo
-Tipo 1 (Context-Sensitive)
-    ↑
-    ├─── Más fácil de reconocer
-Tipo 2 (Context-Free) ← ¡Aquí estamos nosotros!
-    ↑
-    ├─── Más fácil de implementar
-Tipo 3 (Regular)
-    ↓
-    └─── Menos poder expresivo
-```
+![**Figura 2:** Jerarquía de Chomsky — cuatro niveles de poder expresivo y sus autómatas asociados.](diagrams/chomsky_hierarchy.png)
+
+***Figura 2:** Jerarquía de Chomsky — cuatro niveles de poder expresivo y sus autómatas asociados.*
 
 ### Relaciones de Inclusión
 
@@ -307,6 +296,10 @@ Regular ⊂ Context-Free ⊂ Context-Sensitive ⊂ Recursivamente Enumerable
 Cada clase contiene todas las clases anteriores. Un lenguaje regular también es context-free.
 
 ## Aplicación a XGrammar
+
+![**Figura 3:** Mapeo entre las fases del compilador tradicional y el pipeline de XGrammar.](diagrams/xgrammar_pipeline.png)
+
+***Figura 3:** Mapeo entre las fases del compilador tradicional y el pipeline de XGrammar. Cada fase del compilador clásico tiene un equivalente directo en XGrammar.*
 
 En el proyecto, trabajamos con Tipo 2 (CFG). Esto significa:
 

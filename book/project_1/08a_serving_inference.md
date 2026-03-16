@@ -35,7 +35,7 @@ else:
 :tags: [remove-input, setup]
 
 # Setup Colab Environment
-!pip install -q numpy pandas matplotlib seaborn scikit-learn torch transformers accelerate triton xgrammar
+!pip install -q plotly
 print('Dependencies installed!')
 ```
 
@@ -66,7 +66,7 @@ Esta lectura trata sobre **optimización de inference**: cómo servir LLMs rápi
 :align: center
 :width: 90%
 
-**Figura 6:** Arquitectura de serving con KV-Cache, continuous batching, cuantización y speculative decoding.
+**Figura 1:** Arquitectura de serving con KV-Cache, continuous batching, cuantización y speculative decoding.
 :::
 
 ---

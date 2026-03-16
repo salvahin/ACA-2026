@@ -1,0 +1,12 @@
+{
+  "expectations": [
+    {"text": "Se detectaron los 3 placeholders del Markdown", "passed": true, "evidence": "Agent read the file and identified all 3 placeholder locations"},
+    {"text": "Se generaron archivos PNG para cada placeholder", "passed": true, "evidence": "3 PNG files created: 01_pid_block_diagram.png (146KB), 02_step_response_comparison.png (326KB), 03_industrial_control_panel.png (305KB)"},
+    {"text": "El Markdown de salida reemplaza los placeholders con referencias a las imágenes", "passed": true, "evidence": "sample-lectura-enriquecida.md created with image references"},
+    {"text": "El primer placeholder se clasificó como tipo diagram o schematic", "passed": false, "evidence": "No type classification was performed - agent used ad hoc matplotlib approach"},
+    {"text": "El segundo placeholder se clasificó como tipo graph", "passed": false, "evidence": "No type classification system used"},
+    {"text": "El tercer placeholder se clasificó como tipo photo", "passed": false, "evidence": "No type classification system - generated matplotlib mock instead of photo-realistic image"}
+  ],
+  "summary": {"passed": 3, "failed": 3, "total": 6, "pass_rate": 0.50},
+  "timing": {"total_duration_seconds": 104.3}
+}

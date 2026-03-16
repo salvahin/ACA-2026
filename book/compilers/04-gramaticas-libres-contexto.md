@@ -21,7 +21,7 @@ kernelspec:
 :tags: [remove-input, setup]
 
 # Setup Colab Environment
-!pip install -q numpy pandas matplotlib seaborn scikit-learn torch transformers accelerate triton xgrammar
+!pip install -q plotly
 print('Dependencies installed!')
 ```
 
@@ -102,7 +102,7 @@ A → β | γ  (múltiples opciones)
 :align: center
 :width: 90%
 
-**Figura 1.1:** Análisis detallado de la jerarquía de Chomsky: restricciones progresivas en las reglas de producción y los lenguajes que cada tipo puede reconocer.
+**Figura 2:** Análisis detallado de la jerarquía de Chomsky: restricciones progresivas en las reglas de producción y los lenguajes que cada tipo puede reconocer.
 :::
 
 ### Ejemplo 1: Expresiones Aritméticas Simples
@@ -335,7 +335,7 @@ F → ( E ) | número
 :align: center
 :width: 90%
 
-**Figura 2:** Estructura jerárquica de árboles de análisis para expresiones aritméticas: la profundidad del árbol refleja la precedencia de operadores. Operadores con mayor precedencia aparecen más profundos en el árbol.
+**Figura 3:** Estructura jerárquica de árboles de análisis para expresiones aritméticas: la profundidad del árbol refleja la precedencia de operadores. Operadores con mayor precedencia aparecen más profundos en el árbol.
 :::
 
 Esto es **tan importante** que dedicaremos toda una lectura a diseño de gramáticas.

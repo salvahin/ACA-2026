@@ -1,0 +1,12 @@
+{
+  "expectations": [
+    {"text": "Se detectaron los 3 placeholders del Markdown", "passed": true, "evidence": "metrics.json shows 3 placeholders extracted with correct line numbers"},
+    {"text": "Se generaron archivos PNG para cada placeholder", "passed": false, "evidence": "No images generated - GEMINI_API_KEY not set. However, the workflow correctly prepared all prompts and configs."},
+    {"text": "El Markdown de salida reemplaza los placeholders con referencias a las imágenes", "passed": false, "evidence": "lectura-con-imagenes.md exists but placeholders not replaced since images were not generated"},
+    {"text": "El primer placeholder se clasificó como tipo diagram o schematic", "passed": true, "evidence": "metrics.json shows placeholder 0 classified as 'diagram'"},
+    {"text": "El segundo placeholder se clasificó como tipo graph", "passed": true, "evidence": "metrics.json shows placeholder 1 classified as 'graph'"},
+    {"text": "El tercer placeholder se clasificó como tipo photo", "passed": true, "evidence": "metrics.json shows placeholder 2 classified as 'photo'"}
+  ],
+  "summary": {"passed": 4, "failed": 2, "total": 6, "pass_rate": 0.67},
+  "timing": {"total_duration_seconds": 89.2}
+}

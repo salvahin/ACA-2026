@@ -1,11 +1,4 @@
 # Simulaciones Interactivas - Project_1
-
-```{admonition} Ejecutar en Google Colab
-:class: tip
-
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/salvahin/ACA-2026/blob/main/book/notebooks/SIMULACIONES_README.ipynb)
-```
-
 ```{code-cell} ipython3
 :tags: [remove-input, setup]
 

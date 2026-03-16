@@ -15,7 +15,7 @@ kernelspec:
 # Setup condicional para Google Colab
 import sys
 if 'google.colab' in sys.modules:
-    !pip install -q transformers bitsandbytes triton vllm auto-gptq datasets evaluate
+    !pip install -q transformers xgrammar plotly
     # Nota: la lista anterior puede contener librerías extra, las cuales Colab ignorará o instalará rápido.
 ```
 
@@ -71,7 +71,7 @@ LogitsProcessor (restricciones en generación)
 :align: center
 :width: 90%
 
-**Figura 2:** Pipeline de compilación de XGrammar: de JSON Schema a máquina de estados finitos a procesador de logits.
+**Figura 1:** Pipeline de compilación de XGrammar: de JSON Schema a máquina de estados finitos a procesador de logits.
 :::
 
 Veamos cada paso.
@@ -395,7 +395,7 @@ fig.show()
 :align: center
 :width: 90%
 
-**Figura 3:** Flujo de generación restringida - LogitsProcessor filtra tokens inválidos en cada paso.
+**Figura 2:** Flujo de generación restringida - LogitsProcessor filtra tokens inválidos en cada paso.
 :::
 
 ```python

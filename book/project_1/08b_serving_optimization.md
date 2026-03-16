@@ -21,7 +21,7 @@ kernelspec:
 :tags: [remove-input, setup]
 
 # Setup Colab Environment
-!pip install -q numpy pandas matplotlib seaborn scikit-learn torch transformers accelerate triton xgrammar
+!pip install -q plotly
 print('Dependencies installed!')
 ```
 
@@ -36,6 +36,15 @@ Al finalizar esta lectura podrás:
 
 
 ## Parte 3: Continuous Batching
+
+:::{figure} diagrams/serving_optimizations.png
+:name: fig-serving-optimizations
+:alt: Diagrama comparativo de las tres técnicas de optimización de serving para LLMs
+:align: center
+:width: 100%
+
+**Figura 1:** Las tres técnicas principales de optimización de serving: Continuous Batching (maximiza utilización GPU), Speculative Decoding (acelera generación con un modelo borrador), y Cuantización (reduce memoria con menor precisión numérica).
+:::
 
 ### Batching Tradicional
 

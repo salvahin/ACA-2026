@@ -15,7 +15,8 @@ kernelspec:
 # Setup condicional para Google Colab
 import sys
 if 'google.colab' in sys.modules:
-    !pip install -q transformers bitsandbytes triton datasets evaluate
+    !pip install -q transformers bitsandbytes triton vllm auto-gptq datasets evaluate
+    # Nota: la lista anterior puede contener librerías extra, las cuales Colab ignorará o instalará rápido.
 ```
 
 ```{admonition} Ejecutar en Google Colab
@@ -314,8 +315,6 @@ def simulate_gpu_grid_mapping(grid_dim_x, block_dim_x):
 # Lanzar 3 bloques, cada uno con 4 threads
 simulate_gpu_grid_mapping(grid_dim_x=3, block_dim_x=4)
 ```
-
----
 
 ## Jerarquía de Memoria GPU
 

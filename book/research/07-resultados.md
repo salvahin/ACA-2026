@@ -10,22 +10,6 @@ kernelspec:
 ---
 
 # Sección de Resultados: Presentar lo Que Encontraste con Rigor
-
-```{code-cell} ipython3
-# Setup condicional para Google Colab
-import sys
-if 'google.colab' in sys.modules:
-    !pip install -q transformers bitsandbytes triton vllm auto-gptq datasets evaluate
-    # Nota: la lista anterior puede contener librerías extra, las cuales Colab ignorará o instalará rápido.
-```
-
-
-```{admonition} Ejecutar en Google Colab
-:class: tip
-
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/salvahin/ACA-2026/blob/main/book/notebooks/07-resultados.ipynb)
-```
-
 ```{code-cell} ipython3
 :tags: [remove-input, setup]
 
@@ -96,6 +80,15 @@ Sin interpretación. Solo datos.
 Algunas proyecto de investigación combinan estas ("Resultados y Discusión"), lo cual está bien, pero aún deben estar separadas conceptualmente.
 
 > 💡 **Concepto clave:** En Resultados, tu trabajo es comunicar; en Discusión, tu trabajo es explicar.
+
+:::{figure} diagrams/results_vs_discussion.png
+:name: fig-results-vs-discussion
+:alt: Diagrama comparativo entre sección de Resultados y sección de Discusión en escritura científica
+:align: center
+:width: 90%
+
+**Figura 1:** La separación conceptual entre Resultados (los hechos) y Discusión (el significado) es obligatoria aunque se combinen en una sola sección. Mezclarlas sin estructura confunde al lector.
+:::
 
 ---
 

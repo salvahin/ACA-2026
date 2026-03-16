@@ -15,11 +15,63 @@ kernelspec:
 # Setup condicional para Google Colab
 import sys
 if 'google.colab' in sys.modules:
-    !pip install -q transformers bitsandbytes triton vllm auto-gptq datasets evaluate
-    # Nota: la lista anterior puede contener librerías extra, las cuales Colab ignorará o instalará rápido.
+    !pip install -q transformers peft huggingface_hub evaluate rouge_score sacrebleu
+    print('Dependencias instaladas!')
 ```
 
+```{admonition} ⚠️ Acceso a Modelos Llama en Hugging Face
+:class: warning
 
+Los modelos de Meta Llama requieren **solicitar acceso** antes de poder usarlos:
+
+1. **Crear cuenta en Hugging Face:** [huggingface.co/join](https://huggingface.co/join)
+2. **Solicitar acceso al modelo:** Visita [meta-llama/Llama-2-7b-hf](https://huggingface.co/meta-llama/Llama-2-7b-hf) y haz clic en "Request access"
+3. **Aceptar licencia de Meta:** Completa el formulario aceptando los términos de uso
+4. **Crear token de acceso:** En [huggingface.co/settings/tokens](https://huggingface.co/settings/tokens), crea un token con permisos de lectura
+5. **Esperar aprobación:** Generalmente toma minutos, pero puede tardar hasta 24 horas
+
+Una vez aprobado, ejecuta la siguiente celda para autenticarte.
+```
+
+```{code-cell} ipython3
+# Autenticación con Hugging Face para acceder a modelos Llama
+import os
+from huggingface_hub import login
+
+def autenticar_huggingface():
+    """
+    Autentica con Hugging Face usando token del ambiente o solicitándolo al usuario.
+    """
+    # Opción 1: Token en variable de ambiente (recomendado para Colab)
+    token = os.environ.get("HF_TOKEN") or os.environ.get("HUGGING_FACE_HUB_TOKEN")
+
+    # Opción 2: Token en Colab Secrets (si está configurado)
+    if token is None:
+        try:
+            from google.colab import userdata
+            token = userdata.get('HF_TOKEN')
+            print("✓ Token encontrado en Colab Secrets")
+        except:
+            pass
+
+    # Opción 3: Solicitar al usuario
+    if token is None:
+        print("No se encontró token de Hugging Face en el ambiente.")
+        print("Obtén tu token en: https://huggingface.co/settings/tokens")
+        print()
+        token = input("Ingresa tu Hugging Face token: ").strip()
+
+    if token:
+        login(token=token)
+        print("✓ Autenticación exitosa con Hugging Face")
+        return True
+    else:
+        print("✗ No se proporcionó token. No podrás acceder a modelos con restricción.")
+        return False
+
+# Ejecutar autenticación
+autenticar_huggingface()
+```
 
 ```{admonition} Ejecutar en Google Colab
 :class: tip
@@ -93,7 +145,7 @@ Paso 1: Prepare datos
 
 Paso 2: Configura entrenamiento
   ```
-  modelo = AutoModelForCausalLM.from_pretrained("meta-llama/Llama-2-7b")
+  modelo = AutoModelForCausalLM.from_pretrained("meta-llama/Llama-2-7b-hf")
 
   optimizer = AdamW(modelo.parameters(), lr=1e-5)
 
@@ -173,6 +225,15 @@ Solo un 1% de A100 puede hacer esto
 
 ### La Solución: PEFT (LoRA)
 
+:::{figure} diagrams/lora_architecture.png
+:name: fig-lora-architecture-diagram
+:alt: Arquitectura LoRA mostrando la descomposición de la matriz de actualización en dos matrices de bajo rango
+:align: center
+:width: 80%
+
+**Figura 2:** LoRA congela los pesos originales W y aprende dos matrices de bajo rango A y B cuyo producto BA ≈ ΔW. Con rango r=8, LoRA entrena solo el 0.1–1% de los parámetros totales con calidad comparable al full fine-tuning.
+:::
+
 En lugar de actualizar TODOS los pesos, actualiza solo una **matriz de rango bajo**:
 
 ```
@@ -200,11 +261,28 @@ Con LoRA en todas las capas:
 ### LoRA en Práctica
 
 ```{code-cell} ipython3
-:tags: [skip-execution]
-
 from peft import get_peft_model, LoraConfig
-from transformers import AutoModelForCausalLM
+from transformers import AutoModelForCausalLM, AutoTokenizer
+import torch
 
+# Usamos TinyLlama (1.1B params) - más rápido para demostración en T4
+# Para producción usarías meta-llama/Llama-2-7b-hf
+model_name = "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
+
+print(f"Cargando modelo: {model_name}")
+print(f"GPU disponible: {torch.cuda.is_available()}")
+if torch.cuda.is_available():
+    print(f"GPU: {torch.cuda.get_device_name(0)}")
+
+# Cargar modelo base
+modelo = AutoModelForCausalLM.from_pretrained(
+    model_name,
+    torch_dtype=torch.float16,
+    device_map="auto"
+)
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+
+# Configuración LoRA
 config = LoraConfig(
     r=8,                           # Rank bajo
     lora_alpha=32,                 # Escala de actualización
@@ -214,13 +292,44 @@ config = LoraConfig(
     task_type="CAUSAL_LM"
 )
 
-modelo = AutoModelForCausalLM.from_pretrained("meta-llama/Llama-2-7b")
-modelo = get_peft_model(modelo, config)
+# Aplicar LoRA
+modelo_lora = get_peft_model(modelo, config)
 
-# Ahora entrenar como normal, pero:
-# - Memoria: 10x más eficiente
-# - Tiempo: 5x más rápido
-# - Guardas solo: 1-2% de parámetros (300 MB en lugar de 28 GB)
+# Mostrar estadísticas
+print("\n" + "="*60)
+modelo_lora.print_trainable_parameters()
+print("="*60)
+```
+
+Ahora veamos que el modelo con LoRA sigue funcionando correctamente:
+
+```{code-cell} ipython3
+# Verificar que el modelo genera texto correctamente
+prompt = "### Pregunta: ¿Qué es machine learning?\n### Respuesta:"
+
+inputs = tokenizer(prompt, return_tensors="pt").to(modelo_lora.device)
+
+with torch.no_grad():
+    outputs = modelo_lora.generate(
+        **inputs,
+        max_new_tokens=100,
+        temperature=0.7,
+        do_sample=True,
+        pad_token_id=tokenizer.eos_token_id
+    )
+
+respuesta = tokenizer.decode(outputs[0], skip_special_tokens=True)
+print(respuesta)
+```
+
+```{admonition} 💡 Nota sobre modelos
+:class: tip
+Usamos **TinyLlama** (1.1B parámetros) para esta demostración porque:
+- Cabe cómodamente en GPU T4 (16GB)
+- Es rápido de cargar y ejecutar
+- Tiene arquitectura Llama (mismos `target_modules`)
+
+Para producción, cambiarías a `meta-llama/Llama-2-7b-hf` o modelos más grandes.
 ```
 
 ### QLoRA: Aún Más Eficiente
@@ -254,7 +363,7 @@ QLoRA               2 GB       0.15x     300 MB    99%
 :align: center
 :width: 90%
 
-**Figura 2:** Comparación de Métodos de Fine-Tuning - full tuning vs LoRA vs QLoRA.
+**Figura 3:** Comparación de Métodos de Fine-Tuning - full tuning vs LoRA vs QLoRA.
 :::
 
 ---
@@ -302,6 +411,84 @@ Con instruction tuning:
 ```
 
 Hace al modelo general sobre **tipos de instrucciones**, no solo una tarea.
+
+### Formato de Datos para Instruction Tuning
+
+```{code-cell} ipython3
+# Ejemplo de dataset para instruction tuning
+instruction_dataset = [
+    {
+        "instruction": "Traduce al español",
+        "input": "Hello, how are you?",
+        "output": "Hola, ¿cómo estás?"
+    },
+    {
+        "instruction": "Clasifica el sentimiento (positivo/negativo/neutro)",
+        "input": "Este producto es terrible, no lo recomiendo a nadie",
+        "output": "negativo"
+    },
+    {
+        "instruction": "Resume el siguiente texto en una oración",
+        "input": "Python es un lenguaje de programación interpretado de alto nivel. Fue creado por Guido van Rossum y lanzado en 1991. Python enfatiza la legibilidad del código y permite expresar conceptos en menos líneas que otros lenguajes.",
+        "output": "Python es un lenguaje interpretado de alto nivel creado en 1991 que prioriza la legibilidad."
+    },
+    {
+        "instruction": "Genera código Python para la siguiente tarea",
+        "input": "Función que calcula el factorial de un número",
+        "output": "def factorial(n):\n    if n <= 1:\n        return 1\n    return n * factorial(n - 1)"
+    }
+]
+
+def format_alpaca_prompt(example):
+    """Formatea ejemplo en formato Alpaca (Stanford)."""
+    if example.get("input"):
+        return f"""### Instruction:
+{example['instruction']}
+
+### Input:
+{example['input']}
+
+### Response:
+{example['output']}"""
+    else:
+        return f"""### Instruction:
+{example['instruction']}
+
+### Response:
+{example['output']}"""
+
+# Mostrar ejemplos formateados
+print("Ejemplo de prompt formateado para fine-tuning:")
+print("=" * 60)
+print(format_alpaca_prompt(instruction_dataset[0]))
+print("\n" + "=" * 60)
+print(format_alpaca_prompt(instruction_dataset[3]))
+```
+
+```{code-cell} ipython3
+# Probar el modelo con un prompt en formato de instrucción
+prompt = format_alpaca_prompt({
+    "instruction": "Traduce al inglés",
+    "input": "Buenos días, ¿cómo te llamas?",
+    "output": ""
+}).replace("### Response:\n", "### Response:\n")  # Dejar vacío para que genere
+
+inputs = tokenizer(prompt, return_tensors="pt").to(modelo_lora.device)
+
+with torch.no_grad():
+    outputs = modelo_lora.generate(
+        **inputs,
+        max_new_tokens=50,
+        temperature=0.3,
+        do_sample=True,
+        pad_token_id=tokenizer.eos_token_id
+    )
+
+print("Prompt:")
+print(prompt)
+print("\nRespuesta del modelo:")
+print(tokenizer.decode(outputs[0], skip_special_tokens=True).split("### Response:")[-1].strip())
+```
 
 ---
 
@@ -358,7 +545,7 @@ Problema: Modelo funciona en training pero falla en producción
 :align: center
 :width: 90%
 
-**Figura 2:** Métricas de Evaluación - BLEU mide precisión de n-gramas, ROUGE mide recall para resumenes.
+**Figura 4:** Métricas de Evaluación - BLEU mide precisión de n-gramas, ROUGE mide recall para resumenes.
 :::
 
 ### Métricas Automáticas
@@ -393,6 +580,108 @@ Propiedad: Mejor para resúmenes, pero aún imperfecto.
 #### METEOR, CIDEr, etc.
 
 Variaciones de las anteriores, cada una captura algo diferente.
+
+### Ejemplo Práctico: Calculando BLEU y ROUGE
+
+```{code-cell} ipython3
+import evaluate
+
+# Cargar métricas
+bleu = evaluate.load("sacrebleu")
+rouge = evaluate.load("rouge")
+
+# Ejemplo 1: Traducción perfecta
+predictions_1 = ["The cat is on the mat"]
+references_1 = [["The cat is on the mat"]]  # Lista de listas (múltiples referencias válidas)
+
+resultado_bleu_1 = bleu.compute(predictions=predictions_1, references=references_1)
+print("Ejemplo 1: Traducción perfecta")
+print(f"  Predicción: '{predictions_1[0]}'")
+print(f"  Referencia: '{references_1[0][0]}'")
+print(f"  BLEU Score: {resultado_bleu_1['score']:.2f}")
+print()
+
+# Ejemplo 2: Traducción parcialmente correcta
+predictions_2 = ["The black cat"]
+references_2 = [["The cat is black"]]
+
+resultado_bleu_2 = bleu.compute(predictions=predictions_2, references=references_2)
+print("Ejemplo 2: Traducción parcial")
+print(f"  Predicción: '{predictions_2[0]}'")
+print(f"  Referencia: '{references_2[0][0]}'")
+print(f"  BLEU Score: {resultado_bleu_2['score']:.2f}")
+print()
+
+# Ejemplo 3: Múltiples referencias válidas
+predictions_3 = ["Hello, how are you doing?"]
+references_3 = [["Hello, how are you?", "Hi, how are you doing?", "Hey, how's it going?"]]
+
+resultado_bleu_3 = bleu.compute(predictions=predictions_3, references=references_3)
+print("Ejemplo 3: Múltiples referencias válidas")
+print(f"  Predicción: '{predictions_3[0]}'")
+print(f"  Referencias: {references_3[0]}")
+print(f"  BLEU Score: {resultado_bleu_3['score']:.2f}")
+```
+
+```{code-cell} ipython3
+# ROUGE para evaluación de resúmenes
+print("=" * 60)
+print("ROUGE - Evaluación de Resúmenes")
+print("=" * 60)
+
+# Ejemplo de resumen
+texto_original = """
+Python es un lenguaje de programación de alto nivel, interpretado y de propósito general.
+Fue creado por Guido van Rossum y lanzado por primera vez en 1991. Python enfatiza
+la legibilidad del código con su notable uso de sangría significativa. Sus constructos
+de lenguaje y enfoque orientado a objetos tienen como objetivo ayudar a los programadores
+a escribir código claro y lógico para proyectos de pequeña y gran escala.
+"""
+
+resumen_referencia = "Python es un lenguaje interpretado de alto nivel creado por Guido van Rossum en 1991 que enfatiza la legibilidad del código."
+resumen_generado_bueno = "Python es un lenguaje de programación de alto nivel e interpretado, creado en 1991, que prioriza la legibilidad."
+resumen_generado_malo = "Java es un lenguaje compilado de bajo nivel usado principalmente para sistemas embebidos."
+
+# Calcular ROUGE
+resultado_bueno = rouge.compute(
+    predictions=[resumen_generado_bueno],
+    references=[resumen_referencia]
+)
+
+resultado_malo = rouge.compute(
+    predictions=[resumen_generado_malo],
+    references=[resumen_referencia]
+)
+
+print("\nResumen de referencia:")
+print(f"  '{resumen_referencia}'")
+print()
+
+print("Resumen generado BUENO:")
+print(f"  '{resumen_generado_bueno}'")
+print(f"  ROUGE-1: {resultado_bueno['rouge1']:.4f}")
+print(f"  ROUGE-2: {resultado_bueno['rouge2']:.4f}")
+print(f"  ROUGE-L: {resultado_bueno['rougeL']:.4f}")
+print()
+
+print("Resumen generado MALO:")
+print(f"  '{resumen_generado_malo}'")
+print(f"  ROUGE-1: {resultado_malo['rouge1']:.4f}")
+print(f"  ROUGE-2: {resultado_malo['rouge2']:.4f}")
+print(f"  ROUGE-L: {resultado_malo['rougeL']:.4f}")
+```
+
+```{admonition} 📊 Interpretación de métricas
+:class: note
+- **ROUGE-1**: Overlap de unigramas (palabras individuales)
+- **ROUGE-2**: Overlap de bigramas (pares de palabras consecutivas)
+- **ROUGE-L**: Longest Common Subsequence (secuencia más larga en común)
+
+Valores típicos:
+- \>0.5: Excelente
+- 0.3-0.5: Bueno
+- <0.3: Necesita mejora
+```
 
 ### LLM-as-Judge
 
@@ -528,7 +817,7 @@ print(f"Referencia (aleatorio puro): {vocab_size}")
 :align: center
 :width: 90%
 
-**Figura 3:** Pass@k - probabilidad de obtener al menos una solución correcta en k intentos.
+**Figura 5:** Pass@k - probabilidad de obtener al menos una solución correcta en k intentos.
 :::
 
 Métrica importante para generación de código y problemas complejos:
@@ -569,6 +858,107 @@ O más simplemente (si puedes generar muchos intentos):
   Pass@k ≈ 1 - (1 - Pass@1)^k
 ```
 
+### Ejemplo Práctico: Calculando Pass@k
+
+```{code-cell} ipython3
+import numpy as np
+from math import comb
+
+def pass_at_k(n: int, c: int, k: int) -> float:
+    """
+    Calcula Pass@k usando la fórmula exacta (no sesgada).
+
+    Args:
+        n: número total de muestras generadas por problema
+        c: número de muestras correctas
+        k: k para Pass@k
+
+    Returns:
+        Probabilidad de que al menos 1 de k muestras sea correcta
+    """
+    if n - c < k:
+        return 1.0
+    return 1.0 - comb(n - c, k) / comb(n, k)
+
+# Escenario: Generamos 20 soluciones por problema, 14 son correctas
+n_samples = 20
+n_correct = 14
+
+print("Pass@k - Ejemplo con código generado")
+print("=" * 50)
+print(f"Muestras generadas por problema: {n_samples}")
+print(f"Muestras correctas: {n_correct}")
+print(f"Tasa de éxito individual: {n_correct/n_samples:.1%}")
+print()
+
+print("Resultados Pass@k:")
+for k in [1, 5, 10, 20]:
+    if k <= n_samples:
+        score = pass_at_k(n_samples, n_correct, k)
+        print(f"  Pass@{k:2d}: {score:.2%}")
+```
+
+```{code-cell} ipython3
+# Comparar fórmula exacta vs aproximación
+print("\nComparación: Fórmula exacta vs Aproximación")
+print("=" * 50)
+
+# La aproximación Pass@k ≈ 1 - (1 - Pass@1)^k
+# es válida cuando n → ∞
+
+pass_1_exacto = pass_at_k(n_samples, n_correct, 1)
+print(f"Pass@1 exacto: {pass_1_exacto:.4f}")
+print()
+
+print(f"{'k':<5} {'Exacto':<12} {'Aproximado':<12} {'Error':<10}")
+print("-" * 40)
+
+for k in [1, 5, 10, 20, 50, 100]:
+    if k <= n_samples:
+        exacto = pass_at_k(n_samples, n_correct, k)
+    else:
+        exacto = None  # No podemos calcular si k > n
+
+    aproximado = 1 - (1 - pass_1_exacto) ** k
+
+    if exacto is not None:
+        error = abs(exacto - aproximado) * 100
+        print(f"{k:<5} {exacto:<12.4f} {aproximado:<12.4f} {error:<.2f}%")
+    else:
+        print(f"{k:<5} {'N/A':<12} {aproximado:<12.4f} {'N/A':<10}")
+
+print()
+print("💡 La aproximación es útil para estimar Pass@k alto sin generar tantas muestras")
+```
+
+```{code-cell} ipython3
+# Visualización de Pass@k para diferentes tasas de éxito
+import matplotlib.pyplot as plt
+
+fig, ax = plt.subplots(figsize=(10, 6))
+
+k_values = np.arange(1, 101)
+pass_1_rates = [0.3, 0.5, 0.7, 0.9]  # Diferentes tasas de Pass@1
+colors = ['#e74c3c', '#f39c12', '#27ae60', '#3498db']
+
+for pass_1, color in zip(pass_1_rates, colors):
+    pass_k = [1 - (1 - pass_1) ** k for k in k_values]
+    ax.plot(k_values, pass_k, label=f'Pass@1 = {pass_1:.0%}', color=color, linewidth=2)
+
+ax.set_xlabel('k (número de intentos)', fontsize=12)
+ax.set_ylabel('Pass@k', fontsize=12)
+ax.set_title('Pass@k para diferentes tasas de éxito inicial', fontsize=14)
+ax.legend()
+ax.grid(True, alpha=0.3)
+ax.set_ylim(0, 1.05)
+ax.axhline(y=0.95, color='gray', linestyle='--', alpha=0.5, label='95% threshold')
+
+plt.tight_layout()
+plt.show()
+
+print("Observación: Con Pass@1=70%, necesitas ~5 intentos para alcanzar Pass@k≈95%")
+```
+
 ---
 
 ## Parte 7: Benchmark Contamination y Cómo Evitarlo
@@ -579,7 +969,7 @@ O más simplemente (si puedes generar muchos intentos):
 :align: center
 :width: 90%
 
-**Figura 4:** Benchmark Contamination - cuando los datos de evaluación aparecen en el entrenamiento, los resultados no son confiables.
+**Figura 6:** Benchmark Contamination - cuando los datos de evaluación aparecen en el entrenamiento, los resultados no son confiables.
 :::
 
 ### Tipos de Contaminación
@@ -621,6 +1011,129 @@ Test 3: Simil coseno
   ```
 ```
 
+### Ejemplo Práctico: Detección de Contaminación
+
+```{code-cell} ipython3
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+import numpy as np
+
+def detectar_contaminacion(fine_tuning_data: list, benchmark_data: list, umbral: float = 0.7):
+    """
+    Detecta posible contaminación entre datos de fine-tuning y benchmark.
+
+    Args:
+        fine_tuning_data: Lista de textos usados para fine-tuning
+        benchmark_data: Lista de textos del benchmark de evaluación
+        umbral: Umbral de similaridad para considerar contaminación (0-1)
+
+    Returns:
+        Lista de tuplas (idx_ft, idx_bench, similaridad) de posibles contaminaciones
+    """
+    vectorizer = TfidfVectorizer(ngram_range=(1, 3), max_features=5000)
+
+    # Combinar todos los textos para vectorizar
+    todos_textos = fine_tuning_data + benchmark_data
+    tfidf_matrix = vectorizer.fit_transform(todos_textos)
+
+    n_ft = len(fine_tuning_data)
+    contaminados = []
+
+    # Comparar cada texto de fine-tuning con cada texto del benchmark
+    for i in range(n_ft):
+        for j in range(n_ft, len(todos_textos)):
+            sim = cosine_similarity(tfidf_matrix[i:i+1], tfidf_matrix[j:j+1])[0][0]
+            if sim > umbral:
+                contaminados.append((i, j - n_ft, sim))
+
+    return sorted(contaminados, key=lambda x: -x[2])  # Ordenar por similaridad desc
+
+# Datos de ejemplo
+fine_tuning_data = [
+    "¿Cuál es la capital de Francia? La respuesta es París.",
+    "Python es un lenguaje de programación interpretado de alto nivel.",
+    "El agua hierve a 100 grados Celsius a nivel del mar.",
+    "Machine learning es una rama de la inteligencia artificial.",
+    "La fotosíntesis es el proceso por el cual las plantas producen energía."
+]
+
+benchmark_data = [
+    "¿Cuál es la capital de Francia? París es la capital.",  # ¡Similar al ejemplo 0!
+    "Java es un lenguaje de programación compilado orientado a objetos.",
+    "El punto de ebullición del agua es 100°C bajo presión atmosférica normal.",  # ¡Similar al ejemplo 2!
+    "¿Quién escribió Don Quijote? Miguel de Cervantes.",
+    "La gravedad en la Tierra es aproximadamente 9.8 m/s²."
+]
+
+print("Detección de Contaminación de Benchmark")
+print("=" * 60)
+
+# Detectar con umbral de 0.5
+contaminaciones = detectar_contaminacion(fine_tuning_data, benchmark_data, umbral=0.5)
+
+if contaminaciones:
+    print(f"\n⚠️  Se encontraron {len(contaminaciones)} posibles contaminaciones:\n")
+    for i, (idx_ft, idx_bench, sim) in enumerate(contaminaciones, 1):
+        print(f"{i}. Similaridad: {sim:.1%}")
+        print(f"   Fine-tuning[{idx_ft}]: \"{fine_tuning_data[idx_ft][:60]}...\"")
+        print(f"   Benchmark[{idx_bench}]:  \"{benchmark_data[idx_bench][:60]}...\"")
+        print()
+else:
+    print("✓ No se detectó contaminación con el umbral especificado.")
+```
+
+```{code-cell} ipython3
+# Análisis más profundo: matriz de similaridad completa
+import matplotlib.pyplot as plt
+
+# Calcular matriz de similaridad completa
+vectorizer = TfidfVectorizer(ngram_range=(1, 2))
+todos = fine_tuning_data + benchmark_data
+tfidf = vectorizer.fit_transform(todos)
+
+n_ft = len(fine_tuning_data)
+n_bench = len(benchmark_data)
+
+# Extraer submatriz de similaridad FT vs Benchmark
+sim_matrix = cosine_similarity(tfidf[:n_ft], tfidf[n_ft:])
+
+# Visualizar
+fig, ax = plt.subplots(figsize=(10, 6))
+im = ax.imshow(sim_matrix, cmap='RdYlGn_r', aspect='auto', vmin=0, vmax=1)
+
+ax.set_xlabel('Benchmark Data Index')
+ax.set_ylabel('Fine-Tuning Data Index')
+ax.set_title('Matriz de Similaridad: Fine-Tuning vs Benchmark\n(Rojo = Alta similaridad = Posible contaminación)')
+
+# Añadir valores en celdas
+for i in range(n_ft):
+    for j in range(n_bench):
+        color = 'white' if sim_matrix[i, j] > 0.5 else 'black'
+        ax.text(j, i, f'{sim_matrix[i, j]:.2f}', ha='center', va='center', color=color, fontsize=9)
+
+plt.colorbar(im, ax=ax, label='Similaridad Coseno')
+plt.tight_layout()
+plt.show()
+
+# Resumen
+print("\nResumen de contaminación:")
+alto_riesgo = np.sum(sim_matrix > 0.7)
+medio_riesgo = np.sum((sim_matrix > 0.5) & (sim_matrix <= 0.7))
+print(f"  Alto riesgo (>0.7):  {alto_riesgo} pares")
+print(f"  Medio riesgo (0.5-0.7): {medio_riesgo} pares")
+print(f"  Bajo riesgo (<0.5): {n_ft * n_bench - alto_riesgo - medio_riesgo} pares")
+```
+
+```{admonition} ⚠️ Buenas prácticas para evitar contaminación
+:class: warning
+
+1. **Antes de fine-tuning**: Verifica que tu dataset no contenga ejemplos del benchmark
+2. **Usa múltiples métodos**: Hash exacto + similaridad semántica
+3. **Documenta tu proceso**: Registra qué benchmarks excluiste
+4. **Considera benchmarks nuevos**: Usa evaluaciones que el modelo no pudo haber visto
+5. **Evaluación humana**: Complementa métricas automáticas con revisión manual
+```
+
 ---
 
 ## Parte 8: Recomendaciones Prácticas
@@ -631,7 +1144,7 @@ Test 3: Simil coseno
 :align: center
 :width: 90%
 
-**Figura 5:** Heatmap de Correctitud - visualiza rendimiento del modelo por categoría/dificultad de tarea.
+**Figura 7:** Heatmap de Correctitud - visualiza rendimiento del modelo por categoría/dificultad de tarea.
 :::
 
 ### Flujo de Fine-Tuning y Evaluación

@@ -15,7 +15,7 @@ kernelspec:
 # Setup condicional para Google Colab
 import sys
 if 'google.colab' in sys.modules:
-    !pip install -q transformers bitsandbytes triton vllm auto-gptq datasets evaluate
+    !pip install -q xgrammar plotly jsonschema
     # Nota: la lista anterior puede contener librerías extra, las cuales Colab ignorará o instalará rápido.
 ```
 
@@ -127,7 +127,7 @@ fig.show()
 :align: center
 :width: 90%
 
-**Figura 4:** Máquina de estados finitos generada desde JSON Schema - estados y transiciones válidas.
+**Figura 1:** Máquina de estados finitos generada desde JSON Schema - estados y transiciones válidas.
 :::
 
 ```json

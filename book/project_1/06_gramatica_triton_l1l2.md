@@ -29,7 +29,7 @@ else:
 # Setup condicional para Google Colab
 import sys
 if 'google.colab' in sys.modules:
-    !pip install -q transformers bitsandbytes triton vllm auto-gptq datasets evaluate
+    !pip install -q triton jsonschema
     # Nota: la lista anterior puede contener librerías extra, las cuales Colab ignorará o instalará rápido.
 ```
 
@@ -84,7 +84,7 @@ def kernel_name(x_ptr, y_ptr, BLOCK_SIZE: tl.constexpr):
 :align: center
 :width: 90%
 
-**Figura 5:** Arquitectura de niveles de gramática para kernels Triton.
+**Figura 1:** Arquitectura de niveles de gramática para kernels Triton.
 :::
 
 Desglosemos:

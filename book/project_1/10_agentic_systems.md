@@ -21,7 +21,7 @@ kernelspec:
 :tags: [remove-input, setup]
 
 # Setup Colab Environment
-!pip install -q numpy pandas matplotlib seaborn scikit-learn torch transformers accelerate triton xgrammar
+!pip install -q plotly
 print('Dependencies installed!')
 ```
 
@@ -473,7 +473,7 @@ Casos de uso ideales:
 :align: center
 :width: 90%
 
-**Figura 8:** Patrón ReAct - Thought → Action → Observation loops para razonamiento explícito.
+**Figura 1:** Patrón ReAct - Thought → Action → Observation loops para razonamiento explícito.
 :::
 
 ### El Problema
@@ -709,6 +709,15 @@ Desventajas:
 ---
 
 ## Parte 4: Multi-Agent Systems
+
+:::{figure} diagrams/kernelagent_pipeline.png
+:name: fig-kernelagent-pipeline
+:alt: Pipeline completo de KernelAgent como sistema agéntico multi-componente
+:align: center
+:width: 100%
+
+**Figura 2:** Arquitectura completa de KernelAgent: los cinco componentes (Prompt Engineering, Constrained Decoding, Tool Use, RAG y Multi-Agent) se integran en un pipeline autónomo capaz de generar, validar y optimizar kernels GPU iterativamente.
+:::
 
 Más allá de un agente, ¿qué pasa con múltiples agentes que colaboran?
 

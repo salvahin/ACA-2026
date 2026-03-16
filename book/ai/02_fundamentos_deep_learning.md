@@ -21,8 +21,8 @@ kernelspec:
 :tags: [remove-input, setup]
 
 # Setup Colab Environment
-!pip install -q numpy pandas matplotlib seaborn scikit-learn torch transformers accelerate triton
-print('Dependencies installed!')
+!pip install -q plotly
+print('Dependencias instaladas!')
 ```
 
 ```{admonition} Objetivos de Aprendizaje
@@ -431,7 +431,7 @@ Cada capa realiza: y = σ(W @ x + b)
 :align: center
 :width: 90%
 
-**Figura 5:** Capas y Activaciones - cada capa aplica transformación lineal seguida de activación no-lineal.
+**Figura 3:** Capas y Activaciones - cada capa aplica transformación lineal seguida de activación no-lineal.
 :::
 
 Imagina una red simple:
@@ -560,7 +560,7 @@ El forward pass que acabamos de ver es el mismo proceso que ocurre en cada capa 
 :align: center
 :width: 90%
 
-**Figura 6:** Estructura Completa - entrada, capas ocultas con pesos/bias, activaciones, y salida con función de pérdida.
+**Figura 4:** Estructura Completa - entrada, capas ocultas con pesos/bias, activaciones, y salida con función de pérdida.
 :::
 
 ### Funciones de Pérdida (Loss Functions)
@@ -697,6 +697,15 @@ La retropropagación es donde la red **aprende**. Usando la **regla de la cadena
 
 La retropropagación es el algoritmo que permite entrenar redes profundas. Es el motor detrás de todo modelo de IA moderno.
 
+:::{figure} diagrams/backpropagation_flow.png
+:name: fig-backpropagation-flow
+:alt: Flujo de retropropagación mostrando el cálculo de gradientes capa por capa
+:align: center
+:width: 90%
+
+**Figura 5:** Flujo de retropropagación: el error se propaga desde la capa de salida hacia atrás aplicando la regla de la cadena en cada capa, actualizando los pesos según su contribución al error total.
+:::
+
 ### La Regla de la Cadena: Fundamento Matemático
 
 La **regla de la cadena** es el teorema matemático que hace posible el deep learning:
@@ -782,7 +791,7 @@ Error propagates: [Capa N] → [Capa N-1] → ... → [Capa 1]
 :align: center
 :width: 90%
 
-**Figura 3:** Flujo de Backpropagation - forward pass calcula activaciones, backward pass propaga gradientes para actualizar pesos.
+**Figura 6:** Flujo de Backpropagation - forward pass calcula activaciones, backward pass propaga gradientes para actualizar pesos.
 :::
 
 ### Pseudocódigo
@@ -877,7 +886,7 @@ class SimpleNetwork:
 :align: center
 :width: 90%
 
-**Figura 4:** Algoritmo Backpropagation - forward pass calcula predicciones, backward pass propaga error y actualiza pesos.
+**Figura 7:** Algoritmo Backpropagation - forward pass calcula predicciones, backward pass propaga error y actualiza pesos.
 :::
 
 Ahora que tenemos la arquitectura estructurada en código, vamos a usarla para resolver el famoso problema clásico de puerta lógica XOR, el cual no puede ser resuelto por un modelo lineal simple.
@@ -997,22 +1006,31 @@ ax4.set_ylim(0, 1.2)
 ax5 = fig.add_subplot(gs[2, :])
 ax5.axis('off')
 
+# Guardar el ejemplo [0, 1] antes de llamar forward (que modifica network.X)
+example_input = X[1].reshape(1, -1)  # [0, 1]
+Z1_example = example_input @ network.W1 + network.b1
+A1_example = network.sigmoid(Z1_example)
+Z2_example = A1_example @ network.W2 + network.b2
+A2_example = network.sigmoid(Z2_example)[0, 0]
+loss_example = (A2_example - 1) ** 2
+dLoss_dA2 = 2 * (A2_example - 1)
+
 step_by_step = f"""
 EJEMPLO DE BACKPROPAGATION - ÚLTIMA ÉPOCA
 
 1. FORWARD PASS:
    Input: X = [0, 1]
-   Z1 = X @ W1 + b1 = {network.X[1] @ network.W1 + network.b1}
-   A1 = sigmoid(Z1) = {network.sigmoid(network.X[1] @ network.W1 + network.b1)}
-   Z2 = A1 @ W2 + b2 = {(network.sigmoid(network.X[1] @ network.W1 + network.b1) @ network.W2 + network.b2)[0]}
-   A2 = sigmoid(Z2) = {network.forward(network.X[1].reshape(1, -1))[0, 0]:.4f} (predicción)
+   Z1 = X @ W1 + b1 = {Z1_example}
+   A1 = sigmoid(Z1) = {A1_example}
+   Z2 = A1 @ W2 + b2 = {Z2_example[0]}
+   A2 = sigmoid(Z2) = {A2_example:.4f} (predicción)
    Target: y = 1
 
 2. CALCULAR PÉRDIDA:
-   Loss = (A2 - y)² = ({network.forward(network.X[1].reshape(1, -1))[0, 0]:.4f} - 1)² = {((network.forward(network.X[1].reshape(1, -1))[0, 0] - 1) ** 2):.6f}
+   Loss = (A2 - y)² = ({A2_example:.4f} - 1)² = {loss_example:.6f}
 
 3. BACKWARD PASS:
-   ∂Loss/∂A2 = 2(A2 - y) = {2 * (network.forward(network.X[1].reshape(1, -1))[0, 0] - 1):.4f}
+   ∂Loss/∂A2 = 2(A2 - y) = {dLoss_dA2:.4f}
    ∂Loss/∂Z2 = ∂Loss/∂A2 * sigmoid'(A2) (regla de la cadena)
    ∂Loss/∂W2 = A1ᵀ @ ∂Loss/∂Z2 (gradiente para W2)
 
@@ -1074,7 +1092,7 @@ En lugar de procesar palabra por palabra:
 :align: center
 :width: 90%
 
-**Figura 1:** Diagrama del mecanismo de atención mostrando Query, Key y Value.
+**Figura 8:** Diagrama del mecanismo de atención mostrando Query, Key y Value.
 :::
 
 

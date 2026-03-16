@@ -15,7 +15,7 @@ kernelspec:
 # Setup condicional para Google Colab
 import sys
 if 'google.colab' in sys.modules:
-    !pip install -q transformers bitsandbytes triton vllm auto-gptq datasets evaluate
+    # Dependencias ya incluidas en Colab
     # Nota: la lista anterior puede contener librerías extra, las cuales Colab ignorará o instalará rápido.
 ```
 
@@ -48,6 +48,13 @@ Al finalizar esta lectura podrás:
 Aquí llegamos a un aspecto crítico que muchos estudiantes pasan por alto: la **reproducibilidad**. ¿Puede alguien (incluyéndote en 6 meses) ejecutar tu experimento nuevamente y obtener los mismos resultados? Si la respuesta es no, nadie puede confiar en tu investigación.
 
 ## Por Qué la Reproducibilidad Importa
+
+:::{figure} diagrams/reproducibility_workflow.png
+:width: 100%
+:name: fig-reproducibility-workflow
+
+Flujo de trabajo completo para garantizar reproducibilidad en experimentos de ML: desde fijar semillas hasta compartir código y datos públicamente.
+:::
 
 Hay una **crisis de reproducibilidad** en la ciencia. Estudios muestran que:
 - ~50% de estudios en psicología no pueden ser reproducidos
@@ -190,6 +197,13 @@ Código reproducible en https://github.com/.../, commit abc123."
 
 ## Amenazas a la Validez: Resumen
 
+:::{figure} diagrams/validity_threats.png
+:width: 100%
+:name: fig-validity-threats
+
+Las cuatro dimensiones de validez que debes considerar y reportar en tu investigación: constructo, interna, externa y estadística.
+:::
+
 ### Amenazas a Validez de Constructo
 
 ¿Estás midiendo lo que afirmas medir?
@@ -262,6 +276,15 @@ H₁: Tasa de validez con restricciones ≠ baseline
 Prueba: t-test de dos muestras
 Variables secundarias: iteraciones, tiempo
 ```
+
+:::{figure} diagrams/preregistration_flow.png
+:name: fig-preregistration-flow
+:alt: Flujo del proceso de pre-registro de análisis estadístico en Open Science Framework
+:align: center
+:width: 90%
+
+**Figura 1:** Flujo del proceso de pre-registro: desde la formulación de hipótesis hasta la publicación de resultados, diferenciando análisis confirmatorios de exploratorios.
+:::
 
 ## Checklist de Reproducibilidad
 

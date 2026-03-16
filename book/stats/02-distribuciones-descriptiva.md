@@ -21,7 +21,7 @@ kernelspec:
 :tags: [remove-input, setup]
 
 # Setup Colab Environment
-!pip install -q numpy pandas matplotlib seaborn scikit-learn torch transformers accelerate triton
+!pip install -q plotly
 print('Dependencies installed!')
 ```
 ## Semana 2 - Estadística para Generación de Kernels GPU
@@ -444,7 +444,7 @@ La distribución más importante en estadística. **Muchos fenómenos naturales 
 :align: center
 :width: 90%
 
-**Figura 3:** Comparación de las principales distribuciones de probabilidad usadas en estadística.
+**Figura 1:** Comparación de las principales distribuciones de probabilidad usadas en estadística.
 :::
 
 ```

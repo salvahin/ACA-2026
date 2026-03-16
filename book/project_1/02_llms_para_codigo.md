@@ -15,7 +15,7 @@ kernelspec:
 # Setup condicional para Google Colab
 import sys
 if 'google.colab' in sys.modules:
-    !pip install -q transformers bitsandbytes triton vllm auto-gptq datasets evaluate
+    !pip install -q transformers xgrammar plotly
     # Nota: la lista anterior puede contener librerías extra, las cuales Colab ignorará o instalará rápido.
 ```
 
@@ -466,6 +466,15 @@ Para código:
 1. **Usa constrained decoding:** Sintaxis incorrecta es inaceptable
 2. **Agrega testing automático:** Valida lógica
 3. **Combina:** Constrained decoding (sintaxis) + reintento en fallos (lógica)
+
+:::{figure} diagrams/code_llm_strategy.png
+:name: fig-code-llm-strategy
+:alt: Comparación entre generación libre y constrained decoding para modelos de código
+:align: center
+:width: 90%
+
+**Figura 1:** Generación libre vs. constrained decoding: la estrategia óptima combina restricciones gramaticales para garantizar sintaxis válida con testing automático para validar la lógica.
+:::
 
 ---
 

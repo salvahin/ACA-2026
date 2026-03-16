@@ -10,22 +10,6 @@ kernelspec:
 ---
 
 # Metodología: La Receta Exacta de tu Investigación
-
-```{code-cell} ipython3
-# Setup condicional para Google Colab
-import sys
-if 'google.colab' in sys.modules:
-    !pip install -q transformers bitsandbytes triton vllm auto-gptq datasets evaluate
-    # Nota: la lista anterior puede contener librerías extra, las cuales Colab ignorará o instalará rápido.
-```
-
-
-```{admonition} Ejecutar en Google Colab
-:class: tip
-
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/salvahin/ACA-2026/blob/main/book/notebooks/05-metodologia.ipynb)
-```
-
 ```{code-cell} ipython3
 :tags: [remove-input, setup]
 

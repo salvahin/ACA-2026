@@ -15,8 +15,8 @@ kernelspec:
 # Setup condicional para Google Colab
 import sys
 if 'google.colab' in sys.modules:
-    !pip install -q transformers bitsandbytes triton vllm auto-gptq datasets evaluate
-    # Nota: la lista anterior puede contener librerías extra, las cuales Colab ignorará o instalará rápido.
+    !pip install -q mlflow hydra-core omegaconf seaborn
+    print('Dependencias instaladas!')
 ```
 
 
@@ -50,6 +50,15 @@ Al finalizar esta lectura podrás:
 Has entrenado modelos, generado código, evaluado resultados. Pero, ¿cómo **rastrear** todo? ¿Cómo saber qué hiperparámetros usaste hace 3 semanas? ¿Cómo comparar 50 experimentos?
 
 **MLOps (Machine Learning Operations)** resuelve esto: logging sistemático, versionado de experimentos, y gestión del ciclo de vida de modelos. Esta lectura te da las herramientas para investigación reproducible.
+
+:::{figure} diagrams/rag_pipeline.png
+:name: fig-rag-pipeline
+:alt: Pipeline RAG mostrando recuperación de documentos e integración con el LLM
+:align: center
+:width: 90%
+
+**Figura 1:** Pipeline RAG (Retrieval-Augmented Generation): un patrón LLMOps clave donde la base de conocimiento externa se indexa como vectores, se recuperan fragmentos relevantes en cada consulta, y se inyectan como contexto al LLM para respuestas fundamentadas y actualizadas.
+:::
 
 ### ¿Qué es MLOps?
 
@@ -168,7 +177,7 @@ Las herramientas que aprenderás (MLflow) aplican a ambos paradigmas.
 :align: center
 :width: 90%
 
-**Figura 1:** Componentes del Tracking en MLOps - experimentos, parámetros, métricas, artefactos y versiones de modelos.
+**Figura 2:** Componentes del Tracking en MLOps - experimentos, parámetros, métricas, artefactos y versiones de modelos.
 :::
 
 ### Escenario Común
@@ -386,17 +395,32 @@ import pandas as pd
 
 # Obtener todos los runs de un experimento
 experiment = mlflow.get_experiment_by_name("kernel-generation")
-runs = mlflow.search_runs(experiment_ids=[experiment.experiment_id])
 
-# Convertir a DataFrame para análisis
-print("Comparación de Experimentos:")
-print(runs[["run_id", "params.learning_rate", "params.model",
-            "metrics.final_val_loss", "status"]].head(10))
+if experiment is None:
+    print("No se encontró el experimento 'kernel-generation'.")
+    print("Ejecuta primero las celdas de entrenamiento para crear experimentos.")
+else:
+    runs = mlflow.search_runs(experiment_ids=[experiment.experiment_id])
 
-# Encontrar el mejor run
-best_run = runs.loc[runs["metrics.final_val_loss"].idxmin()]
-print(f"\nMejor run: {best_run['run_id']}")
-print(f"Val Loss: {best_run['metrics.final_val_loss']:.4f}")
+    if runs.empty:
+        print("No hay runs en el experimento.")
+    else:
+        # Mostrar columnas disponibles para debug
+        print("Columnas disponibles:", [c for c in runs.columns if c.startswith(('params.', 'metrics.'))])
+
+        # Seleccionar columnas que existan
+        cols_deseadas = ["run_id", "params.learning_rate", "params.model",
+                        "metrics.final_val_loss", "status"]
+        cols_disponibles = [c for c in cols_deseadas if c in runs.columns]
+
+        print("\nComparación de Experimentos:")
+        print(runs[cols_disponibles].head(10))
+
+        # Encontrar el mejor run (si existe la métrica)
+        if "metrics.final_val_loss" in runs.columns:
+            best_run = runs.loc[runs["metrics.final_val_loss"].idxmin()]
+            print(f"\nMejor run: {best_run['run_id']}")
+            print(f"Val Loss: {best_run['metrics.final_val_loss']:.4f}")
 ```
 
 ---
@@ -431,32 +455,42 @@ with mlflow.start_run():
 :tags: [skip-execution]
 
 import mlflow
-
-# Registrar un modelo en el Model Registry
-model_uri = f"runs:/{run_id}/model"
-model_name = "kernel-generator"
-
-# Registrar nueva versión
-mlflow.register_model(model_uri, model_name)
-
-# Transicionar a staging/production
 from mlflow.tracking import MlflowClient
 
-client = MlflowClient()
+# Obtener el run_id más reciente del experimento
+experiment = mlflow.get_experiment_by_name("kernel-generation")
 
-# Mover a Staging
-client.transition_model_version_stage(
-    name=model_name,
-    version=1,
-    stage="Staging"
-)
+if experiment is None:
+    print("No se encontró el experimento. Ejecuta primero las celdas anteriores.")
+else:
+    runs = mlflow.search_runs(
+        experiment_ids=[experiment.experiment_id],
+        order_by=["start_time DESC"],
+        max_results=1
+    )
 
-# Después de validación, mover a Production
-client.transition_model_version_stage(
-    name=model_name,
-    version=1,
-    stage="Production"
-)
+    if runs.empty:
+        print("No hay runs en el experimento.")
+    else:
+        run_id = runs.iloc[0]["run_id"]
+        print(f"Usando run_id: {run_id}")
+
+        # Registrar un modelo en el Model Registry
+        model_uri = f"runs:/{run_id}/model"
+        model_name = "kernel-generator"
+
+        # Nota: Esto requiere que el run tenga un modelo guardado
+        # Si no hay modelo, solo mostramos cómo se haría
+        print(f"Model URI: {model_uri}")
+        print(f"Model name: {model_name}")
+        print("\n# Para registrar (requiere modelo guardado en el run):")
+        print("# mlflow.register_model(model_uri, model_name)")
+
+        # Ejemplo de transición de stages
+        print("\n# Para transicionar stages:")
+        print("# client = MlflowClient()")
+        print("# client.transition_model_version_stage(name=model_name, version=1, stage='Staging')")
+        print("# client.transition_model_version_stage(name=model_name, version=1, stage='Production')")
 ```
 
 ### Ejercicio Práctico: MLflow con Databricks

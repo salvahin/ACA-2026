@@ -10,22 +10,6 @@ kernelspec:
 ---
 
 # Revisión de Estructura: Verificar la Integridad Interna de tu Proyecto de Investigación
-
-```{code-cell} ipython3
-# Setup condicional para Google Colab
-import sys
-if 'google.colab' in sys.modules:
-    !pip install -q transformers bitsandbytes triton vllm auto-gptq datasets evaluate
-    # Nota: la lista anterior puede contener librerías extra, las cuales Colab ignorará o instalará rápido.
-```
-
-
-```{admonition} Ejecutar en Google Colab
-:class: tip
-
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/salvahin/ACA-2026/blob/main/book/notebooks/09-revision-de-estructura.ipynb)
-```
-
 ```{code-cell} ipython3
 :tags: [remove-input, setup]
 
@@ -81,6 +65,15 @@ Mejor aún, esta auditoría es algo que *puedes hacer tú mismo* antes de entreg
 ## Auditoría 1: RQs ↔ Resultados ↔ Conclusiones
 
 Este es el "hilo dorado" de tu proyecto de investigación. Cada pregunta de investigación debe tener una correspondencia clara en resultados y conclusiones.
+
+:::{figure} diagrams/integrity_audit_map.png
+:name: fig-integrity-audit-map
+:alt: Mapa de trazabilidad mostrando la alineación entre RQs, metodología, resultados y conclusiones
+:align: center
+:width: 100%
+
+**Figura 1:** Mapa de trazabilidad del "hilo dorado": cada RQ debe tener correspondencia explícita en metodología, resultados y conclusiones. Celdas en rojo indican vacíos que debes resolver antes de entregar.
+:::
 
 ### Creando el Mapa
 

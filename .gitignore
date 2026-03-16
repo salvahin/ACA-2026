@@ -12,7 +12,6 @@ DEPENDENCY_ANALYSIS.md
 EXECUTIVE_SUMMARY.md
 VISUAL_DEPENDENCY_MAP.txt
 _build/
-lecturas/
 website/
 
 # Jupyter checkpoints
@@ -37,8 +36,3 @@ VALIDACION_IMAGENES_MAPEO_CORRECTO.md
 PROMPTS_IMAGENES_CURSO.md
 Guia_Profesores_TC3002B.docx
 Imagenes gemini/
-
-.python-version
-pyproject.toml
-uv.lock
-

@@ -10,22 +10,6 @@ kernelspec:
 ---
 
 # Revisión Bibliográfica: Aprender a Leer Papers como un Investigador
-
-```{code-cell} ipython3
-# Setup condicional para Google Colab
-import sys
-if 'google.colab' in sys.modules:
-    !pip install -q transformers bitsandbytes triton vllm auto-gptq datasets evaluate
-    # Nota: la lista anterior puede contener librerías extra, las cuales Colab ignorará o instalará rápido.
-```
-
-
-```{admonition} Ejecutar en Google Colab
-:class: tip
-
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/salvahin/ACA-2026/blob/main/book/notebooks/02-revision-bibliografica.ipynb)
-```
-
 ```{code-cell} ipython3
 :tags: [remove-input, setup]
 

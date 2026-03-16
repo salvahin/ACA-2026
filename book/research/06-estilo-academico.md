@@ -10,22 +10,6 @@ kernelspec:
 ---
 
 # Estilo Académico: La Voz Profesional de tu Investigación
-
-```{code-cell} ipython3
-# Setup condicional para Google Colab
-import sys
-if 'google.colab' in sys.modules:
-    !pip install -q transformers bitsandbytes triton vllm auto-gptq datasets evaluate
-    # Nota: la lista anterior puede contener librerías extra, las cuales Colab ignorará o instalará rápido.
-```
-
-
-```{admonition} Ejecutar en Google Colab
-:class: tip
-
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/salvahin/ACA-2026/blob/main/book/notebooks/06-estilo-academico.ipynb)
-```
-
 ```{code-cell} ipython3
 :tags: [remove-input, setup]
 
@@ -104,6 +88,15 @@ Un mito común: "La escritura académica es aburrida." No es verdad. Es **precis
 ---
 
 ## Voz Activa vs. Pasiva: Estrategia Consciente
+
+:::{figure} diagrams/academic_voice_guide.png
+:name: fig-academic-voice-guide
+:alt: Guía comparativa de voz activa vs pasiva y espectro de hedging en escritura académica
+:align: center
+:width: 100%
+
+**Figura 1:** Guía de escritura académica: comparación de voz activa vs. pasiva con ejemplos, y espectro del hedging desde afirmaciones absolutas (evitar) hasta exceso de cautela (evitar), con la zona apropiada al centro.
+:::
 
 Muchos estudiantes evitan la voz activa creyendo que "suena más académica." De hecho, es lo opuesto: investigación moderna prefiere voz activa cuando es clara.
 

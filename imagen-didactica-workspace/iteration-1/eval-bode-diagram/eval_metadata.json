@@ -1,0 +1,11 @@
+{
+  "eval_id": 2,
+  "eval_name": "bode-diagram-individual",
+  "prompt": "Genera una imagen didáctica de un diagrama de Bode para un sistema de segundo orden con frecuencia natural de 10 rad/s y factor de amortiguamiento de 0.5.",
+  "assertions": [
+    "Se generó un archivo PNG",
+    "El prompt fue enriquecido con instrucciones de estilo académico",
+    "Se usó el tipo graph para la generación",
+    "El prompt incluye indicación de etiquetas en español"
+  ]
+}

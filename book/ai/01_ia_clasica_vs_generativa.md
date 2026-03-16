@@ -20,9 +20,8 @@ kernelspec:
 ```{code-cell} ipython3
 :tags: [remove-input, setup]
 
-# Setup Colab Environment
-!pip install -q numpy pandas matplotlib seaborn scikit-learn torch transformers accelerate triton
-print('Dependencies installed!')
+# Setup Colab Environment (todas las dependencias ya vienen en Colab)
+print('Entorno listo!')
 ```
 
 ```{admonition} Objetivos de Aprendizaje
@@ -405,6 +404,15 @@ Antes de hablar de arquitecturas, necesitamos entender **modelos discriminativos
 
 ## Parte 2: Discriminativos vs Generativos
 
+:::{figure} diagrams/discriminative_vs_generative.png
+:name: fig-discriminative-vs-generative
+:alt: Comparación entre modelos discriminativos y generativos en machine learning
+:align: center
+:width: 90%
+
+**Figura 2:** Modelos discriminativos (P(Y|X)) vs generativos (P(X,Y)): los discriminativos aprenden la frontera de decisión; los generativos aprenden la distribución completa de los datos y pueden generar nuevas muestras.
+:::
+
 Esta es una distinción fundamental que aún hoy define cómo pensamos sobre IA.
 
 ### Modelos Discriminativos
@@ -459,7 +467,7 @@ Matemáticamente:
 :align: center
 :width: 90%
 
-**Figura 2:** Modelos Discriminativos vs Generativos - el discriminativo traza límites de decisión mientras el generativo modela la distribución completa.
+**Figura 3:** Modelos Discriminativos vs Generativos - el discriminativo traza límites de decisión mientras el generativo modela la distribución completa.
 :::
 
 ```{admonition} 📚 Conexión

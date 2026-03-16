@@ -21,7 +21,7 @@ kernelspec:
 :tags: [remove-input, setup]
 
 # Setup Colab Environment
-!pip install -q numpy pandas matplotlib seaborn scikit-learn torch transformers accelerate triton
+!pip install -q plotly
 print('Dependencies installed!')
 ```
 ## Semana 8 - Estadística para Generación de Kernels GPU
@@ -91,7 +91,7 @@ Con corrección Bonferroni: FWER ≤ 0.05
 :align: center
 :width: 90%
 
-**Figura 7:** Inflación de la tasa de error familia-wise (FWER) según el número de pruebas realizadas.
+**Figura 1:** Inflación de la tasa de error familia-wise (FWER) según el número de pruebas realizadas.
 :::
 
 ### Corrección de Bonferroni
@@ -904,6 +904,15 @@ Rechaza hipótesis 1-5, no 6-10
 Útil para descubrimiento exploratorio, menos para confirmación.
 
 ## Resumen: Cuándo Usar Qué
+
+:::{figure} diagrams/significance_matrix.png
+:name: fig-significance-matrix
+:alt: Matriz de decisión para elegir el método de corrección por comparaciones múltiples
+:align: center
+:width: 90%
+
+**Figura 2:** Matriz de decisión: qué método de corrección usar según el número de comparaciones, tipo de hipótesis (confirmatorias vs. exploratorias) y tolerancia al error Tipo I.
+:::
 
 ```{admonition} Resumen
 :class: important

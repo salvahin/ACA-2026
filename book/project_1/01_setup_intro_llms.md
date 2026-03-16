@@ -32,7 +32,7 @@ print(f"Usando dispositivo: {device}")
 # Setup condicional para Google Colab
 import sys
 if 'google.colab' in sys.modules:
-    !pip install -q transformers bitsandbytes triton vllm auto-gptq datasets evaluate
+    !pip install -q xgrammar plotly jsonschema
     # Nota: la lista anterior puede contener librerías extra, las cuales Colab ignorará o instalará rápido.
 ```
 
@@ -249,6 +249,15 @@ El resultado es un archivo que garantiza exactitud total.
 ## Compilando XGrammar: CMake y nanobind
 
 XGrammar es una librería C++ con bindings Python. Compilarla requiere pasos especiales.
+
+:::{figure} diagrams/xgrammar_build_pipeline.png
+:name: fig-xgrammar-build-pipeline
+:alt: Pipeline de compilación de XGrammar desde código C++ hasta módulo Python
+:align: center
+:width: 100%
+
+**Figura 1:** Pipeline de compilación de XGrammar: el código C++ se procesa a través de CMake y GCC, nanobind genera los bindings Python, y el resultado es un módulo importable directamente desde Python.
+:::
 
 ### Prerequisitos
 

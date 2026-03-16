@@ -21,7 +21,7 @@ kernelspec:
 :tags: [remove-input, setup]
 
 # Setup Colab Environment
-!pip install -q numpy pandas matplotlib seaborn scikit-learn torch transformers accelerate triton
+!pip install -q plotly
 print('Dependencies installed!')
 ```
 
@@ -55,7 +55,7 @@ Después de esta lectura podrás: Calcular el costo total de operación de Kerne
 :align: center
 :width: 90%
 
-**Figura 7:** Economía de tokens - comparación de costos entre APIs y self-hosting con punto de equilibrio.
+**Figura 1:** Economía de tokens - comparación de costos entre APIs y self-hosting con punto de equilibrio.
 :::
 
 ---

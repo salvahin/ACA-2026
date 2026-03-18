@@ -1,0 +1,5 @@
+# Dependencies for building the Jupyter Book
+jupyter-book>=0.15,<1.0
+myst-parser
+ghp-import
+jupytext

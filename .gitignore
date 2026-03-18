@@ -80,8 +80,8 @@ src/
 # Virtual environments
 .venv*/
 
-# Requirements (dependencies)
-requirements.txt
+# Requirements (root level only, book/requirements.txt is tracked)
+/requirements.txt
 
 # Documentos de reto/planificación
 Carta_Socio_Formador_TC3002B.docx

@@ -86,13 +86,13 @@ parts:
     chapters:
       - file: project_2/index
         sections:
-          - file: project_2/01_gpu_fundamentals
-          - file: project_2/02_cuda_pytorch_internals
-          - file: project_2/03_memoria_optimizacion
-          - file: project_2/04_triton_completo
-          - file: project_2/05_patrones_avanzados
-          - file: project_2/06_kernelbench_corpus
-          - file: project_2/07_debugging_taxonomia
-          - file: project_2/08_baseline_experimentos
-          - file: project_2/09_analisis_visualizacion
-          - file: project_2/10_integracion_documentacion
+          - file: project_2/01_gpu_fundamentals_pytorch
+          - file: project_2/02_cuda_triton_intro
+          - file: project_2/03_triton_patrones
+          - file: project_2/04_optimizacion_kernels
+          - file: project_2/05_kernelbench_evaluacion
+          - file: project_2/06_prompt_a_agente_kernel
+          - file: project_2/07_agente_loop
+          - file: project_2/08_debugging_feedback
+          - file: project_2/09_sycl_portabilidad
+          - file: project_2/10_integracion_final

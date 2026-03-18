@@ -26,13 +26,74 @@ book/_build/
 .gemini/
 .claude/
 
-# Archivos de documentación/notas (no parte del libro)
+# ============================================
+# NON-BOOK CONTENT (kept locally, not tracked)
+# ============================================
+
+# Root documentation/status files
+CURSO_ACA_2026_VIDEOS.md
+DESCARGAS_*.md
+ESTADO_*.md
+GUIA_NANOBANANA2_IMAGENES.md
+HERRAMIENTAS_INTERACTIVAS_ACA.md
+Modulo_AI_URLs_Descargar.md
+PROMPTS_IMAGENES_CURSO.md
+REGISTRO_DESCARGAS_ORGANIZADAS.md
+RESUMEN_*.md
+RESUMEN_*.txt
+URLS_COMPLETAS.txt
 Comentarios_github_gerardo.txt
 IMAGENES_RENOMBRADAS_CORRECTAMENTE.md
-RESUMEN_FINAL_IMAGENES_INSERTADAS.md
-RESUMEN_IMAGENES_INTEGRADAS.md
-RESUMEN_VALIDACION_VISUAL.md
 VALIDACION_IMAGENES_MAPEO_CORRECTO.md
-PROMPTS_IMAGENES_CURSO.md
+investigacion-skill-imagenes-didacticas-nanobanana2.md
+
+# Root images
+dashboard.png
+histogram_comparison.png
+temperature_comparison.png
+training_curve.png
+
+# Analysis files
+notebook_analysis.json
+notebook_test_report.json
+
+# Assets directory
+assets/
+
+# Imagen didactica skill and workspace
+imagen-didactica.skill
+imagen-didactica/
+imagen-didactica-workspace/
+
+# Lecturas (readings) directory
+lecturas/
+
+# Scripts directory
+scripts/
+
+# Slides directory
+slides/
+
+# Source code (grammar)
+src/
+
+# Virtual environments
+.venv*/
+
+# Requirements (dependencies)
+requirements.txt
+
+# Documentos de reto/planificación
+Carta_Socio_Formador_TC3002B.docx
 Guia_Profesores_TC3002B.docx
+Descripcion_Reto_Estudiantes.md
+Descripcion_Tecnica_Reto.md
+Plan_Gestion_Reto1.md
+TC3002B_Challenge_Description.docx
+TC3002B_Challenge_Description.pdf
+banco-reactivos.skill
+banco-reactivos-skill/
+Presentaciones/
+reto-video/
 Imagenes gemini/
+Reto1_Tracker.xlsx

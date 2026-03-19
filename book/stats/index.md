@@ -9,7 +9,7 @@ kernelspec:
   name: python3
 ---
 
-# Módulo de Estadística
+# Estadística y Métodos Cuantitativos
 
 Este módulo te proporciona las herramientas estadísticas necesarias para diseñar experimentos rigurosos, analizar resultados y reportar hallazgos de manera profesional. Aprenderás desde fundamentos de probabilidad hasta técnicas avanzadas de análisis, con énfasis en reproducibilidad científica.
 

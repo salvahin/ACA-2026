@@ -9,7 +9,7 @@ kernelspec:
   name: python3
 ---
 
-# Módulo de Investigación
+# Metodología de la Investigación
 
 Este módulo te guía en la escritura de tu proyecto de investigación. Desde la estructura fundamental hasta la defensa oral, aprenderás todos los aspectos de la comunicación científica necesarios para documentar tu trabajo de manera profesional.
 

@@ -6,6 +6,21 @@ parts:
       - file: calendario
       - file: syllabus
 
+  - caption: Metodología de la Investigación
+    chapters:
+      - file: research/index
+        sections:
+          - file: research/01-que-es-un-proyecto
+          - file: research/02-revision-bibliografica
+          - file: research/03-planteamiento-del-problema
+          - file: research/04-marco-teorico
+          - file: research/05-metodologia
+          - file: research/06-estilo-academico
+          - file: research/07-resultados
+          - file: research/08-conclusiones-y-abstract
+          - file: research/09-revision-de-estructura
+          - file: research/10-preparacion-defensa
+
   - caption: Inteligencia Artificial
     chapters:
       - file: ai/index
@@ -36,7 +51,7 @@ parts:
           - file: compilers/09-limitaciones-context-sensitive
           - file: compilers/10-parser-generators-reflexion
 
-  - caption: Estadística
+  - caption: Estadística y Métodos Cuantitativos
     chapters:
       - file: stats/index
         sections:
@@ -50,21 +65,6 @@ parts:
           - file: stats/08-tamano-efecto
           - file: stats/09-mlops-visualizacion
           - file: stats/10-reporte-estadistico
-
-  - caption: Research (Proyecto)
-    chapters:
-      - file: research/index
-        sections:
-          - file: research/01-que-es-un-proyecto
-          - file: research/02-revision-bibliografica
-          - file: research/03-planteamiento-del-problema
-          - file: research/04-marco-teorico
-          - file: research/05-metodologia
-          - file: research/06-estilo-academico
-          - file: research/07-resultados
-          - file: research/08-conclusiones-y-abstract
-          - file: research/09-revision-de-estructura
-          - file: research/10-preparacion-defensa
 
   - caption: Project 1 - LLM Code Generation
     chapters:

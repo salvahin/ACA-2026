@@ -11,150 +11,44 @@ kernelspec:
 
 # Módulo de Investigación
 
-> **Curso:** ACA - Grammar-Constrained GPU Kernel Generation
-> **Semanas:** 10
+Este módulo te guía en la escritura de tu proyecto de investigación. Desde la estructura fundamental hasta la defensa oral, aprenderás todos los aspectos de la comunicación científica necesarios para documentar tu trabajo de manera profesional.
 
----
+## Objetivos de Aprendizaje
 
-## Overview
+Al completar este módulo, serás capaz de:
 
-Este módulo guía al estudiante en la escritura de su proyecto de investigación. Desde la estructura fundamental hasta la defensa oral, cubre todos los aspectos de la comunicación científica.
+- [ ] Estructurar un proyecto de investigación con todos sus componentes
+- [ ] Realizar revisiones bibliográficas sistemáticas y sintetizar literatura
+- [ ] Formular preguntas de investigación e hipótesis claras
+- [ ] Escribir con estilo académico profesional
+- [ ] Presentar resultados con tablas, figuras y análisis riguroso
+- [ ] Preparar y defender tu trabajo ante un comité
 
----
+## Prerequisitos
 
-## Estructura del Módulo
+- Ninguno específico (módulo transversal)
+- Se recomienda cursar en paralelo con los proyectos técnicos
 
-### Semana 1: Qué es un Proyecto de Investigación
-**Archivo:** `01-que-es-un-proyecto.md`
+## Temas por Semana
 
-- Estructura fundamental
-- Tipos de proyectos
-- Expectativas académicas
-- Planificación inicial
-
----
-
-### Semana 2: Revisión Bibliográfica
-**Archivo:** `02-revision-bibliografica.md`
-
-- Cómo leer papers científicos
-- Búsqueda de literatura
-- Gestión de referencias
-- Síntesis crítica
-
----
-
-### Semana 3: Planteamiento del Problema
-**Archivo:** `03-planteamiento-del-problema.md`
-
-- Convertir curiosidad en preguntas
-- Hipótesis de investigación
-- Objetivos y alcance
-- Justificación
-
----
-
-### Semana 4: Marco Teórico
-**Archivo:** `04-marco-teorico.md`
-
-- Cimientos intelectuales
-- Estado del arte
-- Conceptos clave
-- Posicionamiento teórico
-
----
-
-### Semana 5: Metodología
-**Archivo:** `05-metodologia.md`
-
-- La receta de tu investigación
-- Diseño experimental
-- Recolección de datos
-- Análisis planificado
-
----
-
-### Semana 6: Estilo Académico
-**Archivo:** `06-estilo-academico.md`
-
-- La voz profesional
-- Convenciones de escritura
-- Claridad y precisión
-- Errores comunes
-
----
-
-### Semana 7: Resultados
-**Archivo:** `07-resultados.md`
-
-- Presentar hallazgos con rigor
-- Tablas y figuras
-- Análisis de datos
-- Objetividad
-
----
-
-### Semana 8: Conclusiones y Abstract
-**Archivo:** `08-conclusiones-y-abstract.md`
-
-- Cerrar con impacto
-- Contribuciones
-- Trabajo futuro
-- El abstract perfecto
-
----
-
-### Semana 9: Revisión de Estructura
-**Archivo:** `09-revision-de-estructura.md`
-
-- Verificar integridad interna
-- Coherencia argumentativa
-- Checklist de revisión
-- Feedback efectivo
-
----
-
-### Semana 10: Preparación para Defensa
-**Archivo:** `10-preparacion-defensa.md`
-
-- Del documento a la presentación
-- Anticipar preguntas
-- Comunicación oral
-- Manejo del nerviosismo
-
----
-
-## Progresión Pedagógica
-
-```
-Semanas 1-3: Fundamentos
-├─ Estructura de proyecto
-├─ Literatura
-└─ Problema
-
-Semanas 4-5: Diseño
-├─ Marco teórico
-└─ Metodología
-
-Semanas 6-8: Escritura
-├─ Estilo
-├─ Resultados
-└─ Conclusiones
-
-Semanas 9-10: Cierre
-├─ Revisión
-└─ Defensa
-```
-
----
+| Semana | Tema | Descripción |
+|:------:|------|-------------|
+| 1 | [Qué es un Proyecto](01-que-es-un-proyecto) | Estructura fundamental, tipos de proyectos |
+| 2 | [Revisión Bibliográfica](02-revision-bibliografica) | Cómo leer papers, búsqueda de literatura |
+| 3 | [Planteamiento del Problema](03-planteamiento-del-problema) | Preguntas de investigación, hipótesis |
+| 4 | [Marco Teórico](04-marco-teorico) | Estado del arte, posicionamiento teórico |
+| 5 | [Metodología](05-metodologia) | Diseño experimental, recolección de datos |
+| 6 | [Estilo Académico](06-estilo-academico) | Voz profesional, claridad, precisión |
+| 7 | [Resultados](07-resultados) | Tablas, figuras, análisis objetivo |
+| 8 | [Conclusiones y Abstract](08-conclusiones-y-abstract) | Contribuciones, trabajo futuro |
+| 9 | [Revisión de Estructura](09-revision-de-estructura) | Coherencia, checklist de revisión |
+| 10 | [Preparación para Defensa](10-preparacion-defensa) | Presentación, anticipar preguntas |
 
 ## Relación con Otros Módulos
 
-- **Stats:** Análisis estadístico de resultados
-- **Project 1 & 2:** Contenido técnico del proyecto
+```{admonition} Conexiones
+:class: tip
 
----
-
-**Última actualización:** Marzo 2026
-**Versión:** 1.0
-**Idioma:** Español
+- **← Stats:** Análisis estadístico para la sección de resultados
+- **← Project 1 & 2:** Contenido técnico del proyecto que documentarás
+```

@@ -14,12 +14,58 @@
 print('Dependencies installed!')
 ```
 
-```{admonition} El Reto
-:class: tip
+```{admonition} El Reto: Un Problema de Investigación Abierta
+:class: important
 
 **¿Puedes enseñar a una IA a escribir código GPU ultra-optimizado?**
 
 En este reto construirás un sistema que combina **Inteligencia Artificial**, **Teoría de Compiladores** y **GPU Computing** para generar automáticamente kernels de alto rendimiento con garantías formales de corrección.
+```
+
+```{admonition} ¿Por qué es un Problema Abierto?
+:class: warning
+
+Este no es un problema resuelto. Las herramientas actuales enfrentan **limitaciones fundamentales**:
+
+| Desafío | Estado Actual | Oportunidad de Mejora |
+|---------|---------------|----------------------|
+| **Corrección semántica** | Las gramáticas CFG solo garantizan sintaxis, no semántica | Gramáticas con atributos, verificación formal |
+| **Optimización de rendimiento** | Código correcto ≠ código eficiente | Patrones de optimización en gramáticas |
+| **Generalización** | Gramáticas específicas por dominio | Meta-gramáticas adaptativas |
+| **Latencia de inferencia** | Token masking añade overhead | Cacheo predictivo, compilación ahead-of-time |
+| **Context-sensitive constraints** | CFGs no pueden expresar "variable declarada antes de uso" | Extensiones Type-1, análisis semántico híbrido |
+
+**Nadie ha resuelto completamente** cómo generar código GPU que sea simultáneamente:
+1. Sintácticamente correcto (garantizado por gramáticas)
+2. Semánticamente válido (sin errores de memoria, race conditions)
+3. Óptimamente eficiente (rendimiento competitivo con código humano)
+4. Generalizable (funciona para nuevos tipos de operaciones)
+```
+
+```{admonition} Tu Contribución: Propuestas de Mejora
+:class: seealso
+
+Como parte de tu proyecto, se te invita a **proponer mejoras** que ayuden a resolver aspectos de este problema abierto. Algunas direcciones prometedoras:
+
+**Mejoras al Pipeline de Gramáticas:**
+- Diseñar gramáticas que capturen patrones de optimización GPU (coalescing, tiling, etc.)
+- Implementar verificación semántica post-generación eficiente
+- Explorar gramáticas jerárquicas que combinen estructura y optimización
+
+**Mejoras al Constrained Decoding:**
+- Desarrollar estrategias de caching más agresivas para token masking
+- Investigar lookahead para reducir generaciones fallidas
+- Combinar constrained decoding con beam search optimizado
+
+**Mejoras a la Evaluación:**
+- Definir métricas que capturen tanto corrección como eficiencia
+- Crear benchmarks representativos de workloads reales
+- Desarrollar tests de regresión automatizados
+
+**Las mejores propuestas podrían convertirse en:**
+- Contribuciones a proyectos open-source (XGrammar, vLLM, Triton)
+- Publicaciones en workshops de ML Systems (MLSys, NeurIPS)
+- Fundamento para tesis de posgrado o proyectos de investigación
 ```
 
 ---
@@ -327,6 +373,24 @@ Empieza por el módulo de **Inteligencia Artificial** para construir las bases d
 
 📴 **Sin Internet:** Consulta [Alternativas Offline](alternativas_offline.md) para equivalentes de texto/código de todos los videos de YouTube del curso.
 🔑 **Sin GPU:** Revisa el [Notebook de Verificación de Entorno](notebooks/00_verificacion_entorno.ipynb) para confirmar tu configuración y opciones de CPU Fallback.
+```
+
+---
+
+```{admonition} ⚠️ Contenido Generado con Inteligencia Artificial
+:class: warning
+
+Este material educativo fue generado con asistencia de modelos de lenguaje (LLMs). Aunque ha sido revisado, **puede contener imprecisiones** que requieren corrección:
+
+- **Texto en imágenes:** Las visualizaciones generadas por IA pueden contener alucinaciones en etiquetas, números o texto embebido
+- **Datos y cifras:** Estadísticas, fechas y referencias bibliográficas deben verificarse con fuentes primarias
+- **Código:** Los ejemplos han sido probados, pero siempre verifica la lógica antes de usar en producción
+
+**¿Encontraste un error?** Ayúdanos a mejorar este recurso:
+
+👉 [Reportar un problema o sugerir corrección](URL_PLACEHOLDER_GOOGLE_FORMS)
+
+Tu retroalimentación es valiosa para mantener la calidad del contenido, especialmente dado el volumen de material en los 6 módulos del curso.
 ```
 
 ---

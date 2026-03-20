@@ -42,7 +42,100 @@ Al finalizar esta lectura podrás:
 ```
 
 ## Resumen Ejecutivo
-XGrammar compila gramáticas a parsers eficientes: parsing → normalización → NFA → DFA → minimización → análisis lookahead → generación de código. Resultado: parser Earley con máscaras de bits O(1).
+XGrammar compila gramáticas a parsers eficientes: parsing → normalización → NFA → DFA → minimización → análisis lookahead → generación de código. Resultado: estructuras híbridas (Earley + DFA) con máscaras de bits O(1).
+
+## Definición Formal: Constrained Decoding
+
+Antes de adentrarnos en el pipeline, definamos formalmente qué problema resuelve XGrammar.
+
+### El Problema de Constrained Decoding
+
+**Dado:**
+- Un LLM con vocabulario V = {t₁, t₂, ..., tₖ} (típicamente 32K-100K tokens)
+- Una gramática G que define el lenguaje L(G)
+- Un prefijo ya generado s = t₁t₂...tₙ
+
+**Encontrar:** El conjunto de tokens válidos V' ⊆ V tal que:
+- Para todo t ∈ V': existe al menos una derivación en G que comienza con s·t
+- Para todo t ∉ V': ninguna derivación en G comienza con s·t
+
+### Relación con Parsing Tradicional
+
+| Aspecto | Parsing Tradicional | Constrained Decoding |
+|---------|---------------------|---------------------|
+| Entrada | String completo | Prefijo parcial |
+| Pregunta | ¿s ∈ L(G)? | ¿Qué tokens continúan válidamente? |
+| Salida | Sí/No (+ árbol) | Conjunto de tokens válidos |
+| Complejidad | O(n) a O(n³) | **O(1) por consulta** (con preprocessing) |
+
+### Formalización Matemática
+
+Sea δ la función de transición del parser (DFA o Earley items):
+```
+estado_actual = δ*(q₀, s)    // Estado después de procesar prefijo s
+V' = {t ∈ V | δ(estado_actual, t) ≠ ∅}  // Tokens con transición válida
+```
+
+El **token mask** es simplemente una representación bitmap de V':
+```
+mask[i] = 1 si tᵢ ∈ V'
+mask[i] = 0 si tᵢ ∉ V'
+```
+
+Durante la inferencia del LLM:
+```
+probabilidades_originales = LLM(contexto)
+probabilidades_filtradas = probabilidades_originales * mask  // Elemento a elemento
+siguiente_token = sample(probabilidades_filtradas)
+```
+
+### El Desafío: Tokens de LLM vs Tokens de Gramática
+
+Un problema sutil: los tokens del vocabulario del LLM **no coinciden** con los terminales de la gramática.
+
+```
+Gramática define:     "function"  (un terminal)
+LLM puede tokenizar:  "func" + "tion"  (dos tokens)
+
+Problema: ¿"func" es válido por sí solo?
+  - No termina un terminal válido
+  - Pero ES prefijo de uno válido
+
+Solución: XGrammar mantiene "estados de byte" que rastrean
+prefijos parciales de terminales.
+```
+
+## Especificación de la Gramática de Entrada XGrammar
+
+XGrammar acepta gramáticas en una variante de EBNF. La gramática DE la gramática es:
+
+```ebnf
+grammar      ::= rule+
+rule         ::= identifier "::=" alternation
+alternation  ::= sequence ("|" sequence)*
+sequence     ::= term+
+term         ::= atom quantifier?
+atom         ::= terminal | identifier | "(" alternation ")"
+quantifier   ::= "*" | "+" | "?"
+terminal     ::= '"' char+ '"' | "'" char+ "'"
+identifier   ::= letter (letter | digit | "_")*
+char         ::= /* cualquier carácter excepto comillas sin escapar */
+letter       ::= "a".."z" | "A".."Z"
+digit        ::= "0".."9"
+```
+
+**Ejemplo de especificación válida:**
+
+```ebnf
+json_value   ::= object | array | string | number | "true" | "false" | "null"
+object       ::= "{" (pair ("," pair)*)? "}"
+array        ::= "[" (json_value ("," json_value)*)? "]"
+pair         ::= string ":" json_value
+string       ::= '"' char* '"'
+number       ::= "-"? digit+ ("." digit+)?
+digit        ::= "0".."9"
+char         ::= /* caracteres válidos JSON */
+```
 
 ## La Misión: Compilar una Gramática
 
@@ -343,33 +436,148 @@ Esto es crucial para:
 - Errores informativos (esperábamos X pero vimos Y)
 - Optimizaciones (saltar ramas imposibles)
 - Generación de parsers eficientes (tablas de decisión)
+- **Constrained decoding**: determinar tokens válidos en cada paso
 
-### FIRST(symbol)
+### FIRST(symbol): Algoritmo Completo
 
 Conjunto de terminales que pueden ser **primero** en una derivación de `symbol`.
 
+**Algoritmo de Punto Fijo para FIRST:**
+
+```
+Algoritmo FIRST(X):
+  Si X es terminal:
+    retornar {X}
+
+  Si X es no-terminal:
+    FIRST(X) = {}
+
+    Para cada producción X → Y₁ Y₂ ... Yₖ:
+      añadir FIRST(Y₁) - {ε} a FIRST(X)
+
+      Si ε ∈ FIRST(Y₁):
+        añadir FIRST(Y₂) - {ε} a FIRST(X)
+
+        Si ε ∈ FIRST(Y₂):
+          añadir FIRST(Y₃) - {ε} a FIRST(X)
+          ... (continuar)
+
+      Si ε ∈ FIRST(Yᵢ) para todo i = 1..k:
+        añadir ε a FIRST(X)
+
+    retornar FIRST(X)
+```
+
+**Manejo de ε (epsilon):**
+```
+Regla clave: Si X → ε es una producción, entonces ε ∈ FIRST(X)
+
+Propagación: Si X → A B y A puede derivar a ε,
+entonces FIRST(B) contribuye a FIRST(X)
+
+Ejemplo:
+  A → ε | "a"
+  B → A "b"
+
+  FIRST(A) = {ε, "a"}
+  FIRST(B) = {"a", "b"}  // "b" entra porque A puede ser ε
+```
+
+**Ejemplo completo:**
 ```
 expr → term ("+" term)*
 term → factor ("*" factor)*
 factor → "(" expr ")" | ID | NUM
 
-FIRST(factor) = {"(", ID, NUM}
-FIRST(term) = FIRST(factor) = {"(", ID, NUM}
-FIRST(expr) = FIRST(term) = {"(", ID, NUM}
+Iteración 1:
+  FIRST(factor) = {"(", ID, NUM}
+
+Iteración 2:
+  FIRST(term) = FIRST(factor) = {"(", ID, NUM}
+
+Iteración 3:
+  FIRST(expr) = FIRST(term) = {"(", ID, NUM}
+
+Punto fijo alcanzado.
 ```
 
-### FOLLOW(symbol)
+### FOLLOW(symbol): Algoritmo Completo
 
 Conjunto de terminales que pueden aparecer **después** de `symbol` en una derivación válida.
 
+**Algoritmo de Punto Fijo para FOLLOW:**
+
 ```
-expr → term ("+" term)*
+Algoritmo FOLLOW:
+  Inicializar:
+    FOLLOW(S) = {$}  // S es símbolo inicial, $ es fin de entrada
+    FOLLOW(X) = {} para todo X ≠ S
 
-FOLLOW(term en expr) = {"+" , EOF}   (puede venir + o fin)
+  Repetir hasta que ningún FOLLOW cambie:
+    Para cada producción A → α B β:
+      // Regla 1: Lo que sigue a B en la producción
+      añadir FIRST(β) - {ε} a FOLLOW(B)
 
-term → factor ("*" factor)*
+      // Regla 2: Si β puede derivar a ε (o β está vacío)
+      Si ε ∈ FIRST(β) o β = ε:
+        añadir FOLLOW(A) a FOLLOW(B)
+```
 
-FOLLOW(factor en term) = {"*", FOLLOW(term)}
+**Dependencias entre FOLLOW:**
+```
+Observación crucial: FOLLOW puede depender de otros FOLLOW
+
+Ejemplo:
+  S → A B
+  A → "a"
+  B → "b" | ε
+
+  FOLLOW(A) incluye FIRST(B) - {ε} = {"b"}
+  Pero también FOLLOW(S) = {$} porque B puede ser ε
+
+  Resultado: FOLLOW(A) = {"b", $}
+```
+
+**Ejemplo completo:**
+```
+expr → term rest
+rest → "+" term rest | ε
+term → factor more
+more → "*" factor more | ε
+factor → "(" expr ")" | ID
+
+FOLLOW(expr) = {$, ")"}      // $ por inicial, ")" por factor
+FOLLOW(rest) = FOLLOW(expr)  // rest está al final de expr
+FOLLOW(term) = {"+", $, ")"} // "+" de rest, propagado de expr
+FOLLOW(more) = FOLLOW(term)  // more está al final de term
+FOLLOW(factor) = {"*", "+", $, ")"} // "*" de more, propagado
+```
+
+### Aplicación a Token Masking
+
+Con FIRST y FOLLOW, XGrammar calcula máscaras de tokens:
+
+```python
+def compute_valid_tokens(parser_state, grammar):
+    """
+    Dado el estado actual del parser, retorna tokens válidos.
+    """
+    valid = set()
+
+    for item in parser_state.active_items:
+        next_symbol = item.next_symbol()
+
+        if next_symbol is None:
+            # Item completo: tokens válidos son FOLLOW
+            valid |= FOLLOW[item.rule_name]
+        elif is_terminal(next_symbol):
+            # Siguiente es terminal: ese token es válido
+            valid.add(next_symbol)
+        else:
+            # Siguiente es no-terminal: FIRST de ese símbolo
+            valid |= FIRST[next_symbol]
+
+    return valid
 ```
 
 **Uso en compilación**: Si parseamos un `factor` en contexto `term`, sabemos que después debe venir `*` o algo en `FOLLOW(term)`. Si vemos algo distinto, es error.
@@ -435,6 +643,93 @@ Adaptativo:
   Si muchos tokens válidos → usar tabla
   Si pocos → usar bitmap
   Cambiar estrategia dinámicamente según acceso
+```
+
+### Mapeo LLM Vocabulary ↔ Grammar Tokens
+
+Un desafío crítico: los tokens del LLM usan **subword tokenization** (BPE, SentencePiece) que no coincide con los terminales de la gramática.
+
+```
+Ejemplo de discrepancia:
+
+Gramática define:
+  keyword ::= "function" | "return" | "if"
+
+LLM tokeniza "function" como:
+  GPT-4:      ["function"]           (1 token)
+  Llama-2:    ["func", "tion"]       (2 tokens)
+  CodeLlama:  ["function"]           (1 token)
+
+Problema: ¿Es "func" válido por sí solo?
+  - NO es un terminal completo
+  - PERO es prefijo de un terminal válido
+```
+
+**Solución: Estados de Byte**
+
+XGrammar mantiene estados que rastrean prefijos parciales:
+
+```
+Estado de parsing:
+  - grammar_state: posición en el DFA de la gramática
+  - byte_buffer: bytes acumulados del terminal actual
+  - valid_continuations: qué bytes pueden seguir
+
+Ejemplo parseando "func" + "tion":
+  1. Ver "func" (4 bytes)
+     byte_buffer = "func"
+     valid_continuations = {"t"} // único prefijo que continúa
+     Resultado: token válido (prefijo de "function")
+
+  2. Ver "tion" (4 bytes)
+     byte_buffer = "function"
+     Terminal completo → avanzar grammar_state
+     Resultado: token válido (completa terminal)
+```
+
+### Representación del Bitmap
+
+Para vocabularios de LLM típicos (32K-100K tokens):
+
+```
+Representación eficiente:
+
+Vocabulario: 32,768 tokens (2^15)
+Bitmap: 32,768 bits = 4,096 bytes = 4 KB por estado
+
+Operaciones:
+  is_valid(token_id):
+    return (bitmap[token_id / 64] >> (token_id % 64)) & 1
+  Complejidad: O(1)
+
+Memoria total:
+  Si DFA tiene 100 estados: 100 × 4 KB = 400 KB
+  Cabe fácilmente en L2 cache de GPU
+```
+
+### Estrategia Adaptativa
+
+```
+Trade-off:
+  - Bitmap: O(1) lookup, pero usa memoria fija
+  - Lista: O(log n) lookup, pero usa memoria proporcional a |válidos|
+
+XGrammar elige dinámicamente:
+
+if num_valid_tokens > vocabulary_size * 0.1:
+    use bitmap  // >10% válidos: bitmap es eficiente
+else:
+    use sorted list  // Pocos válidos: lista ahorra memoria
+
+Caché por estado:
+  - Calcular máscara una vez cuando se visita estado
+  - Reusar en visitas futuras
+  - Evicción LRU si memoria limitada
+```
+
+```{admonition} Impacto en Performance
+:class: tip
+El adaptive token mask cache reduce latencia de inferencia de ~5ms a ~0.1ms por token en gramáticas típicas. Esto es crítico porque la latencia de masking debe ser << latencia del forward pass del LLM (~20-50ms).
 ```
 
 ## Ciclo Completo: Ejemplo

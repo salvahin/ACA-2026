@@ -294,17 +294,140 @@ Ejemplo LR válido:
 Este no es LL(1), pero sí es LR(1).
 ```
 
+## Construcción de Tablas LR: El Detalle
+
+Para entender cómo funcionan los parsers LR generados por herramientas como Bison, necesitamos entender la construcción de sus tablas.
+
+### LR(0) Items
+
+Un **item LR(0)** es una producción con un **punto (•)** indicando cuánto hemos reconocido:
+
+```
+Item: A → α • β
+
+Significado:
+- α: Lo que ya hemos visto (reconocido)
+- β: Lo que esperamos ver (por reconocer)
+- •: Posición actual del parser
+
+Ejemplos para E → E + T:
+  E → • E + T    (no hemos visto nada)
+  E → E • + T    (vimos E, esperamos +)
+  E → E + • T    (vimos E y +, esperamos T)
+  E → E + T •    (reconocimiento completo)
+```
+
+### Closure y GOTO
+
+**Closure(I)**: Expande un conjunto de items con predicciones:
+
+```
+Algoritmo Closure(I):
+  repetir hasta que I no cambie:
+    para cada item [A → α • B β] en I:
+      para cada producción B → γ:
+        añadir [B → • γ] a I
+  retornar I
+
+Ejemplo:
+  Closure({E → • E + T}) incluye:
+    E → • E + T
+    E → • T         (porque E puede derivar a T)
+    T → • F         (porque T puede derivar a F)
+    F → • id        (porque F puede derivar a id)
+```
+
+**GOTO(I, X)**: Transición al ver símbolo X:
+
+```
+Algoritmo GOTO(I, X):
+  J = {}
+  para cada item [A → α • X β] en I:
+    añadir [A → α X • β] a J
+  retornar Closure(J)
+```
+
+### Tabla ACTION/GOTO
+
+El parser LR usa dos tablas:
+
+```
+ACTION[estado, terminal] → acción
+  - shift s: push estado s, consumir token
+  - reduce r: aplicar regla r, pop símbolos
+  - accept: parsing exitoso
+  - error: syntax error
+
+GOTO[estado, no-terminal] → estado
+  - Después de reducir, ¿a qué estado ir?
+```
+
+**Ejemplo de tabla para E → E + T | T, T → id:**
+
+```
+Estado |  id   |   +   |   $   |   E   |   T   |
+-------|-------|-------|-------|-------|-------|
+   0   | s2    |       |       |  1    |  3    |
+   1   |       | s4    | acc   |       |       |
+   2   |       | r2    | r2    |       |       |
+   3   |       | r1    | r1    |       |       |
+   4   | s2    |       |       |       |  5    |
+   5   |       | r0    | r0    |       |       |
+
+Donde:
+  r0: E → E + T
+  r1: E → T
+  r2: T → id
+```
+
+### Conflictos Shift-Reduce
+
+A veces la tabla tiene ambigüedad:
+
+```
+Conflicto Shift-Reduce:
+  Estado actual permite tanto:
+  - shift (consumir más input)
+  - reduce (aplicar regla)
+
+Ejemplo clásico - "dangling else":
+  if expr then if expr then stmt else stmt
+
+  ¿El "else" va con el if interno o externo?
+
+Solución típica: preferir shift (asociar else con if más cercano)
+```
+
+```{admonition} ¿Por qué importa esto para XGrammar?
+:class: tip
+Aunque XGrammar usa Earley (más general que LR), entender LR ayuda porque:
+1. La mayoría de gramáticas de lenguajes reales son LR
+2. Los conflictos revelan ambigüedades en tu gramática
+3. Herramientas industriales (Bison, ANTLR) reportan conflictos LR
+```
+
 ## Earley Parsing: El Algoritmo "Mágico"
 
 XGrammar usa **Earley parsing**, que es interesante porque:
 - Maneja **cualquier CFG** (no solo LL o LR)
 - Es **top-down** pero tan generoso que acepta gramáticas más generales
-- Complejidad: O(n³) en general, O(n) para gramáticas LL/LR
+
+**Complejidad del Algoritmo Earley:**
+
+| Tipo de Gramática | Complejidad | Explicación |
+|-------------------|-------------|-------------|
+| Caso general (ambigua) | O(n³) | Debe considerar todas las derivaciones posibles |
+| No-ambigua | O(n²) | Elimina exploración redundante de derivaciones |
+| LL(1) o LR(0) determinista | O(n) | Sin backtracking, decisiones únicas |
+
+```{admonition} Nota Técnica
+:class: note
+La complejidad O(n) para gramáticas LL/LR solo se logra cuando la gramática tiene propiedades especiales que eliminan completamente el backtracking. En la práctica, la mayoría de gramáticas de lenguajes de programación caen en el caso O(n²), lo cual sigue siendo eficiente para parsing.
+```
 
 ![**Figura 2:** Proceso del algoritmo Earley Parser.](diagrams/earley_parsing.png)
 
 ***Figura 2:** Proceso del algoritmo Earley Parser.*
-
 
 El algoritmo es elegante pero un poco complejo. Lo veremos en detalle en la próxima lectura.
 
@@ -440,7 +563,8 @@ def parseExpression(tokens):
 - BNF es la notación estándar para gramáticas; EBNF añade cuantificadores para mayor compacidad
 - Los cuantificadores {X}, [X], X+, X? eliminan la necesidad de recursión explícita en muchos casos
 - Parsing top-down (LL) predice qué regla aplicar; bottom-up (LR) reduce cuando reconoce patrones
-- Earley parsing acepta cualquier CFG con complejidad O(n³) general, O(n) para LL/LR
+- LR parsing usa tablas ACTION/GOTO construidas mediante items, closure y GOTO
+- Earley parsing acepta cualquier CFG: O(n³) general, O(n²) no-ambigua, O(n) para gramáticas deterministas
 
 **Para la siguiente lectura:**
 Exploraremos el pipeline completo de XGrammar: cómo compila gramáticas a parsers eficientes mediante normalización, construcción de autómatas y optimizaciones.

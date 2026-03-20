@@ -540,6 +540,124 @@ Tests:
 
 Cada paso: pequeño, testeable, se integra con lo anterior.
 
+## Patrones de Gramática Específicos para GPU
+
+Al diseñar gramáticas para kernels GPU, debemos considerar las restricciones del hardware.
+
+### Patrón 1: Operaciones sobre Tiles (Vectorización)
+
+Las GPUs procesan datos en **tiles** (bloques). La gramática debe forzar este patrón:
+
+```ebnf
+tile_operation ::= "tl.load" "(" pointer_expr "," "mask" "=" mask_expr ")"
+                 | "tl.store" "(" pointer_expr "," value_expr "," "mask" "=" mask_expr ")"
+                 | tile_expr binary_op tile_expr
+
+tile_expr ::= "tl.load" "(" ... ")" | identifier | tile_expr binary_op tile_expr
+
+pointer_expr ::= base_ptr "+" offset_expr
+offset_expr ::= "tl.arange" "(" expr "," expr ")" ("+"|"*") expr
+```
+
+**Por qué funciona**: Esta gramática SOLO permite operaciones que operan sobre tiles completos, no elementos individuales.
+
+### Patrón 2: Memory Coalescing Forzado
+
+Para acceso eficiente a memoria, los threads adyacentes deben acceder a direcciones adyacentes:
+
+```ebnf
+# BUENO: Patrón de acceso coalescente
+coalesced_access ::= base_ptr "+" thread_offset
+thread_offset ::= "pid" "*" block_size "+" "tl.arange" "(" "0" "," block_size ")"
+
+# MALO: Patrón stride (la gramática NO debe permitir esto)
+strided_access ::= base_ptr "+" index "*" stride  # ¡NO INCLUIR!
+```
+
+**Restricción gramatical**: Al no incluir `strided_access` en la gramática, el LLM no puede generar código con acceso strided.
+
+### Patrón 3: Control Flow Limitado (Evitar Divergencia)
+
+La divergencia de threads es costosa. Limitamos el control flow:
+
+```ebnf
+# Solo permitir máscaras, no if/else arbitrario
+conditional_op ::= "tl.where" "(" mask_expr "," true_expr "," false_expr ")"
+
+# NO permitir:
+# if_stmt ::= "if" expr ":" block "else" ":" block
+```
+
+### Patrón 4: Sincronización Explícita
+
+Para operaciones que requieren sincronización:
+
+```ebnf
+sync_block ::= "tl.debug_barrier" "(" ")"
+             | "# sync point"
+
+# Forzar sincronización antes de leer datos compartidos
+shared_read ::= sync_block newline
+                "tl.load" "(" shared_ptr ")"
+```
+
+### Patrón 5: Estructura Load-Compute-Store
+
+El patrón más eficiente para kernels:
+
+```ebnf
+kernel_body ::= load_section compute_section store_section
+
+load_section ::= (load_stmt newline)+
+compute_section ::= (compute_stmt newline)+
+store_section ::= (store_stmt newline)+
+
+load_stmt ::= identifier "=" "tl.load" "(" ... ")"
+compute_stmt ::= identifier "=" arith_expr  # Solo aritmética
+store_stmt ::= "tl.store" "(" ... ")"
+```
+
+**Ventaja**: Esta estructura garantiza:
+- Todas las cargas primero (maximiza paralelismo de memoria)
+- Todo el cómputo junto (maximiza uso de ALUs)
+- Todas las escrituras al final (evita dependencias)
+
+### Ejemplo Completo: Gramática para Vector Add Eficiente
+
+```ebnf
+kernel ::= decorator newline
+           "def" name "(" params ")" ":" newline
+           indent kernel_body dedent
+
+decorator ::= "@triton.jit"
+params ::= param ("," param)*
+param ::= name ":" type
+
+kernel_body ::= setup_block load_block compute_block store_block
+
+setup_block ::= "pid" "=" "tl.program_id" "(" "0" ")" newline
+                "block_start" "=" "pid" "*" "BLOCK_SIZE" newline
+                "offsets" "=" "block_start" "+" "tl.arange" "(" "0" "," "BLOCK_SIZE" ")" newline
+                "mask" "=" "offsets" "<" name newline
+
+load_block ::= (name "=" "tl.load" "(" ptr_expr "," "mask" "=" "mask" ")" newline)+
+
+compute_block ::= (name "=" arith_expr newline)+
+
+store_block ::= ("tl.store" "(" ptr_expr "," name "," "mask" "=" "mask" ")" newline)+
+
+ptr_expr ::= name "+" "offsets"
+arith_expr ::= term (("+"|"-"|"*"|"/") term)*
+term ::= name | number | "(" arith_expr ")"
+```
+
+```{admonition} Principio de Diseño GPU
+:class: tip
+**Restrictivo = Eficiente**: Una gramática más restrictiva produce código más eficiente. Al prohibir patrones ineficientes a nivel gramatical, garantizamos que el LLM solo genere código optimizado.
+
+Esto invierte la intuición tradicional donde "más expresivo = mejor". Para GPUs, menos opciones significa mejores opciones.
+```
+
 ## Errores Comunes a Evitar
 
 ```

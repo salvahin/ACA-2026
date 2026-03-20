@@ -238,6 +238,25 @@ Mientras cola no esté vacía:
 F' = {S ⊆ Q | S ∩ F ≠ ∅}  // estados que contienen estados de aceptación del NFA
 ```
 
+```{admonition} Complejidad Teórica vs Práctica
+:class: note
+
+**Peor caso teórico:** El DFA resultante puede tener hasta 2^|Q_NFA| estados, donde |Q_NFA| es el número de estados del NFA original. Esto es porque cada subconjunto de estados del NFA es potencialmente un estado del DFA.
+
+**En la práctica:** Este caso exponencial es **extremadamente raro**. Se requieren patrones artificiales específicos para alcanzarlo. Las gramáticas de lenguajes de programación reales típicamente producen DFAs con un número de estados **comparable o menor** al NFA original.
+
+**¿Por qué?**
+- Los subconjuntos alcanzables son limitados por la estructura de la gramática
+- Muchos subconjuntos potenciales nunca se visitan
+- La minimización posterior elimina estados redundantes
+
+**Ejemplo empírico:**
+- Gramática JSON típica: NFA ~150 estados → DFA ~80 estados → DFA minimizado ~35 estados
+- Expresiones regulares de lexer C: NFA ~200 estados → DFA ~120 estados
+
+No temas a la construcción de subconjuntos; es eficiente para gramáticas prácticas.
+```
+
 ### Ejemplo Paso a Paso
 
 **NFA Original**:

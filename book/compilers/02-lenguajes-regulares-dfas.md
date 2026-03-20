@@ -396,6 +396,13 @@ En generación de código con LLMs, los DFAs restringen qué tokens puede genera
 El siguiente simulador visualiza DFAs directamente en el notebook con Plotly.
 ```
 
+```{admonition} Teoría vs Implementación
+:class: warning
+**Definición formal de DFA:** Una tupla M = (Q, Σ, δ, q₀, F) donde Q es el conjunto de estados, Σ el alfabeto, δ la función de transición, q₀ el estado inicial, y F los estados de aceptación.
+
+**Implementación práctica:** El código Python a continuación es una *simulación* del concepto matemático. Usa diccionarios para representar δ, listas para Q y F, y funciones para visualizar. No confundas la elegancia matemática de la definición formal con los detalles de implementación.
+```
+
 ```{code-cell} ipython3
 # Simulador DFA interactivo con Plotly
 # Permite visualizar cualquier DFA y trazar el procesamiento de una cadena

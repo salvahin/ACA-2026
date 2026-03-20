@@ -399,6 +399,168 @@ Lenguajes Libres de Contexto:
 
 **Solución práctica**: Combinamos CFG para estructura + análisis semántico para restricciones contextuales.
 
+## Gramáticas con Atributos: Llevando Semántica a la Sintaxis
+
+Las **gramáticas con atributos** (attribute grammars) son una extensión de las CFGs que permiten asociar información semántica con los nodos del árbol de análisis.
+
+### ¿Por qué Atributos?
+
+Las CFGs solo nos dan estructura. Pero durante la compilación necesitamos:
+- Calcular tipos de expresiones
+- Propagar información de scope
+- Evaluar expresiones constantes
+- Generar código
+
+Los atributos resuelven esto de manera sistemática.
+
+### Atributos Sintetizados vs Heredados
+
+**Atributos Sintetizados**: Fluyen de **hijos a padres** (bottom-up)
+- El valor se calcula a partir de los valores de los hijos
+- Ejemplo: el tipo de una expresión se calcula a partir de sus operandos
+
+**Atributos Heredados**: Fluyen de **padres a hijos** (top-down)
+- El valor se pasa desde el padre o hermanos
+- Ejemplo: el contexto de tipos disponibles en un scope
+
+```
+Visualización:
+                    E (tipo = int)    ← sintetizado de hijos
+                   /|\
+                  E + T
+                  |   |
+                 T    F
+                 |    |
+                 F   "3"
+                 |
+                "2"
+
+  Si queremos heredar: "estamos dentro de función main"
+                    E (contexto = "main")  ← heredado del padre
+                   /|\
+                  E + T
+         (ctx=main) (ctx=main)
+```
+
+### Ejemplo 1: Calculadora con Atributos Sintetizados
+
+Gramática con atributos para evaluar expresiones:
+
+```
+Gramática:
+  E → E + T    { E.val = E₁.val + T.val }
+  E → T        { E.val = T.val }
+  T → T * F    { T.val = T₁.val * F.val }
+  T → F        { T.val = F.val }
+  F → ( E )    { F.val = E.val }
+  F → número   { F.val = número.lexval }
+
+Notación:
+  - Cada símbolo tiene atributo .val
+  - Las reglas semánticas calculan valores
+```
+
+**Evaluación para "2 + 3 * 4":**
+
+```
+Árbol de análisis con atributos:
+
+              E.val = 14
+             /    |    \
+      E.val=2    "+"   T.val=12
+         |             /   |   \
+      T.val=2    T.val=3  "*"  F.val=4
+         |          |            |
+      F.val=2   F.val=3        "4"
+         |          |
+        "2"        "3"
+
+Orden de evaluación (post-orden):
+1. F.val = 2
+2. T.val = 2
+3. E.val = 2
+4. F.val = 3
+5. T.val = 3
+6. F.val = 4
+7. T.val = 3 * 4 = 12
+8. E.val = 2 + 12 = 14
+```
+
+### Ejemplo 2: Type Checking con Atributos Heredados
+
+Para verificar tipos, necesitamos pasar el **entorno de tipos** hacia abajo:
+
+```
+Gramática con atributos:
+  Decl → type ID "=" Expr
+         { ID.tipo = type.val;
+           Expr.env = añadir(ID, type.val, Decl.env);
+           Decl.error = (Expr.tipo ≠ type.val) }
+
+  Expr → Expr + Expr
+         { Expr.tipo = if (Expr₁.tipo = Expr₂.tipo = int)
+                       then int else error;
+           Expr₁.env = Expr.env;
+           Expr₂.env = Expr.env }
+
+  Expr → ID
+         { Expr.tipo = buscar(ID, Expr.env) }
+
+Atributos heredados: .env (entorno de tipos)
+Atributos sintetizados: .tipo, .error
+```
+
+**Verificación para "int x = 5 + 3":**
+
+```
+                Decl.error = false
+                    |
+    type="int"  ID="x"  "="    Expr.tipo = int
+                               /    |    \
+                       Expr.tipo=int "+" Expr.tipo=int
+                           |                |
+                          "5"              "3"
+
+Flujo:
+1. Heredado: env se propaga hacia abajo
+2. Sintetizado: tipos se calculan hacia arriba
+3. Verificación: comparar tipos en la raíz
+```
+
+### S-Attributed vs L-Attributed Grammars
+
+**S-Attributed**: Solo atributos sintetizados
+- Evaluables en post-orden (bottom-up)
+- Compatible con parsers LR
+
+**L-Attributed**: Atributos heredados + sintetizados, pero con restricción
+- Heredados solo pueden depender de hermanos izquierdos o del padre
+- Evaluables en pre-orden (top-down, left-to-right)
+- Compatible con parsers LL
+
+```
+L-Attributed permite:
+  A → B C D
+  D.inherited = f(A.inherited, B.synthesized, C.synthesized)
+
+L-Attributed NO permite:
+  A → B C D
+  B.inherited = f(D.synthesized)  // ¡D está a la derecha!
+```
+
+### Aplicación en XGrammar
+
+XGrammar usa implícitamente atributos para:
+
+1. **Tracking de estado**: El "estado del parser" es un atributo heredado
+2. **Token masking**: Los tokens válidos son un atributo sintetizado del estado actual
+3. **Contexto**: Información como "estamos dentro de un string" es heredada
+
+```{admonition} ¿Por qué esto importa para LLMs?
+:class: tip
+En constrained decoding, el "contexto" (qué hemos generado hasta ahora) fluye como atributo heredado, y la "máscara de tokens válidos" es un atributo sintetizado. Esta perspectiva ayuda a diseñar gramáticas más eficientes.
+```
+
 ## Reconocimiento con PDA (Preview)
 
 Un **autómata de pila** es como un DFA pero con una pila infinita:

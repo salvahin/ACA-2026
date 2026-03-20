@@ -53,6 +53,39 @@ Imagina que escribes un programa en Python o C++. Tu computadora no entiende dir
 
 En nuestro contexto del curso, estamos diseñando un compilador especializado para gramáticas libres de contexto que generarán kernels CUDA en GPU. El compilador tomará especificaciones en lenguaje natural o semi-formal, validará su estructura, y generará código eficiente para ejecutarse en hardware paralelo.
 
+```{admonition} Contexto: ¿Qué es un LLM y Por Qué Importa para Compiladores?
+:class: important
+
+Este curso conecta la teoría clásica de compiladores con una aplicación moderna: **Large Language Models (LLMs)**.
+
+**¿Qué es un LLM?**
+
+Un LLM (Large Language Model) es un modelo de aprendizaje automático entrenado con enormes cantidades de texto. Genera texto **token por token**, prediciendo la probabilidad del siguiente token dado el contexto anterior. Ejemplos incluyen GPT-4, Claude, y Llama.
+
+**El Problema: LLMs Generan Código Sintácticamente Incorrecto**
+
+Cuando un LLM genera código, no tiene garantía de corrección sintáctica:
+- Puede generar paréntesis desbalanceados
+- Puede usar identificadores no declarados
+- Puede producir estructuras gramaticalmente inválidas
+
+**La Solución: Constrained Decoding con Gramáticas**
+
+Aquí es donde entra la teoría de compiladores. Usamos gramáticas formales (CFGs) para **restringir** qué tokens puede generar el modelo en cada paso:
+
+| Parsing Tradicional | Constrained Decoding |
+|---------------------|---------------------|
+| Lee tokens existentes | Guía generación de nuevos tokens |
+| Valida código después de escribirlo | Previene errores durante la generación |
+| Acepta o rechaza un programa | Filtra opciones inválidas en tiempo real |
+
+**¿Por qué esto es revolucionario?**
+
+En lugar de generar código y luego verificar si es válido (rechazando el inválido), **garantizamos corrección sintáctica desde el inicio**. El LLM solo puede elegir tokens que mantengan la validez gramatical.
+
+Este curso te enseñará la teoría de compiladores necesaria para entender y diseñar estos sistemas de generación restringida.
+```
+
 ### Analogía: La Cocina
 
 Piensa en un compilador como una cocina profesional:
@@ -118,11 +151,16 @@ Tokens:   [INT, ID, ASSIGN, NUM, SEMICOLON]
 
 El analizador sintáctico verifica que la secuencia de tokens cumple con las reglas de la gramática. En nuestro caso, si la entrada viola las reglas (por ejemplo, `int = 42 x`), el parser rechaza la entrada.
 
-**En XGrammar**: Es la fase central. Nuestro compilador debe generar un parser (típicamente un Earley parser) que acepte exactamente los strings definidos por nuestra gramática CFG.
+**En XGrammar**: Es la fase central. El compilador genera estructuras de parsing que aceptan exactamente los strings definidos por nuestra gramática CFG.
 
 ```{admonition} 🎯 Conexión con el Proyecto
 :class: important
-En XGrammar, la fase de parsing es crítica porque genera las máscaras de tokens que guían la generación del LLM. El Earley parser construye un autómata de pila que determina qué tokens son válidos en cada paso, asegurando que el código generado sea sintácticamente correcto desde el inicio.
+En XGrammar, la fase de parsing es crítica porque genera las máscaras de tokens que guían la generación del LLM. XGrammar usa un **enfoque híbrido**:
+
+1. **Estructura Earley-like**: Mantiene el estado del parsing mediante items que rastrean qué reglas están parcialmente reconocidas
+2. **Token masking basado en DFA**: Para eficiencia, pre-compila la gramática a autómatas que permiten consultas O(1) sobre qué tokens son válidos
+
+Esta combinación permite tanto la generalidad de Earley (acepta cualquier CFG) como la velocidad de los DFAs (verificación en tiempo constante). El resultado: constrained decoding que garantiza corrección sintáctica sin sacrificar latencia de inferencia.
 ```
 
 ### 3. Análisis Semántico
@@ -222,10 +260,13 @@ Producción general: α → β  (donde α y β son cualquier string)
 
 ### Tipo 1: Lenguajes Sensibles al Contexto (Context-Sensitive)
 
-**Características**: Las reglas deben ser no-decrecientes en longitud.
+**Características**: Las reglas deben ser **no-contractivas** (la longitud del lado derecho es mayor o igual al lado izquierdo).
 
 ```
-Producción: αAβ → αγβ  (donde γ es no-vacío y más largo que A)
+Producción: αAβ → αγβ  (donde |γ| ≥ 1, es decir, γ es no-vacío)
+
+Restricción formal: |αAβ| ≤ |αγβ|
+Como A es un solo símbolo y γ tiene al menos un símbolo, la producción nunca reduce longitud.
 ```
 
 **Poder**: Pueden expresar restricciones de alcance, tipos, y memoria limitada.

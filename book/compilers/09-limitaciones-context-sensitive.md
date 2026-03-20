@@ -90,42 +90,148 @@ Tipo 3: Regular                       (autómatas finitos)
 
 **Teorema del Pumping Lemma para CFGs**:
 
-Si L es context-free, entonces existe constante n tal que para todo string s en L con |s| >= n:
+Si L es context-free, entonces existe constante n (la "longitud de pumping") tal que para todo string s en L con |s| >= n:
   s = uvwxy donde:
     - |vwx| <= n
     - |vx| > 0
     - Para todo i >= 0: uv^i wx^i y está en L
 
-**Implicación**: CFG **no puede contar con dos contadores independientes**. Solo puede guardar en la pila, que es LIFO (último en, primero afuera).
-
-### Ejemplo que CFG No Puede Hacer
+**Intuición**: En cualquier árbol de derivación suficientemente grande, debe haber un no-terminal que se repite en un camino. Esta repetición permite "bombear" (repetir) partes del string.
 
 ```
-Lenguaje: a^n b^n c^n (n de cada letra)
+Visualización del Pumping Lemma:
 
-¿Puede una CFG reconocerlo?
+       S
+      / \
+     /   \
+    A     y      ← parte "y" (después del bombeo)
+   /|\
+  / | \
+ u  A  x         ← parte "v" y "x" (bombeables)
+    |
+    w            ← parte "w" (centro)
 
-Intenta:
-  S → aSbSc | ε
+La A repetida permite:
+- i=0: u w y       (quitar v y x)
+- i=1: u v w x y   (normal)
+- i=2: u vv w xx y (repetir v y x)
+- etc.
+```
 
-¿Funciona?
-  S → aSbSc
-    → aaSbScbSc
-    → aaabSbScbSc
-    ...
+**Implicación**: CFG **no puede contar con dos contadores independientes**. Solo puede guardar en la pila, que es LIFO (último en, primero afuera).
 
-¡No! Genera aaa b b c c en los pasos intermedios, no a^n b^n c^n.
+### Cómo Usar el Pumping Lemma (Estructura de Prueba)
 
-¿Qué hacía falta?
-  Necesitamos sincronizar 3 contadores.
-  CFG solo tiene 1 pila (LIFO).
+Para demostrar que un lenguaje L **NO es context-free**:
 
-Para a^n b^n c^n, necesitamos:
-  - Contar 'a's (guardar en pila 1)
-  - Contar 'b's (guardar en pila 2)
-  - Verificar que 'c's = ambas pilas
+```
+Estructura de prueba por contradicción:
 
-CFG con 1 pila no puede hacerlo.
+1. SUPONER que L es context-free
+2. Por el Pumping Lemma, existe constante n
+3. ELEGIR un string s ∈ L con |s| >= n
+   (Elegir estratégicamente para que cualquier división falle)
+4. Por el lema, s = uvwxy con las condiciones
+5. CONSIDERAR todos los casos posibles de división
+6. MOSTRAR que para algún i, uv^i wx^i y ∉ L
+7. CONTRADICCIÓN → L no es context-free
+```
+
+### Ejemplo Completo: a^n b^n c^n No es Context-Free
+
+**Demostración formal:**
+
+```
+Paso 1: Supongamos que L = {a^n b^n c^n | n >= 0} es context-free.
+
+Paso 2: Por el Pumping Lemma, existe constante de bombeo p.
+
+Paso 3: Elegimos s = a^p b^p c^p
+        - s está en L (tiene p de cada letra)
+        - |s| = 3p >= p
+
+Paso 4: Por el lema, s = uvwxy donde |vwx| <= p y |vx| > 0
+
+Paso 5: Analizamos dónde pueden estar v y x:
+
+  Caso A: vwx está completamente dentro de las a's
+          vwx = a...a
+          Entonces v y x solo contienen a's
+          Al bombear (i=2): tenemos más a's que b's y c's
+          → a^(p+k) b^p c^p ∉ L  ✗
+
+  Caso B: vwx está completamente dentro de las b's
+          Similar al caso A
+          → a^p b^(p+k) c^p ∉ L  ✗
+
+  Caso C: vwx está completamente dentro de las c's
+          Similar
+          → a^p b^p c^(p+k) ∉ L  ✗
+
+  Caso D: vwx cruza frontera a-b (contiene a's y b's pero no c's)
+          Al bombear: cambian a's y b's, pero no c's
+          → Los tres conteos ya no son iguales  ✗
+
+  Caso E: vwx cruza frontera b-c (contiene b's y c's pero no a's)
+          Similar
+          → Los tres conteos ya no son iguales  ✗
+
+  Caso F: vwx contiene a's, b's y c's
+          Imposible porque |vwx| <= p, y las a's, b's, c's
+          están separadas por p posiciones cada una.
+          Si vwx contuviera los tres, |vwx| > p. ✗
+
+Paso 6: En todos los casos posibles, al bombear obtenemos
+        un string que NO está en L.
+
+Paso 7: Contradicción. Por lo tanto, L no es context-free. ∎
+```
+
+```{admonition} Error Común en Pruebas de Pumping Lemma
+:class: warning
+
+**Incorrecto:** "Elijo v = a^k y muestro que falla"
+- ¡El adversario elige la división, no tú!
+
+**Correcto:** "Para CUALQUIER división posible de s en uvwxy..."
+- Debes considerar todos los casos donde v y x podrían estar
+```
+
+### Por Qué la Intuición Funciona
+
+```
+CFG y su PDA equivalente tienen UNA pila.
+
+Para a^n b^n c^n necesitamos:
+  1. Contar a's (push n veces)
+  2. Verificar b's = a's (pop n veces)
+  3. Verificar c's = a's (¡pero la pila ya está vacía!)
+
+Con una pila:
+  - Podemos hacer a^n b^n (push a's, pop con b's)
+  - Podemos hacer b^n c^n (push b's, pop con c's)
+  - NO podemos verificar a^n = b^n = c^n simultáneamente
+
+Necesitaríamos DOS pilas independientes (Type 1 power).
+```
+
+### Ejemplo que CFG SÍ Puede Hacer
+
+```
+Contraste: a^n b^n (dos contadores relacionados)
+
+Gramática:
+  S → aSb | ε
+
+Derivación:
+  S → aSb → aaSbb → aaabbb
+
+¿Por qué funciona?
+  - Una pila es suficiente
+  - Push a's, luego pop verificando b's
+
+El Pumping Lemma NO da contradicción aquí porque
+podemos elegir v = a, x = b, y bombear manteniendo igualdad.
 ```
 
 ## Problemas Prácticos: Declaración Antes de Uso

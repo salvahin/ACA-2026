@@ -17,12 +17,23 @@ Este módulo cubre la teoría de compiladores necesaria para entender cómo las 
 
 Al completar este módulo, serás capaz de:
 
+**Fundamentos Teóricos:**
 - [ ] Diseñar autómatas finitos (DFA/NFA) para reconocer patrones en texto
 - [ ] Escribir gramáticas libres de contexto (CFG) en notación BNF/EBNF
+- [ ] Construir tablas de parsing LR y calcular conjuntos FIRST/FOLLOW
+- [ ] Aplicar el Pumping Lemma para demostrar que un lenguaje no es context-free
+- [ ] Usar gramáticas con atributos para análisis semántico
+
+**Aplicación a LLMs:**
+- [ ] Explicar qué es constrained decoding y cómo las gramáticas lo habilitan
 - [ ] Entender el pipeline de compilación de gramáticas a FSM en XGrammar
+- [ ] Describir cómo funciona el token masking para vocabularios de LLM
+
+**Diseño y Práctica:**
 - [ ] Diseñar gramáticas para DSLs (Domain-Specific Languages)
+- [ ] Crear gramáticas específicas para kernels GPU eficientes
 - [ ] Identificar las limitaciones de las gramáticas libres de contexto
-- [ ] Comparar y seleccionar parser generators apropiados para cada caso
+- [ ] Comparar y seleccionar parser generators apropiados (ANTLR, PLY, XGrammar, etc.)
 
 ## Prerequisitos
 

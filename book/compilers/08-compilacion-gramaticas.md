@@ -1006,6 +1006,214 @@ if not equivalent:
     print("  Ninguno (DFA ya está minimizado)")
 ```
 
+## Representaciones Intermedias (IR)
+
+En compiladores tradicionales, entre el parsing y la generación de código existe una **representación intermedia** (IR). Aunque XGrammar se enfoca en parsing, entender IR es crucial para generar código GPU eficiente.
+
+### Código de Tres Direcciones (TAC)
+
+El **Three-Address Code** es una IR donde cada instrucción tiene a lo sumo tres operandos:
+
+```
+Expresión: a = b + c * d
+
+Three-Address Code:
+  t1 = c * d
+  t2 = b + t1
+  a = t2
+
+Propiedades:
+- Cada instrucción: resultado = operando1 op operando2
+- Temporales explícitos (t1, t2)
+- Fácil de optimizar y analizar
+```
+
+### Static Single Assignment (SSA)
+
+**SSA** es una forma de IR donde cada variable se asigna exactamente una vez:
+
+```
+Código original:
+  x = 1
+  x = x + 1
+  y = x * 2
+
+En SSA:
+  x₁ = 1
+  x₂ = x₁ + 1
+  y₁ = x₂ * 2
+
+Ventaja: Simplifica análisis de flujo de datos
+```
+
+**Funciones φ (phi)**: Para unir valores en puntos de control:
+
+```
+Código original:
+  if (cond)
+    x = 1
+  else
+    x = 2
+  y = x + 3
+
+En SSA:
+  if (cond)
+    x₁ = 1
+  else
+    x₂ = 2
+  x₃ = φ(x₁, x₂)  // "elige" el valor correcto
+  y₁ = x₃ + 3
+```
+
+### Control Flow Graphs (CFG)
+
+Un **grafo de flujo de control** representa la estructura del programa:
+
+```
+Ejemplo:
+  if (a > b) {
+    max = a;
+  } else {
+    max = b;
+  }
+  print(max);
+
+CFG:
+        [Entry]
+           |
+      [if a > b]
+        /     \
+    [max=a]  [max=b]
+        \     /
+      [print(max)]
+           |
+        [Exit]
+
+Nodos: Basic blocks (secuencias sin saltos)
+Aristas: Flujo de control
+```
+
+## Compilación para GPU: Triton y CUDA
+
+Dado que el curso se enfoca en kernels GPU, veamos cómo la compilación difiere del CPU.
+
+### Arquitectura GPU vs CPU
+
+```
+CPU:
+- Pocos cores potentes (4-64)
+- Caché grande
+- Optimizado para latencia
+- Instrucciones complejas
+
+GPU:
+- Miles de cores simples (1024-16384)
+- Caché pequeño por core
+- Optimizado para throughput
+- Instrucciones paralelas (SIMD/SIMT)
+```
+
+### Pipeline de Compilación Triton
+
+Triton (el framework que usamos para kernels) tiene su propio pipeline:
+
+```
+Código Python (Triton DSL)
+         ↓
+[Frontend] → Triton IR (MLIR-based)
+         ↓
+[Optimizations] → Tile scheduling, Memory coalescing
+         ↓
+[Backend] → PTX (NVIDIA) o AMDGPU IR
+         ↓
+[Assembler] → Código máquina GPU
+```
+
+### Triton IR: Ejemplo
+
+```python
+# Código Triton
+@triton.jit
+def add_kernel(x_ptr, y_ptr, output_ptr, n_elements):
+    pid = tl.program_id(0)
+    block_start = pid * BLOCK_SIZE
+    offsets = block_start + tl.arange(0, BLOCK_SIZE)
+    mask = offsets < n_elements
+    x = tl.load(x_ptr + offsets, mask=mask)
+    y = tl.load(y_ptr + offsets, mask=mask)
+    output = x + y
+    tl.store(output_ptr + offsets, output, mask=mask)
+```
+
+```
+Triton IR (simplificado):
+  %pid = get_program_id(0)
+  %start = mul %pid, BLOCK_SIZE
+  %offsets = arange(0, BLOCK_SIZE)
+  %addrs = add %start, %offsets
+  %mask = icmp_slt %addrs, %n_elements
+  %x = load %x_ptr[%addrs], mask=%mask
+  %y = load %y_ptr[%addrs], mask=%mask
+  %out = fadd %x, %y
+  store %output_ptr[%addrs], %out, mask=%mask
+```
+
+### Optimizaciones GPU-Específicas
+
+```
+1. Memory Coalescing
+   - Accesos a memoria deben ser contiguos
+   - Threads adyacentes acceden a direcciones adyacentes
+
+   Malo:  thread[i] accede a data[i * stride]  (stride > 1)
+   Bueno: thread[i] accede a data[i]           (contiguo)
+
+2. Shared Memory Tiling
+   - Cargar datos a memoria compartida (rápida)
+   - Reusar entre threads del mismo bloque
+
+3. Ocupación
+   - Balancear registros vs threads
+   - Más threads = mejor hiding de latencia
+
+4. Divergencia de Threads
+   - Evitar if/else donde threads difieren
+   - Todos los threads en un warp deben seguir mismo camino
+```
+
+### Gramáticas para Kernels Eficientes
+
+El diseño de gramáticas para DSLs GPU debe considerar estas optimizaciones:
+
+```
+Buena gramática:
+  tile_op ::= "for" id "in" tile_range ":" tile_body
+  tile_range ::= "tl.arange" "(" expr "," expr ")"
+  tile_body ::= (load_stmt | compute_stmt | store_stmt)+
+
+Garantiza:
+- Operaciones sobre tiles (vectorizables)
+- Patrón load-compute-store (predecible)
+- Sin control flow complejo (evita divergencia)
+
+Mala gramática (demasiado permisiva):
+  stmt ::= any_python_stmt
+
+Problema:
+- Permite código no-paralelizable
+- El LLM podría generar loops secuenciales
+```
+
+```{admonition} Conexión: Gramáticas → Kernels Correctos
+:class: tip
+Al diseñar gramáticas para XGrammar que generen código GPU:
+1. **Restringe** a patrones eficientes (tiles, coalesced access)
+2. **Prohibe** patrones ineficientes (divergencia, acceso aleatorio)
+3. **Estructura** para facilitar optimizaciones posteriores
+
+La gramática actúa como **especificación de corrección**: código que no es eficiente en GPU simplemente no puede ser generado.
+```
+
 ```{admonition} Resumen
 :class: important
 **Conceptos clave:**
@@ -1014,6 +1222,8 @@ if not equivalent:
 - Las máscaras de tokens (bitmasks) permiten validación O(1) de tokens válidos por estado
 - La construcción de tablas de parsing LL(1) usa FIRST/FOLLOW para decisiones deterministas
 - La fusión de estados equivalentes reduce el tamaño del DFA sin cambiar el lenguaje aceptado
+- Las representaciones intermedias (TAC, SSA, CFG) facilitan optimización y generación de código
+- La compilación GPU requiere consideraciones específicas: coalescing, tiling, ocupación, divergencia
 
 **Para la siguiente lectura:**
 Exploraremos las limitaciones de las CFGs y lenguajes context-sensitive, entendiendo qué restricciones NO pueden expresarse solo con gramáticas.

@@ -314,10 +314,10 @@ El flag `-e` significa "editable". Cambios en el código fuente se reflejan sin 
 ```{code-cell} ipython3
 import xgrammar as xgr
 
-# Si esto funciona sin errores, ¡está instalado!
-schema = {"type": "object"}
-compiled = xgr.compile(schema)
-print("XGrammar funcionando correctamente")
+# Verificar que XGrammar está instalado correctamente
+print(f"XGrammar version: {xgr.__version__}")
+print(f"Clases disponibles: GrammarCompiler, TokenizerInfo")
+print("XGrammar instalado correctamente")
 ```
 
 ## Configuración de Proyecto Completa

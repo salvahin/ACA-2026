@@ -32,8 +32,8 @@ print(f"Usando dispositivo: {device}")
 # Setup condicional para Google Colab
 import sys
 if 'google.colab' in sys.modules:
+    !pip install -q --upgrade pip setuptools wheel
     !pip install -q xgrammar plotly jsonschema
-    # Nota: la lista anterior puede contener librerías extra, las cuales Colab ignorará o instalará rápido.
 ```
 
 
@@ -84,7 +84,7 @@ Cuando clonas un repositorio sin especificar una versión, obtienes la rama prin
 
 ```bash
 # ❌ No recomendado - obtienes lo que hay ahora
-git clone https://github.com/milab-ai/xgrammar.git
+git clone https://github.com/mlc-ai/xgrammar.git
 cd xgrammar
 # ¿Qué versión tengo? Nadie lo sabe exactamente...
 ```
@@ -95,7 +95,7 @@ Los repositorios usan **tags** para marcar versiones específicas. Puedes pensar
 
 ```bash
 # ✓ Recomendado - reproducible y explícito
-git clone https://github.com/milab-ai/xgrammar.git
+git clone https://github.com/mlc-ai/xgrammar.git
 cd xgrammar
 git checkout v0.1.0  # O el tag que necesites
 ```
@@ -280,7 +280,7 @@ brew install cmake llvm
 
 ```bash
 # 1. Clonar con tag específico
-git clone https://github.com/milab-ai/xgrammar.git
+git clone https://github.com/mlc-ai/xgrammar.git
 cd xgrammar
 git checkout v0.1.0
 

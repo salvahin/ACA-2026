@@ -33,6 +33,19 @@ jobs:
           pip install --upgrade pip
           pip install -r book/requirements.txt
 
+      - name: Convert MyST markdown to notebooks
+        run: |
+          mkdir -p book/notebooks
+          # Convert MyST markdown files to notebooks
+          for dir in project_1 project_2 stats research compilers ai; do
+            for f in book/$dir/*.md; do
+              if [ -f "$f" ] && grep -q "jupytext:" "$f" 2>/dev/null; then
+                filename=$(basename "$f" .md)
+                jupytext --to notebook "$f" -o "book/notebooks/${filename}.ipynb"
+              fi
+            done
+          done
+
       - name: Build Jupyter Book
         run: |
           jupyter-book build book/

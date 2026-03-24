@@ -315,9 +315,9 @@ El flag `-e` significa "editable". Cambios en el código fuente se reflejan sin 
 import xgrammar as xgr
 
 # Verificar que XGrammar está instalado correctamente
-print(f"XGrammar version: {xgr.__version__}")
-print(f"Clases disponibles: GrammarCompiler, TokenizerInfo")
-print("XGrammar instalado correctamente")
+assert hasattr(xgr, 'GrammarCompiler'), "GrammarCompiler no encontrado"
+assert hasattr(xgr, 'TokenizerInfo'), "TokenizerInfo no encontrado"
+print("✓ XGrammar instalado correctamente")
 ```
 
 ## Configuración de Proyecto Completa
